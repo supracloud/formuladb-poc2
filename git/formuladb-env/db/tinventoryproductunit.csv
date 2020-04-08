@@ -1,2 +1,2 @@
-_id,code,product_code,product_name,inventory_location,serial1,serial2,serial3,serial4,serial5,serial6,serial7,install_date,state,nb_piston_cycles,brita_counter,washing_cycles
-InventoryProductUnit~~1,"","","","","","","","","","","","","","","",""
+_id,code,product_code,product_name,inventory_location,serial1,serial2,serial3,serial4,serial5,serial6,serial7,install_date,state,nb_piston_cycles,brita_counter,washing_cycles,_owner,_role,_rev
+InventoryProductUnit~~1,"","","","","","","","","","","","","","","","",AnounymousUserId,$ANONYMOUS,""

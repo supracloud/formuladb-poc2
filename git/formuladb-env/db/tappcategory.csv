@@ -1,11 +1,11 @@
-_id,guiorder
-AppCategory~~Booking & Appointments,020
-AppCategory~~Business Administration,030
-AppCategory~~Consulting,080
-AppCategory~~Design & Media,050
-AppCategory~~Distribution,010
-AppCategory~~Food & Travel,100
-AppCategory~~Maintenance & Support,040
-AppCategory~~Medical & Health,060
-AppCategory~~Sports & Fitness,090
-AppCategory~~Startup Management,070
+_id,guiorder,_owner,_role,_rev
+AppCategory~~Booking & Appointments,020,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Business Administration,030,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Consulting,080,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Design & Media,050,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Distribution,010,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Food & Travel,100,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Maintenance & Support,040,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Medical & Health,060,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Sports & Fitness,090,AnounymousUserId,$ANONYMOUS,""
+AppCategory~~Startup Management,070,AnounymousUserId,$ANONYMOUS,""

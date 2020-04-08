@@ -202,7 +202,9 @@ export class FrmdbEditorDirective {
 
         getData('/formuladb-api/user').then((u: {userRole: string, userId: string}) => {
             if (u.userRole === "$ANONYMOUS") {
-                raiseNotification(ThemeColors.warning, "WARNING this is a preview environment", 'To be able to save your modifications, please <a href="/login">Login</a> or <a href="/register">Register</a>')
+                raiseNotification(ThemeColors.warning, 
+                    "WARNING this is a preview environment.", 
+                    'To be able to save your modifications, please <a href="/login" target="_blank">Login</a> or <a href="/register" target="_blank">Register</a>')
             }
         })
     }

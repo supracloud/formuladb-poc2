@@ -1,1 +1,1 @@
-_id,product_id,quantity,error_quantity,client_stock,units
+_id,product_id,quantity,error_quantity,client_stock,units,_owner,_role,_rev

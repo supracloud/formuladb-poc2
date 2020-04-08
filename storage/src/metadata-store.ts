@@ -263,7 +263,7 @@ export class MetadataStore {
 
     async newApp(appName: string, basedOnApp?: string): Promise<App | null> {
         if (basedOnApp) {
-            await execShell(`cp -ar ${FRMDB_ENV_DIR}/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
+            await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
         } else {
             await execShell(`mkdir -p ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
             await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/index.html`);
@@ -374,7 +374,7 @@ export class MetadataStore {
             let img = await this.getPageScreenshot(pageOpts);
             let { appName, pageName } = pageOpts;
             console.info('Saving screenshot for ', pageOpts);
-            let path = `${appName}/static/${pageName}.png`;
+            let path = `frmdb-apps/${appName}/static/${pageName}.png`;
             await this.writeFile(`${FRMDB_ENV_DIR}/${path}`, img);
             console.info('saved ', path);
         } catch (err) {

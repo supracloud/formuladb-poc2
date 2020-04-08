@@ -78,10 +78,6 @@ export class AuthRoutes {
             res.status(200).send({ isproductionenv: process.env.FRMDB_IS_PROD_ENV === "true" });
         });
 
-        app.get('/login', function (req, res) {
-            res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb-io/login.html');
-        });
-
         app.post('/login',
             passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/login' }),
         );

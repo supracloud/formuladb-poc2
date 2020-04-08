@@ -116,12 +116,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     authRoutes.setupAuthRoutes(app);
 
+    app.get('/login', function (req, res, next) {
+        readHtmlPage({appName: "users", pageName: "login"}, req, res, next);
+    });
     app.get('/register', function (req, res, next) {
-        if (process.env.FRMDB_IS_PROD_ENV) {
-            res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb-io/register.html');
-        } else {
-            next();
-        }
+        readHtmlPage({appName: "users", pageName: "register"}, req, res, next);
     });
 
     app.post('/register', async (req, res, next) => {
@@ -340,7 +339,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next(err);
         }
     });
-    
+
     app.get('/formuladb-api/:app', async function (req, res, next) {
         try {
             let app: App | null = await kvsFactory.metadataStore.getApp(req.params.app);

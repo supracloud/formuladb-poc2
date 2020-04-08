@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@domain/metadata/entity";
+import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn, EntityProperty } from "@domain/metadata/entity";
 import { SchemaDAO } from "@domain/metadata/schema_dao";
 import { DataObj, parseDataObjId, isNewDataObjId } from "@domain/metadata/data_obj";
 import { CircularJSON } from "@domain/json-stringify";
@@ -70,8 +70,8 @@ export class FrmdbEngine {
                 if (isMetadataStoreObject(event.obj)) {
                     throw new Error('Save data in record storage not allowed for metadata objects ' + JSON.stringify(event));
                 }
-                event.obj.role = userId;
-                event.obj.owner = userId;
+                event.obj._role = userRole;
+                event.obj._owner = userId;
                 return this.transactionRunner.computeFormulasAndSave(event);
             case "ServerEventDeletedFormData":
                 if (isMetadataStoreObject(event.obj)) {
@@ -180,7 +180,12 @@ export class FrmdbEngine {
 
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
         if (!event.entityId.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
-        let newEntity: Entity = { _id: event.entityId, props: {} };
+        let newEntity: Entity = { _id: event.entityId, props: {
+            _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+            owner: { name: "owner", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+            role: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+            _rev: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        } };
 
         return this.frmdbEngineStore.kvsFactory.metadataStore.putEntity(newEntity)
             .then(() => {

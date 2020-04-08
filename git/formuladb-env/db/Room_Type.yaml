@@ -33,3 +33,6 @@ props:
         name: total_number_of_rooms
         propType_: FORMULA
         formula: 'COUNTIF(Room, room_type == @[_id])'
+    _owner: { name: _owner, propType_: STRING, allowNull: false }
+    _role: { name: _role, propType_: STRING, allowNull: false }
+    _rev: { name: _rev, propType_: STRING, allowNull: false }

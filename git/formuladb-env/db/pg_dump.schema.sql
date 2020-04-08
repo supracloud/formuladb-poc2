@@ -189,7 +189,10 @@ ALTER TABLE public.t_user OWNER TO postgres;
 
 CREATE TABLE public.tappcategory (
     _id character varying NOT NULL COLLATE pg_catalog."C",
-    guiorder character varying
+    guiorder character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -202,7 +205,10 @@ ALTER TABLE public.tappcategory OWNER TO postgres;
 CREATE TABLE public.tcontactrequest (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     email character varying,
-    comments character varying
+    comments character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -216,7 +222,10 @@ CREATE TABLE public.tinventoryorder (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     sales_agent character varying,
     creation_date character varying,
-    order_item_table character varying
+    order_item_table character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -232,7 +241,10 @@ CREATE TABLE public.tinventoryproduct (
     barcode character varying,
     name character varying,
     description character varying,
-    inventory_location character varying
+    inventory_location character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -259,7 +271,10 @@ CREATE TABLE public.tinventoryproductunit (
     state character varying,
     nb_piston_cycles character varying,
     brita_counter character varying,
-    washing_cycles character varying
+    washing_cycles character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -271,7 +286,10 @@ ALTER TABLE public.tinventoryproductunit OWNER TO postgres;
 
 CREATE TABLE public.tinventoryreceipt (
     _id character varying NOT NULL COLLATE pg_catalog."C",
-    receipt_item_table character varying
+    receipt_item_table character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -285,7 +303,10 @@ CREATE TABLE public.tlargesalesproduct (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     product_id character varying,
     product_name character varying,
-    large_sales_value numeric(12,5)
+    large_sales_value numeric(12,5),
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -296,6 +317,9 @@ ALTER TABLE public.tlargesalesproduct OWNER TO postgres;
 --
 
 CREATE TABLE public.tlargesalesreport (
+    _owner character varying,
+    _role character varying,
+    _rev character varying,
     _id character varying NOT NULL COLLATE pg_catalog."C",
     client character varying,
     month character varying,
@@ -315,7 +339,10 @@ CREATE TABLE public.torderitem (
     quantity numeric(12,5),
     error_quantity numeric(12,5),
     client_stock numeric(12,5),
-    units character varying
+    units character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -337,7 +364,10 @@ CREATE TABLE public.tproductlocation (
     currency__ character varying,
     minimal_stock numeric(12,5),
     moving_stock numeric(12,5),
-    state character varying
+    state character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -352,7 +382,10 @@ CREATE TABLE public.treceiptitem (
     product_id character varying,
     quantity numeric(12,5),
     price character varying,
-    units character varying
+    units character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -365,7 +398,10 @@ ALTER TABLE public.treceiptitem OWNER TO postgres;
 CREATE TABLE public.troom (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     nb numeric(12,5),
-    room_type character varying
+    room_type character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -384,7 +420,10 @@ CREATE TABLE public.troom_booking (
     nb_adults numeric(12,5),
     nb_children numeric(12,5),
     days numeric(12,5),
-    cost character varying
+    cost character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -403,7 +442,10 @@ CREATE TABLE public.troom_type (
     price numeric(12,5),
     wifi character varying,
     parking character varying,
-    total_number_of_rooms numeric(12,5)
+    total_number_of_rooms numeric(12,5),
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -426,7 +468,10 @@ CREATE TABLE public.tsampleapp (
     call_to_action character varying,
     small_img character varying,
     long_img character varying,
-    guiorder character varying
+    guiorder character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 
@@ -464,7 +509,10 @@ CREATE TABLE public.twishlistrequest (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     app character varying,
     email character varying,
-    comments character varying
+    comments character varying,
+    _owner character varying,
+    _role character varying,
+    _rev character varying
 );
 
 

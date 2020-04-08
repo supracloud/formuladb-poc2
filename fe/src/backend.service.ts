@@ -45,7 +45,9 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
             } else {
                 let u: any = await getData('/formuladb-api/user');
                 if (response.status == 403 && u.userRole === "$ANONYMOUS") {
-                    raiseNotification(ThemeColors.warning, "Cannot save modifications in preview environment", 'Please <a href="/login">Login</a> or <a href="/register">Register</a>')
+                    raiseNotification(ThemeColors.warning, 
+                        "Cannot save modifications in preview environment.", 
+                        'Please <a href="/login" target="_blank">Login</a> or <a href="/register" target="_blank">Register</a>')
                 }
                 throw new Error(response.status + "-" + response.statusText);
             }

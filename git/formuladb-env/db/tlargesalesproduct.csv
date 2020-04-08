@@ -1,5 +1,5 @@
-_id,product_id,product_name,large_sales_value
-LargeSalesProduct~~1__1,ProductLocation~~1__9a,Handmade Frozen Hat,0.00000
-LargeSalesProduct~~1__2,ProductLocation~~1__10,Incredible Rubber Computer,0.00000
-LargeSalesProduct~~1__3,ProductLocation~~1__11,Small Fresh Pants,0.00000
-LargeSalesProduct~~1__4,ProductLocation~~1__12,Unbranded Rubber Pizza,0.00000
+_id,product_id,product_name,large_sales_value,_owner,_role,_rev
+LargeSalesProduct~~1__1,ProductLocation~~1__9a,Handmade Frozen Hat,0.00000,AnounymousUserId,$ANONYMOUS,""
+LargeSalesProduct~~1__2,ProductLocation~~1__10,Incredible Rubber Computer,0.00000,AnounymousUserId,$ANONYMOUS,""
+LargeSalesProduct~~1__3,ProductLocation~~1__11,Small Fresh Pants,0.00000,AnounymousUserId,$ANONYMOUS,""
+LargeSalesProduct~~1__4,ProductLocation~~1__12,Unbranded Rubber Pizza,0.00000,AnounymousUserId,$ANONYMOUS,""

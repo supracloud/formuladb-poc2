@@ -358,7 +358,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             }
             let cols = this.columns || [];
 
-            this.agGridColumns = cols.map(c => <ColDef>{
+            this.agGridColumns = cols.filter(c => !['owner', 'role', '_rev'].includes(c.name)).map(c => <ColDef>{
                 headerName: I18N.tt(c.name),
                 field: c.name,
                 width: c.width ? c.width : 100,

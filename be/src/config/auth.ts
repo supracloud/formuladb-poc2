@@ -34,7 +34,7 @@ export class Auth {
                 return false;
             }
             let dataObj = await this.frmdbStore.getDataObj(perm.resource_id);
-            return dataObj?.owner == userId;
+            return dataObj?._owner == userId;
         } else return false;
     }
     permissionMatchesReq(inputData: AuthInputData, perm: $PermissionObjT): boolean {
