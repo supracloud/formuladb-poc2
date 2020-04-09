@@ -48,7 +48,7 @@ import { Undo } from "./undo";
 import { $FRMDB_MODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
-import { parsePageUrl, PageOpts } from "@domain/url-utils";
+import { parseAllPageUrl, AllPageOpts } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage, navigateTo } from "./frmdb-editor-router";
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
@@ -110,7 +110,7 @@ export class FrmdbEditorDirective {
 
     }
 
-    updateStateFromUrl(newPageOpts: PageOpts, newUrl: URL) {
+    updateStateFromUrl(newPageOpts: AllPageOpts, newUrl: URL) {
         let { appName } = newPageOpts;
 
         this.setIframeSrc(newUrl);
@@ -162,7 +162,7 @@ export class FrmdbEditorDirective {
             hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
             // this.manageIframeNavigation();
             if (this.iframe.contentWindow?.location && window.location.pathname != this.iframe.contentWindow.location.pathname) {
-                let {appName, pageName} = parsePageUrl(this.iframe.contentWindow.location.pathname);
+                let {appName, pageName} = parseAllPageUrl(this.iframe.contentWindow.location.pathname);
                 navigateEditorToAppAndPage(appName, pageName, this.iframe.contentWindow.location.search);
             }
         }
@@ -172,7 +172,7 @@ export class FrmdbEditorDirective {
         setTimeout(ff, 2000);
         this.setIframeSrc(new URL(window.location.href));
 
-        let newPageOpts = parsePageUrl(window.location.pathname);
+        let newPageOpts = parseAllPageUrl(window.location.pathname);
         this.state.emitChange({
             selectedAppName: newPageOpts.appName,
             selectedPageName: newPageOpts.pageName,
@@ -196,15 +196,16 @@ export class FrmdbEditorDirective {
         })
 
         registerFrmdbEditorRouterHandler('editor-iframe-src',
-            (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => this.updateStateFromUrl(newPageOpts, newUrl),
+            (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => this.updateStateFromUrl(newPageOpts, newUrl),
             () => this.checkSafeNavigation()
         );
 
         getData('/formuladb-api/user').then((u: {userRole: string, userId: string}) => {
             if (u.userRole === "$ANONYMOUS") {
+                let {lang} = parseAllPageUrl(window.location.pathname);
                 raiseNotification(ThemeColors.warning, 
                     "WARNING this is a preview environment.", 
-                    'To be able to save your modifications, please <a href="/login" target="_blank">Login</a> or <a href="/register" target="_blank">Register</a>')
+                    `To be able to save your modifications, please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
             }
         })
     }
@@ -228,7 +229,7 @@ export class FrmdbEditorDirective {
             let prevUrl = this.iframeHistory.pop();
             if (prevUrl) {
                 let url = new URL(prevUrl);
-                let {appName, pageName} = parsePageUrl(url.pathname);
+                let {appName, pageName} = parseAllPageUrl(url.pathname);
                 navigateEditorToAppAndPage(appName, pageName, url.search);
             } 
         };
@@ -246,7 +247,7 @@ export class FrmdbEditorDirective {
 
                     if (this.iframe.contentWindow?.location.href) this.iframeHistory.push(this.iframe.contentWindow?.location.href);
 
-                    let {appName, pageName} = parsePageUrl(newPathname);
+                    let {appName, pageName} = parseAllPageUrl(newPathname);
                     navigateEditorToAppAndPage(appName, pageName, url.search);
                 }
             }
@@ -442,7 +443,7 @@ export class FrmdbEditorDirective {
             //replace nonalphanumeric with dashes and lowercase for name
             pageObj.name = pageObj.name.replace(/[^a-zA-Z0-9]/g, '-');
 
-            let pageOpts = parsePageUrl(window.location.pathname);
+            let pageOpts = parseAllPageUrl(window.location.pathname);
             if (isNewPage) pageOpts = {...pageOpts, pageName: pageObj.name};
 
             BACKEND_SERVICE().putEvent(

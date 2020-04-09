@@ -1,10 +1,10 @@
-import { parsePageUrl } from "@domain/url-utils";
+import { parseAllPageUrl } from "@domain/url-utils";
 
 let appName: string | null = null;
 let appRootEl: HTMLElement | null = null;
 
 function findTenantAndApp() {
-    ({appName} = parsePageUrl(window.location.pathname));
+    ({appName} = parseAllPageUrl(window.location.pathname));
     appRootEl = document.body;
 }
 

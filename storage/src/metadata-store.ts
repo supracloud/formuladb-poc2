@@ -17,7 +17,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
-import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
+import { makeUrlPath, parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts, OptionalPageOpts, DefaultPageOptsForAppT } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
@@ -274,7 +274,7 @@ export class MetadataStore {
         return this.getApp(appName);
     }
 
-    async setPageProperties(pageOpts: PageOpts, newPageObj: $PageObjT, startPageName: string) {
+    async setPageProperties(pageOpts: FullPageOpts, newPageObj: $PageObjT, startPageName: string) {
         let { appName } = pageOpts;
         let content;
         if ('$LANDING-PAGE$' === startPageName) {
@@ -302,6 +302,10 @@ export class MetadataStore {
             <meta name="description" content="${newPageObj.description}">
             <meta name="author" content="${newPageObj.author}">
             <meta name="frmdb_display_date" content="${newPageObj.frmdb_display_date}">
+            <meta name="frmdb_look" content="${pageOpts.look}">
+            <meta name="frmdb_primary_color" content="${pageOpts.primaryColor}">
+            <meta name="frmdb_secondary_color" content="${pageOpts.secondaryColor}">
+            <meta name="frmdb_theme" content="${pageOpts.theme}">
         `;
         cleanedUpDOM.replaceChild(newHeadEl, headEl);
 
@@ -310,7 +314,24 @@ export class MetadataStore {
         setTimeout(() => this.setPageScreenshot(pageOpts), 500);
     }
 
-    async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
+    async getDefaultPageOptsForApp(appName: string): Promise<DefaultPageOptsForAppT> {
+        let app = await this.getApp(appName);
+        if (!app) throw new Error(`app ${appName} not found`);
+        return {
+            look: app.defaultLook || 'basic',
+            primaryColor: app.defaultPrimaryColor || '008cba',
+            secondaryColor: app.defaultSecondaryColor || 'eeeeee',
+            theme: app.defaultTheme || 'Clean',
+        }
+    }
+    async fullPageOptsFromMandatory(pageOpts: MandatoryPageOpts): Promise<FullPageOpts> {
+        let defaultOpts = await this.getDefaultPageOptsForApp(pageOpts.appName);
+        return {
+            ...pageOpts,
+            ...defaultOpts,
+        }
+    }
+    async savePageHtml(pageOpts: AllPageOpts, html: string): Promise<void> {
         let { appName, pageName } = pageOpts;
         let pagePath = `frmdb-apps/${appName}/${pageName}.html`;
 
@@ -366,10 +387,11 @@ export class MetadataStore {
 
         await this.writeFile(`${FRMDB_ENV_DIR}/${pagePath}`, htmlTools.document2html(cleanedUpDOM));
 
-        setTimeout(() => this.setPageScreenshot(pageOpts), 500);
+        let fullPageOpts: FullPageOpts = pageOpts.look ? pageOpts as FullPageOpts : await this.fullPageOptsFromMandatory(pageOpts);
+        setTimeout(() => this.setPageScreenshot(fullPageOpts), 500);
     }
 
-    async setPageScreenshot(pageOpts: PageOpts) {
+    async setPageScreenshot(pageOpts: FullPageOpts) {
         try {
             let img = await this.getPageScreenshot(pageOpts);
             let { appName, pageName } = pageOpts;
@@ -383,7 +405,7 @@ export class MetadataStore {
         }
     }
 
-    async getLookCss(pageOpts: PageOpts): Promise<string> {
+    async getLookCss(pageOpts: FullPageOpts): Promise<string> {
         let lookCss = await this.readFile(`${FRMDB_ENV_DIR}/css/${pageOpts.look}-${pageOpts.primaryColor}-${pageOpts.secondaryColor}.css`);
         return lookCss;
     }
@@ -409,7 +431,7 @@ export class MetadataStore {
         return browser;
     }
 
-    async getPageScreenshot(pageOpts: PageOpts): Promise<Buffer> {
+    async getPageScreenshot(pageOpts: FullPageOpts): Promise<Buffer> {
         console.info("generating screenshot for ", pageOpts);
         let url = makeUrlPath(pageOpts);
         console.info("got to page ", url);
@@ -423,7 +445,7 @@ export class MetadataStore {
         return img;
     }
 
-    async getPagePdf(pageOpts: PageOpts): Promise<Buffer> {
+    async getPagePdf(pageOpts: FullPageOpts): Promise<Buffer> {
         let browser = await this.runPuppeteer();
         const page = await browser.newPage();
         await page.goto('http://localhost:3000' + makeUrlPath(pageOpts));
@@ -432,7 +454,7 @@ export class MetadataStore {
         return pdf;
     }
 
-    async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
+    async getPageHtml(pageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
         let { appName, pageName } = pageOpts;
         let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName + '.html' || 'index.html'}`);
 
@@ -483,7 +505,7 @@ export class MetadataStore {
     }
 
     async deletePage(deletedPagePath: string): Promise<void> {
-        let { appName, pageName } = parsePageUrl(deletedPagePath);
+        let { appName, pageName } = parseAllPageUrl(deletedPagePath);
         await this.delFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName}.html`);
     }
 

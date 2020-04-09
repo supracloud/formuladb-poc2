@@ -7,7 +7,7 @@ import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "../../core/src/page-utils";
-import { parsePageUrl } from "@domain/url-utils";
+import { parseAllPageUrl } from "@domain/url-utils";
 import { isShadowRoot, isHTMLElement } from "@core/dom-utils";
 import { APP_AND_TENANT_ROOT } from "./app.service";
 
@@ -158,7 +158,8 @@ export function $SAVE_DOC_PAGE(pagePath: string, doc: Document): Promise<boolean
     let cleanedUpDOM = cleanupDocumentDOM(doc);
     let html = htmlTools.document2html(cleanedUpDOM);
     
-    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(parsePageUrl(pagePath), html))
+    let pageOpts = parseAllPageUrl(pagePath);
+    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pageOpts, html))
         .then(async (ev: ServerEventPutPageHtml) => {
             if (ev.state_ != 'ABORT' && !ev.error_) {
                 alert(`Saved ${pagePath}`);

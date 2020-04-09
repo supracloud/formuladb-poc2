@@ -20,6 +20,7 @@ import { I18nStore } from "./i18n-store";
 import { isMetadataObject, isMetadataEntity, isMetadataStoreObject } from "@domain/metadata/default-metadata";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
 import { App } from "@domain/app";
+import { FullPageOpts } from "@domain/url-utils";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
@@ -123,23 +124,25 @@ export class FrmdbEngine {
     }
 
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
+        let fullPageOpts = event.pageOpts.look ? event.pageOpts as FullPageOpts 
+            : await await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
         let app: App | null = await this.frmdbEngineStore.kvsFactory.metadataStore.getApp(event.pageOpts.appName);
         if (app) {
             let dirty: boolean = false;
-            if (app.defaultLook != event.pageOpts.look) {
-                app.defaultLook = event.pageOpts.look;
+            if (app.defaultLook != fullPageOpts.look) {
+                app.defaultLook = fullPageOpts.look;
                 dirty = true;
             }
-            if (app.defaultPrimaryColor != event.pageOpts.primaryColor) {
-                app.defaultPrimaryColor = event.pageOpts.primaryColor;
+            if (app.defaultPrimaryColor != fullPageOpts.primaryColor) {
+                app.defaultPrimaryColor = fullPageOpts.primaryColor;
                 dirty = true;
             }
-            if (app.defaultSecondaryColor != event.pageOpts.secondaryColor) {
-                app.defaultSecondaryColor = event.pageOpts.secondaryColor;
+            if (app.defaultSecondaryColor != fullPageOpts.secondaryColor) {
+                app.defaultSecondaryColor = fullPageOpts.secondaryColor;
                 dirty = true;
             }
-            if (app.defaultTheme != event.pageOpts.theme) {
-                app.defaultTheme = event.pageOpts.theme;
+            if (app.defaultTheme != fullPageOpts.theme) {
+                app.defaultTheme = fullPageOpts.theme;
                 dirty = true;
             }
             if (dirty) {
@@ -162,7 +165,9 @@ export class FrmdbEngine {
     }
 
     private async setPage(event: events.ServerEventSetPage): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(event.pageOpts, event.pageObj, event.startPageName);
+        let fullPageOpts = event.pageOpts.look ? event.pageOpts as FullPageOpts 
+            : await await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(fullPageOpts, event.pageObj, event.startPageName);
         return event;
     }
 

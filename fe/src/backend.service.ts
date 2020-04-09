@@ -21,6 +21,7 @@ import { APP_AND_TENANT_ROOT, _resetAppAndTenant } from "./app.service";
 import { waitUntil } from "@domain/ts-utils";
 import { raiseNotification } from "./notifications.service";
 import { ThemeColors } from "@domain/uimetadata/theme";
+import { parseAllPageUrl } from "@domain/url-utils";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -45,9 +46,10 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
             } else {
                 let u: any = await getData('/formuladb-api/user');
                 if (response.status == 403 && u.userRole === "$ANONYMOUS") {
+                    let {lang} = parseAllPageUrl(window.location.pathname);
                     raiseNotification(ThemeColors.warning, 
                         "Cannot save modifications in preview environment.", 
-                        'Please <a href="/login" target="_blank">Login</a> or <a href="/register" target="_blank">Register</a>')
+                        `Please <a href="${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
                 }
                 throw new Error(response.status + "-" + response.statusText);
             }

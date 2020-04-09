@@ -16,7 +16,7 @@ const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParse
 
 import { getTestFrmdbEngineStore } from "./key_value_store_impl_selector";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { parsePageUrl, PageOpts } from '@domain/url-utils';
+import { parseFullPageUrl, FullPageOpts } from '@domain/url-utils';
 import { $DictionaryObjT } from '@domain/metadata/default-metadata.js';
 import { generateUUID } from '@domain/uuid';
 
@@ -94,7 +94,7 @@ describe('MetadataStore', () => {
 
     it("Should save page without fragments/themes and default language", async () => {
         await frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
-            parsePageUrl('/na-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html'),
+            parseFullPageUrl('/na-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html'),
             PageHtmlFromClientBrowser);
 
         expectSavedPageToEqual(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/test.html`, /*html*/`
@@ -153,7 +153,7 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Clean theme and i18n", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/fr-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html'),
+                parseFullPageUrl('/fr-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html'),
                 new Map().set('$Dictionary~~main content', { fr: 'contenu principal' })
             ));
 
@@ -177,7 +177,7 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Frames theme", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/test.html'), new Map()));
+                parseFullPageUrl('/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/test.html'), new Map()));
 
         let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="en">')
@@ -196,14 +196,14 @@ describe('MetadataStore', () => {
     it("Should read the correct look css", async () => {
         let [lang, look, primaryColor, secondaryColor, theme, appName] =
             ['en', 'basic', '1a1a1a', 'ffffff', 'Frames', 'kvsf-test-app-for-specs'];
-        let cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as PageOpts);
+        let cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as FullPageOpts);
         expect(cssStr.indexOf('--frmdb-look-name: basic')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--primary: #1a1a1a')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--secondary: #fff')).toBeGreaterThan(0);
 
         [lang, look, primaryColor, secondaryColor, theme, appName] =
             ['en', 'lux', 'cb8670', '363636', 'Clean', 'kvsf-test-app-for-specs'];
-        cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as PageOpts);
+        cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as FullPageOpts);
         expect(cssStr.indexOf('--frmdb-look-name: lux')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--primary: #cb8670')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--secondary: #363636')).toBeGreaterThan(0);
@@ -222,7 +222,7 @@ describe('MetadataStore', () => {
             screenshot: '/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/static/new-page.png',
         };
         await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
-            parsePageUrl(`/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/${page1Obj.name}.html`),
+            parseFullPageUrl(`/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/${page1Obj.name}.html`),
             page1Obj, "$LANDING-PAGE$");
 
         let savedPage = fs.readFileSync(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/new-page.html`).toString();
@@ -234,6 +234,10 @@ describe('MetadataStore', () => {
                 <meta name="description" content="some description">
                 <meta name="author" content="John">
                 <meta name="frmdb_display_date" content="2020-11-03">
+                <meta name="frmdb_look" content="basic">
+                <meta name="frmdb_primary_color" content="1a1a1a">
+                <meta name="frmdb_secondary_color" content="ffffff">
+                <meta name="frmdb_theme" content="Frames">
             </head>
             <body>
                 <h1>Template Page</h1>
@@ -257,7 +261,7 @@ describe('MetadataStore', () => {
             screenshot: '/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/static/new-page-2.png',
         };
         await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
-            parsePageUrl(`/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/${page2Obj.name}.html`),
+            parseFullPageUrl(`/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/${page2Obj.name}.html`),
             page2Obj, "new-page");
 
         pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('kvsf-test-app-for-specs');

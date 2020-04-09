@@ -1,10 +1,10 @@
-import { parsePageUrl, PageOpts } from "./url-utils";
+import { parseAllPageUrl, FullPageOpts } from "./url-utils";
 
 describe('url-utils', () => {
     it('should parse page URL', () => {
-        let ret = parsePageUrl('/en-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test-page.html');
+        let ret = parseAllPageUrl('/en-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test-page.html');
 
-        let expectedPageOpts: PageOpts = { 
+        let expectedPageOpts: FullPageOpts = { 
             lang: 'en', 
             look: 'basic', 
             primaryColor: "1a1a1a", 
