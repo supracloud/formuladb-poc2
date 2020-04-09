@@ -1,9 +1,5 @@
 _id: themes
 description: themes
-defaultLook: basic
-defaultPrimaryColor: 008cba
-defaultSecondaryColor: eeeeee
-defaultTheme: Clean
 pages:
     - index.html
     - _footer.html

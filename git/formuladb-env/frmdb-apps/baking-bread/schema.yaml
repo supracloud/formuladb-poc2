@@ -1,0 +1,6 @@
+_id: FRMDB_SCHEMA~~formuladb-internal--formuladb.io
+entityIds:
+    - $User
+    - $Dictionary
+    - $Currency
+    - RoomBooking
