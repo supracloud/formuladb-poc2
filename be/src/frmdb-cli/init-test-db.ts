@@ -53,7 +53,13 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
             }
         }
 
-        await Promise.all(records.map(r => putObj(frmdbEngine, r)));
+        // await Promise.all(records.map(r => putObj(frmdbEngine, r)));
+        await Promise.all(records.slice(0, 50).map(r => putObj(frmdbEngine, r)));
+        await Promise.all(records.slice(50, 100).map(r => putObj(frmdbEngine, r)));
+        await Promise.all(records.slice(100, 20000).map(r => putObj(frmdbEngine, r)));
+        // for (let r of records) {
+        //     await putObj(frmdbEngine, r);
+        // }
         nbRecords = records.length;
 
         let end = new Date();

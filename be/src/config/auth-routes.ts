@@ -4,7 +4,7 @@ import * as connectEnsureLogin from "connect-ensure-login";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import * as events from "@domain/event";
-import { $UserObjT, DefaultSchema, PermissionType, $Table, $Page, $Image, $Icon, $App } from "@domain/metadata/default-metadata";
+import { $UserObjT, DefaultSchema, PermissionType, $Table, $Page, $Image, $Icon, $App, AuthSchema } from "@domain/metadata/default-metadata";
 import { Auth, AuthStatus } from "./auth";
 import { FrmdbStore } from "@core/frmdb_store";
 import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
@@ -16,7 +16,7 @@ export type RequestType = "api" | "page";
 export class AuthRoutes {
     private auth: Auth;
     constructor(kvsFactory: KeyValueStoreFactoryI) {
-        this.auth = new Auth(new FrmdbStore(kvsFactory, DefaultSchema));
+        this.auth = new Auth(new FrmdbStore(kvsFactory, AuthSchema));
     }
 
     initPassport(app: express.Express) {
@@ -78,7 +78,10 @@ export class AuthRoutes {
             res.status(200).send({ isproductionenv: process.env.FRMDB_IS_PROD_ENV === "true" });
         });
 
-        app.post('/login',
+        app.post('/login', function (req, res, next) {
+                console.error("HEREEE");
+                next();
+            },
             passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/login' }),
         );
 

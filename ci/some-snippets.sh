@@ -62,3 +62,8 @@ curl -XPUT  -H "Content-Type: text/csv" --data-binary @apps/inventory/\$User.csv
 
 I=35; for i in [a-z]*; do idx=`printf '%07d' $I`; k=`echo $i | sed 's/^/'$idx'-/'`; echo mv $i $k; ((I++)) ; done
 #for i in *; do [[ $i =~ ([0-9]+)-(.*.svg) ]]; printf "%07d-%s\n" $((10#${BASH_REMATCH[1]})) ${BASH_REMATCH[2]} ; done
+
+#####################################
+## Db stuff
+#####################################
+cat t_permission.csv | psql -h db -U postgres -c "COPY t_permission FROM STDIN WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'"

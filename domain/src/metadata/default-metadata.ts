@@ -127,6 +127,7 @@ export const $Image: Entity = _$Image;
 export type $ImageObjT = {[K in keyof typeof _$Image['props']]: string};
 
 const MetadataEntities = [
+    // $User, //WTF node crash
     $Icon, 
     $Image, 
     $App, 
@@ -159,4 +160,12 @@ export function getDefaultEntity(path: string): Entity | null {
 export const DefaultSchema: Schema = {
     _id: 'FRMDB_SCHEMA~~DefaultSchema',
     entities: MetadataEntities.reduce((acc, m) => {acc[m._id] = m; return acc}, {})
+}
+
+export const AuthSchema: Schema = {
+    _id: 'FRMDB_SCHEMA~~AuthSchema',
+    entities: {
+        [$User._id]: $User,
+        [$Permission._id]: $Permission,
+    }
 }

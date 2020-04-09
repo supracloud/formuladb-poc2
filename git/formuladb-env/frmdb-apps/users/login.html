@@ -17,26 +17,26 @@
         <div class="navbar-collapse collapse" id="navbar_global">
           <ul class="navbar-nav align-items-lg-center ml-lg-auto">
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://www.facebook.com/creativetim" target="_blank" data-toggle="tooltip" title="Like us on Facebook">
+              <a class="nav-link nav-link-icon" href="https://www.facebook.com/formuladb" target="_blank" data-toggle="tooltip" title="Like us on Facebook">
                 <i class="frmdb-i-facebook-square"></i>
                 <span class="nav-link-inner--text d-lg-none">Facebook</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://www.instagram.com/creativetimofficial" target="_blank" data-toggle="tooltip"
+              <a class="nav-link nav-link-icon" href="https://www.instagram.com/formuladb" target="_blank" data-toggle="tooltip"
                 title="Follow us on Instagram">
                 <i class="frmdb-i-instagram"></i>
                 <span class="nav-link-inner--text d-lg-none">Instagram</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://twitter.com/creativetim" target="_blank" data-toggle="tooltip" title="Follow us on Twitter">
+              <a class="nav-link nav-link-icon" href="https://twitter.com/formuladb" target="_blank" data-toggle="tooltip" title="Follow us on Twitter">
                 <i class="frmdb-i-twitter-square"></i>
                 <span class="nav-link-inner--text d-lg-none">Twitter</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://github.com/creativetimofficial/argon-design-system" target="_blank" data-toggle="tooltip"
+              <a class="nav-link nav-link-icon" href="https://github.com/formuladb/argon-design-system" target="_blank" data-toggle="tooltip"
                 title="Star us on Github">
                 <i class="frmdb-i-github"></i>
                 <span class="nav-link-inner--text d-lg-none">Github</span>
@@ -88,13 +88,13 @@
                 <div class="text-center text-muted mb-4">
                   <small>Or sign in with credentials</small>
                 </div>
-                <form role="form">
+                <form role="form" method="POST" action="/login">
                   <div class="form-group mb-3">
                     <div class="input-group input-group-alternative">
                       <div class="input-group-prepend">
                         <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                       </div>
-                      <input class="form-control" placeholder="Email" type="email">
+                      <input name="email" class="form-control" placeholder="Email" type="email">
                     </div>
                   </div>
                   <div class="form-group">
@@ -102,7 +102,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                       </div>
-                      <input class="form-control" placeholder="Password" type="password">
+                      <input name="password" class="form-control" placeholder="Password" type="password">
                     </div>
                   </div>
                   <div class="custom-control custom-control-alternative custom-checkbox">
@@ -110,7 +110,7 @@
                     <label class="custom-control-label" for=" customCheckLogin"><span>Remember me</span></label>
                   </div>
                   <div class="text-center">
-                    <button type="button" class="btn btn-primary my-4">Sign in</button>
+                    <button type="submit" class="btn btn-primary my-4">Sign in</button>
                   </div>
                 </form>
               </div>
