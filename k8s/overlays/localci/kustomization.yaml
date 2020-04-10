@@ -1,0 +1,4 @@
+bases:
+- ../ci
+patches:
+- patches/ingress.yaml

@@ -39,6 +39,10 @@ profiles:
     value: k8s/overlays/development
 - name: ci
   patches:
+  - op: add
+    path: /build/artifacts/0/docker/buildArgs
+    value:
+      BUILD_CI: 1
   - op: replace
     path: /deploy/kustomize/paths/0
     value: k8s/overlays/ci

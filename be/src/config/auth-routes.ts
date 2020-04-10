@@ -76,7 +76,7 @@ export class AuthRoutes {
         });
 
         app.get('/isproductionenv', function (req, res) {
-            res.status(200).send({ isproductionenv: process.env.FRMDB_IS_PROD_ENV === "true" });
+            res.status(200).send({ isproductionenv: process.env.FRMDB_CAN_CREATE_ENV === "true" });
         });
 
         function login(req, res, next) {
@@ -108,15 +108,14 @@ export class AuthRoutes {
             let hashedPass = md5(req.body.password);
             await this.auth.createUser(req.body.email, hashedPass, req.body.name);
 
-            login(req, res, next);
-            return;//TODO create env
-
-            if (process.env.FRMDB_IS_PROD_ENV) {
+            if (process.env.FRMDB_CAN_CREATE_ENV) {
                 await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
-                res.redirect(`/${req.params.lang}/users/env-creation.html`);
-                // res.redirect(`https://${req.body.environment}.formuladb.io/`);
+                // res.redirect(`/${req.params.lang}/users/env-creation.html`);
+                let domain = process.env.BUILD_DEVELOPMENT ? 'frmdb.localhost' : 'formuladb.io';
+                res.redirect(`https://${req.body.environment}.${domain}/`);
             } else {
-                next();
+                login(req, res, next);
+                return;
             }
         });
 

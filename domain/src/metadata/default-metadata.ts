@@ -34,6 +34,19 @@ export const _$Table = {
 };
 export const $Table: Entity = _$Table;
 
+export const _$FrmdbEnv = {
+    _id: "$FrmdbEnv",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        default_app_name: { name: "default_app_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _owner: { name: "_owner", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _role: { name: "_role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _rev: { name: "_rev", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+export const $FrmdbEnv: Entity = _$FrmdbEnv;
+export type $FrmdbEnvObjT = {[K in keyof typeof _$FrmdbEnv['props']]: string};
+
 export const _$User = {
     _id: "$User",
     props: {

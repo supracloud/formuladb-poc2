@@ -106,7 +106,10 @@
                                                     <i class="ni ni-hat-3"></i>
                                                 </span>
                                             </div>
-                                            <input name="envname" required class="form-control" placeholder="environment-name" type="text">
+                                            <input name="envname" required class="form-control" placeholder="environment-name" type="text"
+                                                required pattern="[-a-z]+"
+                                                oninput="this.value = this.value.replace(/[^-a-z+]/g, '-').replace(/[A-Z]/g, v => v.toLowerCase());"
+                                            >
                                             <div class="input-group-append">
                                                 <span class="input-group-text" id="basic-addon2">@formuladb.io</span>
                                             </div>

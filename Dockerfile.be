@@ -7,14 +7,14 @@ RUN chmod +x kustomize
 
 # Download kubectl
 FROM alpine:3.10 as download-kubectl
-ENV KUBECTL_VERSION v1.15.4
+ENV KUBECTL_VERSION v1.16.1
 ENV KUBECTL_URL https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
 RUN wget -O kubectl "${KUBECTL_URL}"
 RUN chmod +x kubectl
 
 # Download skaffold
 FROM alpine:3.10 as download-skaffold
-ENV SKAFFOLD_VERSION v0.39.0
+ENV SKAFFOLD_VERSION v1.5.0
 ENV SKAFFOLD_URL https://storage.googleapis.com/skaffold/releases/${SKAFFOLD_VERSION}/skaffold-linux-amd64
 RUN wget -O skaffold "${SKAFFOLD_URL}"
 RUN chmod +x skaffold
@@ -29,6 +29,7 @@ ARG BUILD_DEVELOPMENT
 ENV NPM_SCRIPT=${BUILD_DEVELOPMENT:+start_dev}
 ENV NPM_SCRIPT=${NPM_SCRIPT:-start}
 ENV BUILD_DEVELOPMENT=${BUILD_DEVELOPMENT}
+ENV BUILD_CI=${BUILD_CI}
 
 ENV GIT_SSH_COMMAND="ssh -i /ssh/frmdb.id_rsa"
 
@@ -40,7 +41,8 @@ RUN apk update --no-cache && apk upgrade --no-cache && \
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_PATH /usr/bin/chromium-browser
 
-ENV KUBECONFIG=k8s/production-kube-config.conf
+ENV KUBECONFIG=${BUILD_DEVELOPMENT:-k8s/production-kube-config.conf}
+ENV KUBECONFIG=${BUILD_DEVELOPMENT:+}
 
 COPY package.json /package.json
 

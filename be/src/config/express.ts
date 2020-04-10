@@ -137,7 +137,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     setupChangesFeedRoutes(app, kvsFactory);
 
     app.delete('/formuladb-api/env/:envname', async function (req, res, next) {
-        if (process.env.FRMDB_IS_PROD_ENV) {
+        if (process.env.FRMDB_CAN_CREATE_ENV) {
             console.log(`Delete called on ${req.params.envname} environment`)
             let status_message = await cleanupEnvironment(req.params.envname);
             console.log(status_message);
