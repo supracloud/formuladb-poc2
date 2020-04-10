@@ -39,8 +39,9 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 2; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
-    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema" | grep 'RoomType'; do 
+    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema" | grep 'Room_Type'; do 
         echo "== be not started yet ==================================================="
+        curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema"
         kubectl -n "$NAMESPACE" logs service/be | head -100
         sleep 10; 
     done
@@ -105,7 +106,10 @@ function test_e2e {
 
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'RoomType'; do sleep 2; done
+    while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'Room_Type'; do 
+        curl $URL/formuladb-api/hotel-booking/schema
+        sleep 2; 
+    done
 
     npm run test-headless -- -- --specs \
         "tsc-out/docs/1-Intro/6-editor-tables-list.e2e.js,tsc-out/docs/0-GetStarted/7-list-of-pages.e2e.js"
@@ -115,7 +119,8 @@ function e2e_dev_env {
     set -x
 
     if ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; then
-        echo "== ERROR: be not started yet ! "
+        echo "== be not started yet ! "
+        curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/formuladb-io/schema
         kubectl -n "$FRMDB_ENV_NAME" logs service/be
     fi
 
@@ -127,7 +132,10 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do 
+        curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema
+        sleep 2; 
+    done
     # how to upgrade test data without deleting existing user data?
     test_e2e staging "https://staging.formuladb.io" 100
 }
@@ -137,7 +145,10 @@ function build_images_and_deploy_production {
 }
 
 function e2e_production {
-    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do 
+        curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema
+        sleep 2; 
+    done
     #WARNING: make sure only safe tests
     echo test_e2e production "https://formuladb.io" 100
 }
