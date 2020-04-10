@@ -9,7 +9,7 @@ import * as util from 'util';
 const exists = util.promisify(fs.exists);
 
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image, $System_Param, $Permission } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image, $System_Param, $Permission, $ImageObjT } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
@@ -23,6 +23,7 @@ import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
 import { ServerEventSetPage } from "@domain/event";
 import { getPageProperties, setPageProperties } from "@core/dom-utils";
+import { ThemeColors } from '@domain/uimetadata/theme';
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -454,7 +455,7 @@ export class MetadataStore {
         return pdf;
     }
 
-    async getPageHtml(pageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
+    async getPageHtml(pageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>, flashMessages?: {[severity: string]: string[]}): Promise<string> {
         let { appName, pageName } = pageOpts;
         let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName + '.html' || 'index.html'}`);
 
@@ -501,6 +502,23 @@ export class MetadataStore {
         I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, dictionaryCache);
         pageDom.lang = pageOpts.lang;
 
+        {
+            let notifContainer = pageDom.querySelector('frmdb-notification-container');
+            if (!notifContainer) {
+                notifContainer = htmlTools.doc.createElement('frmdb-notification-container')
+                htmlTools.doc.body.appendChild(notifContainer);
+            }
+            if (flashMessages) {
+                for (let [severity, messages] of Object.entries(flashMessages)) {
+                    if (messages && messages.length > 0) {
+                        notifContainer.append(/*html*/`
+                            <frmdb-alert severity="${severity}" event-title="" event-detail="${messages.join(', ')}"></frmdb-alert>
+                        `);
+                    }
+                }
+            }
+        }
+
         return htmlTools.document2html(pageDom);
     }
 
@@ -528,8 +546,15 @@ export class MetadataStore {
         return icon.name;
     }
 
-    async getMediaObjects(appName: string) {
-        return this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
+    async getAvailableImages(appName: string): Promise<$ImageObjT[]> {
+        let apps = await this.getApps(appName);
+        let images: string[] = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
+        for (let app of apps.map(a => a._id)) {
+            if (app === appName) continue;
+            let imgsForApp = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${app}/static`);
+            images.push(...imgsForApp);
+        }
+        return images.map(i => ({_id: i}));
     }
 
     async getAvailableIcons(appName: string): Promise<$IconObjT[]> {

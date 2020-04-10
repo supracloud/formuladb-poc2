@@ -1,16 +1,25 @@
 _id: formuladb.io
 description: formuladb.io
 pages:
-    - index.html
-    - no-code.html
-    - low-code.html
-    - no-code-vs-low-code.html
-    - pricing.html
-    - contact.html
-    - community.html
+    - _footer.html
+    - _head.html
+    - _nav.html
+    - _scripts.html
     - about.html
     - add__WishListRequest.html
-    - _nav.html
-    - _footer.html
-    - login.html
-    - register.html
+    - all-in-one-digital-transformation-platform.html
+    - blog-become-no-code-consultant.html
+    - blog-free-digital-transformation-consulting-for-sme-against-covid19.html
+    - contact.html
+    - docs.html
+    - index.html
+    - internal_docs.html
+    - low-code.html
+    - no-code-vs-low-code.html
+    - no-code.html
+    - pricing.html
+    - versions.html
+defaultLook: cerulean
+defaultPrimaryColor: 7795f8
+defaultSecondaryColor: 6c757d
+defaultTheme: _none_

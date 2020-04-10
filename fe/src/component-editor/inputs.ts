@@ -799,6 +799,14 @@ export class ParamListInput extends Input {
 						</div>
 					</div>
 				{% } %}
+				<div class="parameter">
+					<div class="input-group">
+						<input name="{%=key%}_{%=i%}_paramName" type="text" class="form-control" value="{%=param.name%}"/>
+					</div>
+					<div class="input-group">
+						<textarea name="{%=key%}_{%=i%}_paramValue" rows="1" class="form-control">{%=param.value%}</textarea>
+					</div>
+				</div>
 					
 			</div>
 		`, data);

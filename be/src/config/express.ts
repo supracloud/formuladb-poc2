@@ -14,6 +14,8 @@ import * as mime from 'mime';
 import * as serveIndex from 'serve-index';
 let debug = require('debug');
 const url = require('url');
+var flash = require('connect-flash');
+
 
 import * as timeout from 'connect-timeout';
 
@@ -25,12 +27,12 @@ import { App } from "@domain/app";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
 import { i18nTranslateText } from "@be/i18n-be";
-import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
+import { cleanupEnvironment } from "./env-manager";
 import { AuthRoutes } from "./auth-routes";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed-routes";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
-import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMetadataStoreEntity } from "@domain/metadata/default-metadata";
-import { simpleAdHocQueryForMetadataEntities } from "./metadata-entities";
+import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMetadataStoreEntity, $ImageObjT } from "@domain/metadata/default-metadata";
+import { simpleAdHocQueryForMetadataEntities } from "./simple-ad-hoc-query-metadata-entities";
 import { FullPageOpts, makeUrlPath, DefaultPageOptsForAppT, DefaultPageOptsForApp } from "@domain/url-utils";
 import { FrmdbRoutes } from "./api";
 
@@ -86,6 +88,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         resave: false,
         saveUninitialized: true
     }))
+    app.use(flash());
 
     let authRoutes = new AuthRoutes(kvsFactory);
     authRoutes.initPassport(app);
@@ -125,15 +128,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         req.params.app = "users";
         req.params.page = "register";
         renderHtmlPage(req, res, next);
-    });
-
-    app.post('/register', async (req, res, next) => {
-        if (process.env.FRMDB_IS_PROD_ENV) {
-            await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
-            res.redirect(`https://${req.body.environment}.formuladb.io/`);
-        } else {
-            next();
-        }
     });
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +227,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } else {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
             let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
-            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, dictionaryCache);
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, dictionaryCache, {
+                'info': req.flash('info'),
+                'warning': req.flash('info'),
+                'error': req.flash('error'),
+            });
             res.set('Content-Type', 'text/html')
             res.send(pageHtml);
         }
@@ -366,8 +364,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb-api/:app/media', async function (req, res, next) {
         try {
-            let paths: string[] = await kvsFactory.metadataStore.getMediaObjects(req.params.app);
-            res.json(paths);
+            let imgs: $ImageObjT[] = await kvsFactory.metadataStore.getAvailableImages(req.params.app);
+            res.json(imgs.map(i => i._id));//TODO use simpleAddHocQuery
         } catch (err) {
             console.error(err);
             next(err);

@@ -25,6 +25,14 @@ export class Auth {
         return this.frmdbStore.getDataObj(userId) as Promise<$UserObjT | null>;
     }
 
+    async createUser(email: string, password: string, name: string): Promise<$UserObjT | null> {
+        return this.frmdbStore.putDataObj({
+            _id: `$User~~${email}`,
+            name,
+            password
+        } as $UserObjT) as Promise<$UserObjT | null>;
+    }
+
     async permissionMatchesUser(userId: string, userRole: string, perm: $PermissionObjT): Promise<boolean> {
         if (perm.for_who === "ALL") return true;
         else if (perm.for_who === "ROLE") return userRole === perm.role;

@@ -2,15 +2,23 @@ import { ThemeColors } from "@domain/uimetadata/theme";
 import { AlertComponent } from "./alert/alert.component";
 import { MwzEvents } from "@domain/event";
 
+class NotificationContainerComponent extends HTMLElement {
+    connectedCallback() {
+        this.style.position = 'fixed';
+        this.style.top = '0';
+        this.style.right = '0';
+        this.style.padding = '5px';
+        this.style.zIndex = '56789';
+    }
+}
+customElements.define('frmdb-notification-container', NotificationContainerComponent);
 
-let NotificationContainer = document.createElement('div');
-NotificationContainer.id = "frmdb-notification-container";
-document.body.appendChild(NotificationContainer);
-NotificationContainer.style.position = 'fixed';
-NotificationContainer.style.top = '0';
-NotificationContainer.style.right = '0';
-NotificationContainer.style.padding = '5px';
-NotificationContainer.style.zIndex = '56789';
+let NotificationContainer: HTMLElement = document.querySelector('frmdb-notification-container') as HTMLElement;
+if (!NotificationContainer) {
+    NotificationContainer = document.createElement('frmdb-notification-container');
+    document.body.appendChild(NotificationContainer);
+}
+
 
 export function raiseNotification(severity: ThemeColors, title: string, msg: string) {
     let alertEl: AlertComponent = document.createElement('frmdb-alert') as AlertComponent;

@@ -9,6 +9,7 @@ import { Auth, AuthStatus } from "./auth";
 import { FrmdbStore } from "@core/frmdb_store";
 import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { parseDataObjId } from "@domain/metadata/data_obj";
+import { createNewEnvironment } from "./env-manager";
 
 const needsLogin = connectEnsureLogin.ensureLoggedIn('/login');
 export type RequestType = "api" | "page";
@@ -58,7 +59,7 @@ export class AuthRoutes {
     roleFromReq(req: express.Request): string {
         return (req.user as any)?.role || '$ANONYMOUS';
     }
-    
+
     userIdFromReq(req: express.Request): string {
         return (req.user as any)?._id;
     }
@@ -78,14 +79,48 @@ export class AuthRoutes {
             res.status(200).send({ isproductionenv: process.env.FRMDB_IS_PROD_ENV === "true" });
         });
 
-        app.post('/login', function (req, res, next) {
-                console.error("HEREEE");
-                next();
-            },
-            passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/login' }),
-        );
+        function login(req, res, next) {
+            passport.authenticate('local', function (err, user, info) {
+                if (err) { return next(err); }
+                if (!user) { return res.redirect(`/${req.params.lang}`); }
+                req.logIn(user, function (err) {
+                    if (err) { return next(err); }
+                    return res.redirect('/');
+                });
+            })(req, res, next);
+        }
+        app.post('/:lang/users/login', login);
 
-        app.get('/logout', function (req, res) {
+        app.post('/:lang/users/register', async (req, res, next) => {
+            let user = await this.auth.getUser(`$User~~${req.body.email}`);
+            if (user) {
+                req.flash('warning', "User already exists");
+                res.redirect(`/${req.params.lang}/users/register.html`);
+                return;
+            }
+
+            if (!req.body.email || !req.body.password || !req.body.email || !req.body.envname) {
+                req.flash('error', "please supply name, environment name, email and password");
+                res.redirect(`/${req.params.lang}/users/register.html`);
+                return;
+            }
+
+            let hashedPass = md5(req.body.password);
+            await this.auth.createUser(req.body.email, hashedPass, req.body.name);
+
+            login(req, res, next);
+            return;//TODO create env
+
+            if (process.env.FRMDB_IS_PROD_ENV) {
+                await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
+                res.redirect(`/${req.params.lang}/users/env-creation.html`);
+                // res.redirect(`https://${req.body.environment}.formuladb.io/`);
+            } else {
+                next();
+            }
+        });
+
+        app.get('/:lang/users/logout', function (req, res) {
             req.logout();
             req.session?.destroy(function (err) {
                 res.redirect('/');
@@ -134,7 +169,7 @@ export class AuthRoutes {
             let userId = this.userIdFromReq(req);
 
             let authStatus = await this.auth.authEvent(userId, userRole, appName, event);
-            return this.processAuthStatus(requestType,authStatus, req, res, next);
+            return this.processAuthStatus(requestType, authStatus, req, res, next);
         } else return true;
     }
 }
