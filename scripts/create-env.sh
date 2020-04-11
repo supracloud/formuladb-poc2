@@ -16,7 +16,9 @@ bash /scripts/prepare-env.sh "${newEnvName}"
 images=`kubectl get deployment be -n$FRMDB_ENV_NAME -o=jsonpath='{.spec.template.spec.containers[0].image}'`
 echo "GKE with image ${images} ..."
 skaffoldProfile=client
-if [ -n "$BUILD_DEVELOPMENT" -o -n "$BUILD_CI" ]; then
+if [ -n "$BUILD_DEVELOPMENT" ]; then
+    skaffoldProfile=localci
+elif [ -n "$BUILD_CI"]; then
     skaffoldProfile=ci
 fi
 skaffold deploy -n ${newEnvName} -p ${skaffoldProfile} --images=${images}
@@ -34,24 +36,6 @@ for step in `seq 0 24`; do
     if curl ${protocol}://${newEnvName}.${domain}; then
         echo "Env ready. Data provisioning ..."
     fi
+    echo "waiting for containers to start"
+    sleep 4
 done
-
-#     try {
-#         const res = await fetch(``)
-#         console.log(`https://${newEnvName}.formuladb.io returned ${res.status}`);
-#         if (200 === res.status) {
-#             console.log(`Env ready. Data provisioning ...`);
-# kubectl -n ${newEnvName} exec service/be -- env DISABLE_TEST_USERS=true ADMIN_USER_EMAIL=${email} ADMIN_USER_PASS=${password} node /dist-be/frmdb-be-load-test-data.js
-#              maxBuffer: 10240 * 1000});
-            
-#             console.log(`Done!`);
-#             return;
-#         }
-#         console.log(`Fetch returned with ${res.status}. Retrying ...`);
-#     } catch (error) {
-#         console.log(`Fetch failed with error ${error}. Retrying ...`);
-#     }
-#     await delay(5000);
-# }
-
-# throw "Env not ready. Giving up ...";

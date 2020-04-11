@@ -46,6 +46,11 @@ profiles:
   - op: replace
     path: /deploy/kustomize/paths/0
     value: k8s/overlays/ci
+- name: localci
+  patches:
+  - op: replace
+    path: /deploy/kustomize/paths/0
+    value: k8s/overlays/localci    
 - name: client
   patches:
   - op: replace
