@@ -16,9 +16,7 @@ const fetch = require('node-fetch')
 let debug = require('debug');
 const url = require('url');
 var flash = require('connect-flash');
-
-
-import * as timeout from 'connect-timeout';
+var ipn = require('paypal-ipn');
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
@@ -308,6 +306,34 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     // API
     //////////////////////////////////////////////////////////////////////////////////////
 
+    async function verifyPayPalIPN(params: any, opts: any): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            ipn.verify(params, { ...opts }, function callback(err, msg) {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    if (params.payment_status == 'Completed') {
+                        resolve(true);
+                    } else {
+                        console.log("Payment not completed", params);
+                        resolve(false);
+                    }
+                }
+            });
+        });
+    }
+    app.post('/formuladb-api/paypal/inp/check/', async function (req, res, next) {
+        console.log("strting PAYPAL inp check OK", req.body);
+        let paymentCompleted = await verifyPayPalIPN(req.body, {});
+        console.log("PAYPAL inp check finished", paymentCompleted, req.body);
+    });
+    app.post('/formuladb-api/paypal-sandbox/inp/check/', async function (req, res, next) {
+        console.log("strting PAYPAL inp check OK with sandbox", req.body);
+        let paymentCompleted = await verifyPayPalIPN(req.body, {allow_sandbox: true});
+        console.log("PAYPAL inp check finished", paymentCompleted, req.body);
+    });
+
     app.get('/formuladb-api/themes', async function (req, res, next) {
         let themes = await kvsFactory.metadataStore.getThemes();
         res.send(themes);
@@ -354,7 +380,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             }
         } catch (err) {
             console.info(err);
-            res.status(406); res.send('not-ready');            
+            res.status(406); res.send('not-ready');
         }
     });
 
@@ -428,7 +454,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/formuladb-api/:app/obj/:id', async function (req, res, next) {
         try {
             let obj = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getDataObj(req.params.id);
-            res.json(obj||{});
+            res.json(obj || {});
         } catch (err) {
             console.error(err);
             next(err);
