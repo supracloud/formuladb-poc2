@@ -323,15 +323,15 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             });
         });
     }
-    app.post('/formuladb-api/paypal/inp/check/', async function (req, res, next) {
-        console.log("strting PAYPAL inp check OK", req.body);
+    app.post('/formuladb-api/payments/PayPal_IPN', async function (req, res, next) {
+        console.log("strting PAYPAL ipn check OK", req.body);
         let paymentCompleted = await verifyPayPalIPN(req.body, {});
-        console.log("PAYPAL inp check finished", paymentCompleted, req.body);
+        console.log("PAYPAL ipn check finished", paymentCompleted, req.body);
     });
-    app.post('/formuladb-api/paypal-sandbox/inp/check/', async function (req, res, next) {
-        console.log("strting PAYPAL inp check OK with sandbox", req.body);
+    app.post('/formuladb-api/payments-sandbox/PayPal_IPN', async function (req, res, next) {
+        console.log("strting PAYPAL ipn check OK with sandbox", req.body);
         let paymentCompleted = await verifyPayPalIPN(req.body, {allow_sandbox: true});
-        console.log("PAYPAL inp check finished", paymentCompleted, req.body);
+        console.log("PAYPAL ipn check finished", paymentCompleted, req.body);
     });
 
     app.get('/formuladb-api/themes', async function (req, res, next) {
