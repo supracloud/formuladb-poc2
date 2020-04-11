@@ -14,6 +14,6 @@ spec:
           value: "true"
         - name: FRMDB_AUTH_ENABLED
           value: "false"
-        - name: FRMDB_IS_PROD_ENV
+        - name: FRMDB_CAN_CREATE_ENV
           value: "true"
 

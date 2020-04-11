@@ -12,8 +12,11 @@ import * as yaml from 'js-yaml';
 import * as csv from 'csv';
 import * as mime from 'mime';
 import * as serveIndex from 'serve-index';
+const fetch = require('node-fetch')
 let debug = require('debug');
 const url = require('url');
+var flash = require('connect-flash');
+
 
 import * as timeout from 'connect-timeout';
 
@@ -25,13 +28,14 @@ import { App } from "@domain/app";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
 import { i18nTranslateText } from "@be/i18n-be";
-import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
-import { initPassport, handleAuth } from "./auth";
-import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
+import { cleanupEnvironment, createNewEnvironment } from "./env-manager";
+import { AuthRoutes } from "./auth-routes";
+import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed-routes";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
-import { $Dictionary, isMetadataEntity } from "@domain/metadata/default-metadata";
-import { simpleAdHocQueryForMetadataEntities } from "./metadata-entities";
-import { PageOpts, makeUrlPath } from "@domain/url-utils";
+import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMetadataStoreEntity, $ImageObjT } from "@domain/metadata/default-metadata";
+import { simpleAdHocQueryForMetadataEntities } from "./simple-ad-hoc-query-metadata-entities";
+import { FullPageOpts, makeUrlPath, DefaultPageOptsForAppT, DefaultPageOptsForApp } from "@domain/url-utils";
+import { FrmdbRoutes } from "./api";
 
 const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
 const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
@@ -85,8 +89,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         resave: false,
         saveUninitialized: true
     }))
+    app.use(flash());
 
-    initPassport(app, kvsFactory);
+    let authRoutes = new AuthRoutes(kvsFactory);
+    authRoutes.initPassport(app);
 
     app.use(bodyParser.json({ limit: "10mb" }));
     app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
@@ -112,23 +118,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } else next();
     });
 
-    handleAuth(app);
+    authRoutes.setupAuthRoutes(app);
 
-    app.get('/register', function (req, res, next) {
-        if (process.env.FRMDB_IS_PROD_ENV) {
-            res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb-io/register.html');
-        } else {
-            next();
-        }
+    app.get('/:lang/users/login.html', function (req, res, next) {
+        req.params.app = "users";
+        req.params.page = "login";
+        renderHtmlPage(req, res, next);
     });
-
-    app.post('/register', async (req, res, next) => {
-        if (process.env.FRMDB_IS_PROD_ENV) {
-            await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
-            res.redirect(`https://${req.body.environment}.formuladb.io/`);
-        } else {
-            next();
-        }
+    app.get('/:lang/users/register.html', function (req, res, next) {
+        req.params.app = "users";
+        req.params.page = "register";
+        renderHtmlPage(req, res, next);
     });
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -138,11 +138,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     setupChangesFeedRoutes(app, kvsFactory);
 
     app.delete('/formuladb-api/env/:envname', async function (req, res, next) {
-        if (process.env.FRMDB_IS_PROD_ENV) {
+        if (process.env.FRMDB_CAN_CREATE_ENV) {
             console.log(`Delete called on ${req.params.envname} environment`)
             let status_message = await cleanupEnvironment(req.params.envname);
             console.log(status_message);
-            res.end(status_message, null, 4);
+            res.end(status_message);
         } else {
             next();
         }
@@ -171,22 +171,30 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }));
     });
 
-    let formuladbIoStatic = express.static(`${FRMDB_ENV_DIR}/frmdb-apps/formuladb-io`, { index: "index.html" });
-    app.get('/', formuladbIoStatic);
-    app.get('/*.html', formuladbIoStatic);
-    app.get('/*.yaml', formuladbIoStatic);
+    const DEFAULT_APP = 'formuladb-io';//TODO: make this configurable
+    app.get("/", function (req, res, next) {
+        res.redirect(`${FRMDB_ENV_DIR}/frmdb-apps/${DEFAULT_APP}/index.html`);
+    });
 
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
-    app.get('/:lang-:look-:primary-:secondary-:theme/:app/:page.html', async function (req, res, next) {
-        let query: PageOpts['query'] = req.query;
+    async function renderHtmlPage(req: express.Request, res: express.Response, next) {
+        let defaultPageOpts: DefaultPageOptsForAppT = DefaultPageOptsForApp;
+        if (!req.params.look) {
+            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForApp(req.params.app);
+        }
 
-        let pageOpts = {
+        let appName = req.params.app;
+        let pageName = req.params.page;
+        if (! await authRoutes.authResource("page", '0READ', appName, $Page._id, pageName, req, res, next)) return;
+        let query: FullPageOpts['query'] = req.query;
+
+        let pageOpts: FullPageOpts = {
             lang: req.params.lang,
-            look: req.params.look,
-            primaryColor: req.params.primary,
-            secondaryColor: req.params.secondary,
-            theme: req.params.theme,
+            look: req.params.look || defaultPageOpts.look,
+            primaryColor: req.params.primary || defaultPageOpts.primaryColor,
+            secondaryColor: req.params.secondary || defaultPageOpts.secondaryColor,
+            theme: req.params.theme || defaultPageOpts.theme,
             appName: req.params.app,
             pageName: req.params.page,
             query: req.query,
@@ -214,47 +222,62 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             }));
         }
         else if (query?.frmdbRender === "editor") {
+            if (! await authRoutes.authResource("api", '2PREVIEWEDIT', pageName, $Page._id, appName, req, res, next)) return;
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
             let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
-            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, dictionaryCache);
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, dictionaryCache, {
+                'info': req.flash('info'),
+                'warning': req.flash('info'),
+                'error': req.flash('error'),
+            });
             res.set('Content-Type', 'text/html')
             res.send(pageHtml);
         }
-    });
-    app.get('/:lang-:look-:primary-:secondary-:theme/:app/formuladb-look.css', async function (req, res, next) {
+    }
+    app.get('/:lang-:look-:primary-:secondary-:theme/:app/:page.html', renderHtmlPage);
+    app.get('/:lang/:app/:page.html', renderHtmlPage);
+
+    async function renderFormuladbCss(req, res, next) {
+        let defaultPageOpts: DefaultPageOptsForAppT = DefaultPageOptsForApp;
+        if (!req.params.look) {
+            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForApp(req.params.app);
+        }
         let css = await kvsFactory.metadataStore.getLookCss({
             lang: req.params.land,
-            look: req.params.look,
-            primaryColor: req.params.primary,
-            secondaryColor: req.params.secondary,
-            theme: req.params.theme,
+            look: req.params.look || defaultPageOpts.look,
+            primaryColor: req.params.primary || defaultPageOpts.primaryColor,
+            secondaryColor: req.params.secondary || defaultPageOpts.secondaryColor,
+            theme: req.params.theme || defaultPageOpts.theme,
             appName: req.params.app,
             pageName: `${req.params.page}.html`,
             query: req.query,
         });
         res.set('Content-Type', 'text/css')
         res.send(css);
-    });
+    };
+    app.get('/:lang-:look-:primary-:secondary-:theme/:app/formuladb-look.css', renderFormuladbCss);
+    app.get('/:lang/:app/formuladb-look.css', renderFormuladbCss);
 
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        res.redirect(`${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/${req.params.fileName}`);
-    });
-    app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        res.redirect(`${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`);
-    });    
-    app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:dirName/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        res.redirect(`${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.fileName}`);
-    });    
-    app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:dirName/:dirName2/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        res.redirect(`${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.dirName2}/${req.params.fileName}`);
-    });    
-    app.get('/:app/:name.yaml', function (req, res, next) {
+        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/${req.params.fileName}`;
         formuladbEnvStatic(req, res, next);
     });
-    app.get(/^\/formuladb-env\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
+    app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`;
+        formuladbEnvStatic(req, res, next);
+    });
+    app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:dirName/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.fileName}`;
+        formuladbEnvStatic(req, res, next);
+    });
+    app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:dirName/:dirName2/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.dirName2}/${req.params.fileName}`;
+        formuladbEnvStatic(req, res, next);
+    });
+    app.get('/:app/:name.yaml', function (req, res, next) {
         formuladbEnvStatic(req, res, next);
     });
 
@@ -294,15 +317,44 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         let looks = await kvsFactory.metadataStore.getLooks();
         res.send(looks);
     });
-    
+
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
-            let translations = await i18nTranslateText(coreFrmdbEngine, req.body.texts, req.body.to);
+            let userRole = authRoutes.roleFromReq(req);
+            let userId = authRoutes.userIdFromReq(req);
+            let translations = await i18nTranslateText(userRole, userId, coreFrmdbEngine, req.body.texts, req.body.to);
             res.json(translations);
         } catch (err) {
             console.error(err);
             next(err);
+        }
+    });
+
+    app.get('/formuladb-api/user', async function (req, res, next) {
+        try {
+            let userRole = authRoutes.roleFromReq(req);
+            let userId = authRoutes.userIdFromReq(req);
+            res.send({ userId, userRole });
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    });
+
+    app.get('/formuladb-api/check-env/:env', async function (req, res, next) {
+        try {
+            let resp = await fetch(`https://${req.params.env}.formuladb.io/formuladb-api/base-app/schema`).then(response => {
+                return response.text();
+            });
+            if (resp.indexOf('$Dictionary') >= 0 && resp.indexOf('$Page') >= 0) {
+                res.status(200); res.send('ok');
+            } else {
+                res.status(406); res.send('not-ok');
+            }
+        } catch (err) {
+            console.info(err);
+            res.status(406); res.send('not-ready');            
         }
     });
 
@@ -329,8 +381,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb-api/:app/media', async function (req, res, next) {
         try {
-            let paths: string[] = await kvsFactory.metadataStore.getMediaObjects(req.params.app);
-            res.json(paths);
+            let imgs: $ImageObjT[] = await kvsFactory.metadataStore.getAvailableImages(req.params.app);
+            res.json(imgs.map(i => i._id));//TODO use simpleAddHocQuery
         } catch (err) {
             console.error(err);
             next(err);
@@ -352,7 +404,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             let query = req.body as SimpleAddHocQuery;
 
             let ret;
-            if (isMetadataEntity(req.params.table)) {
+            if (isMetadataStoreEntity(req.params.table)) {
                 ret = await simpleAdHocQueryForMetadataEntities(req.params.app, kvsFactory, req.params.table, query);
             } else {
                 ret = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
@@ -390,8 +442,12 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     //all write operations are handled via events
     app.post('/formuladb-api/:app/event', async function (req, res, next) {
+        let event = req.body;
+        if (! await authRoutes.authEvent("api", req.params.app, event, req, res, next)) return;
+        let userRole = authRoutes.roleFromReq(req);
+        let userId = authRoutes.userIdFromReq(req);
         return (await getFrmdbEngine(req.params.app))
-            .processEvent(req.body)
+            .processEvent(userRole, userId, event)
             .then(notif => {
                 addEventToChangesFeed(notif);
                 res.json(notif);
@@ -419,7 +475,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => { console.error(err); next(err) });
     });
     app.put('/formuladb-api/:app/schema', async function (req, res, next) {
-        if (req.user.role !== 'ADMIN') { res.status(403); return; }
         let schema = req.body;
         let existingSchema = await kvsFactory.metadataStore.getSchema(req.params.app);
         if (!existingSchema) {

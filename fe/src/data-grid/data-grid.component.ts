@@ -20,7 +20,6 @@ import * as _ from 'lodash';
 import { waitUntil } from '@domain/ts-utils';
 
 import { elvis } from '@core/elvis';
-import { TableEditorComponent } from '../table-editor/table-editor.component';
 import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
@@ -359,7 +358,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             }
             let cols = this.columns || [];
 
-            this.agGridColumns = cols.map(c => <ColDef>{
+            this.agGridColumns = cols.filter(c => !['owner', 'role', '_rev'].includes(c.name)).map(c => <ColDef>{
                 headerName: I18N.tt(c.name),
                 field: c.name,
                 width: c.width ? c.width : 100,

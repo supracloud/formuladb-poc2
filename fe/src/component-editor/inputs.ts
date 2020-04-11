@@ -20,12 +20,15 @@ import { tmpl } from "./tmpl";
 import { emit, onEvent } from "@fe/delegated-events";
 import { elvis } from "@core/elvis";
 import { BLOBS, FrmdbBlob } from "@fe/frmdb-editor/blobs";
+import { ComponentProperty, Component } from "./component-editor.component";
 
 declare var $: null;
 
 export abstract class Input extends HTMLElement {
 	abstract inputTagName: string;
 	value: string;
+	property: ComponentProperty;
+	component: Component;
 
 	init(data): void {
 		this.render(this.inputTagName, data);
@@ -85,7 +88,7 @@ export class TextareaInput extends Input {
 		super.init(data);
 		this.render(/*html*/`
 			<div>
-				<textarea name="{%=key%}" rows="4" class="form-control"/>
+				<textarea name="{%=key%}" rows="3" class="form-control"/>
 			</div>
 		`, data);
 	}
@@ -711,7 +714,6 @@ export class SectionInput extends Input {
 	}
 
 	init(data) {
-		super.init(data);
 		this.render(/*html*/`
 			<label class="header border-bottom" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
 			<input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
@@ -759,6 +761,58 @@ export class ListInput extends Input {
 	}
 }
 
+
+export class ParamListInput extends Input {
+	static elemTagName = "frmdb-param-list-input";
+	inputTagName = "frmdb-param-list-input";
+
+	setValue(value) {}
+
+	getParameterValues() {
+		let ret: {name:string, value:string}[] = [];
+		for (let paramEl of Array.from(this.querySelectorAll('.parameter'))) {
+			let input = paramEl.querySelector('input') as HTMLInputElement;
+			let textarea = paramEl.querySelector('textarea') as HTMLTextAreaElement;
+			ret.push({name: input.value, value: textarea.value});
+		}
+		return ret;
+	}
+
+	init(data) {
+		onEvent(this, 'change', 'input', (event: Event) => {
+			let input = event.target as HTMLInputElement;
+			emit(this, { type: "FrmdbModifyPageElement", value: input.value });
+		});
+		onEvent(this, 'change', 'textarea', (event: Event) => {
+			let textarea = event.target as HTMLTextAreaElement;
+			emit(this, { type: "FrmdbModifyPageElement", value: textarea.value });
+		});
+		
+		this.render(/*html*/`
+				{% for ( let [i, param] of params.entries() ) { %}
+					<div class="parameter">
+						<div class="input-group">
+							<input name="{%=key%}_{%=i%}_paramName" readonly disabled type="text" class="form-control" value="{%=param.name%}"/>
+						</div>
+						<div class="input-group">
+							<textarea name="{%=key%}_{%=i%}_paramValue" rows="1" class="form-control">{%=param.value%}</textarea>
+						</div>
+					</div>
+				{% } %}
+				<div class="parameter">
+					<div class="input-group">
+						<input name="{%=key%}_{%=i%}_paramName" type="text" class="form-control" value="{%=param.name%}"/>
+					</div>
+					<div class="input-group">
+						<textarea name="{%=key%}_{%=i%}_paramValue" rows="1" class="form-control">{%=param.value%}</textarea>
+					</div>
+				</div>
+					
+			</div>
+		`, data);
+	}
+}
+
 export const Inputs = {
 	'TextInput': TextInput,
 	'TextareaInput': TextareaInput,
@@ -783,6 +837,7 @@ export const Inputs = {
 	'ButtonInput': ButtonInput,
 	'SectionInput': SectionInput,
 	'ListInput': ListInput,
+	'ParamListInput': ParamListInput,
 };
 
 customElements.define("frmdb-text-input", TextInput);
@@ -807,6 +862,7 @@ customElements.define("frmdb-text-value-input", TextValueInput);
 customElements.define("frmdb-button-input", ButtonInput);
 customElements.define("frmdb-section-input", SectionInput);
 customElements.define("frmdb-list-input", ListInput);
+customElements.define("frmdb-param-list-input", ParamListInput);
 customElements.define("frmdb-responsive-class-select-input", ResponsiveClassSelectInput);
 
 export function createInput(inputtype: keyof typeof Inputs): Input {

@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@domain/metadata/entity";
+import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn, EntityProperty } from "@domain/metadata/entity";
 import { SchemaDAO } from "@domain/metadata/schema_dao";
 import { DataObj, parseDataObjId, isNewDataObjId } from "@domain/metadata/data_obj";
 import { CircularJSON } from "@domain/json-stringify";
@@ -17,8 +17,10 @@ import { generateUUID } from "@domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
 import { I18nStore } from "./i18n-store";
-import { isMetadataObject, isMetadataEntity } from "@domain/metadata/default-metadata";
+import { isMetadataObject, isMetadataEntity, isMetadataStoreObject } from "@domain/metadata/default-metadata";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
+import { App } from "@domain/app";
+import { FullPageOpts } from "@domain/url-utils";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
@@ -57,18 +59,23 @@ export class FrmdbEngine {
         return Promise.resolve(schema);
     }
 
-    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+    public processEventAnonymous(event: events.MwzEvents): Promise<events.MwzEvents> {
+        return this.processEvent('$ANONYMOUS', 'AnounymousUserId', event);
+    }
+    public processEvent(userRole: string, userId: string, event: events.MwzEvents): Promise<events.MwzEvents> {
         event._id = Date.now() + '_' + generateUUID();
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
 
         switch (event.type_) {
             case "ServerEventModifiedFormData":
-                if (isMetadataObject(event.obj._id)) {
+                if (isMetadataStoreObject(event.obj)) {
                     throw new Error('Save data in record storage not allowed for metadata objects ' + JSON.stringify(event));
                 }
+                event.obj._role = userRole;
+                event.obj._owner = userId;
                 return this.transactionRunner.computeFormulasAndSave(event);
             case "ServerEventDeletedFormData":
-                if (isMetadataObject(event.obj._id)) {
+                if (isMetadataStoreObject(event.obj)) {
                     throw new Error('Delete data in record storage not allowed for metadata objects ' + JSON.stringify(event));
                 }
                 return this.transactionRunner.computeFormulasAndSave(event);
@@ -117,6 +124,31 @@ export class FrmdbEngine {
     }
 
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
+        let fullPageOpts = event.pageOpts.look ? event.pageOpts as FullPageOpts 
+            : await await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
+        let app: App | null = await this.frmdbEngineStore.kvsFactory.metadataStore.getApp(event.pageOpts.appName);
+        if (app) {
+            let dirty: boolean = false;
+            if (app.defaultLook != fullPageOpts.look) {
+                app.defaultLook = fullPageOpts.look;
+                dirty = true;
+            }
+            if (app.defaultPrimaryColor != fullPageOpts.primaryColor) {
+                app.defaultPrimaryColor = fullPageOpts.primaryColor;
+                dirty = true;
+            }
+            if (app.defaultSecondaryColor != fullPageOpts.secondaryColor) {
+                app.defaultSecondaryColor = fullPageOpts.secondaryColor;
+                dirty = true;
+            }
+            if (app.defaultTheme != fullPageOpts.theme) {
+                app.defaultTheme = fullPageOpts.theme;
+                dirty = true;
+            }
+            if (dirty) {
+                await this.frmdbEngineStore.kvsFactory.metadataStore.putApp(event.pageOpts.appName, app);
+            }
+        }
         await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pageOpts, event.pageHtml);
         return event;
     }
@@ -133,7 +165,9 @@ export class FrmdbEngine {
     }
 
     private async setPage(event: events.ServerEventSetPage): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(event.pageOpts, event.pageObj, event.startPageName);
+        let fullPageOpts = event.pageOpts.look ? event.pageOpts as FullPageOpts 
+            : await await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(fullPageOpts, event.pageObj, event.startPageName);
         return event;
     }
 
@@ -145,13 +179,18 @@ export class FrmdbEngine {
     }
 
     private async deletePage(event: events.ServerEventDeletePage): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.deletePage(event.deletedPagePath);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.deletePage(event.pageName);
         return event;
     }
 
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
-        if (!event.path.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
-        let newEntity: Entity = { _id: event.path, props: {} };
+        if (!event.entityId.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
+        let newEntity: Entity = { _id: event.entityId, props: {
+            _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+            owner: { name: "owner", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+            role: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+            _rev: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        } };
 
         return this.frmdbEngineStore.kvsFactory.metadataStore.putEntity(newEntity)
             .then(() => {

@@ -12,6 +12,7 @@ builds
 api-tests.junit.xml
 themes/.scss
 elastic-apm-rum.umd.min.js
+env_workspace
 
 # dependencies
 node_modules

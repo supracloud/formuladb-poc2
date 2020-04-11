@@ -59,4 +59,7 @@ props:
     washing_cycles:
         name: washing_cycles
         propType_: STRING
+    _owner: { name: _owner, propType_: STRING, allowNull: false }
+    _role: { name: _role, propType_: STRING, allowNull: false }
+    _rev: { name: _rev, propType_: STRING, allowNull: false }
 isEditable: true

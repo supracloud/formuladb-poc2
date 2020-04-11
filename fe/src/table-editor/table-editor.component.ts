@@ -11,6 +11,8 @@ import { raiseNotification } from '@fe/notifications.service';
 import { ThemeColors } from '@domain/uimetadata/theme';
 import { ServerEventModifiedFormData, ServerEventDeletedFormData } from '@domain/event';
 import { BACKEND_SERVICE } from '@fe/backend.service';
+import { FormComponent } from '@fe/form/form.component';
+import { $FRMDB_MODAL } from '@fe/directives/data-toggle-modal.directive';
 
 const html = require('raw-loader!@fe-assets/table-editor/table-editor.component.html').default;
 const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/table-editor/table-editor.component.scss').default;
@@ -18,6 +20,7 @@ const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/table-editor/
 export class TableEditorComponent extends HTMLElement {
     
     selectedRecord: DataObj;
+    tableName: string;
 
     init(): void {
         // calculate stats when new rows loaded, i.e. onModelUpdated
@@ -28,10 +31,18 @@ export class TableEditorComponent extends HTMLElement {
             e.preventDefault()
         });
         onEventChildren(this, 'click', '#delete-row-btn', async (e) => { 
-            if (!this.selectedRecord) raiseNotification(ThemeColors.info, "Cannot delete row.", "Please select row in table first.")
+            if (!this.selectedRecord) { raiseNotification(ThemeColors.info, "Cannot delete row.", "Please select row first."); return }
             let event: ServerEventDeletedFormData = await BACKEND_SERVICE().putEvent(
                 new ServerEventDeletedFormData(this.selectedRecord)) as ServerEventDeletedFormData;
-            
+        });
+        onEventChildren(this, 'click', '#add-row-btn', async (e) => { 
+            if (!this.tableName) { raiseNotification(ThemeColors.info, "Cannot add row.", "Please select table first."); return }
+            let modalEl = this.ownerDocument?.querySelector('#edit-record-modal');
+            if (!modalEl)  { raiseNotification(ThemeColors.warning, "Cannot add row.", "internal problem, modal not found"); return }
+            let formElState = (modalEl?.querySelector('frmdb-form') as FormComponent)?.frmdbState;
+            formElState.rowid = '$FRMDB_NEW_RECORD';
+            formElState.table_name = this.tableName; 
+            $FRMDB_MODAL(modalEl as HTMLElement);
         });
 
         onEventChildren(this, 'click', '.nav-link[role="tab"]', (e: MouseEvent) => {
@@ -55,7 +66,10 @@ export class TableEditorComponent extends HTMLElement {
     connectedCallback() {
         this.init();
     }
+
+    static observedAttributes = ["table-name"];
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {
+        if (name == "table-name") this.tableName = newVal;
     }
     observedAttributes: any;
 

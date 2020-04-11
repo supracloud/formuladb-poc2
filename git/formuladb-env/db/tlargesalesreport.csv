@@ -1,2 +1,2 @@
-_id,client,month,large_sales_product_table
-LargeSalesReport~~1,John Doe,2018-09-01,""
+_owner,_role,_rev,_id,client,month,large_sales_product_table
+AnounymousUserId,$ANONYMOUS,"",LargeSalesReport~~1,John Doe,2018-09-01,""

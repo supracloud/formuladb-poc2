@@ -16,7 +16,7 @@ import './element-editor/element-editor.component';
 import './wysiwyg-editor/wysiwyg-editor.component';
 
 import {FrmdbEditorDirective} from './frmdb-editor/frmdb-editor.directive';
-import { PageOpts, isEditorMode } from '@domain/url-utils';
+import { isEditorMode } from '@domain/url-utils';
 
 export class FrmdbFeComponent extends HTMLElement {
     rootEl: HTMLElement | undefined;

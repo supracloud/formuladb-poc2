@@ -7,7 +7,7 @@ import { KeyValueObj } from "./key_value_obj";
 import { DataObj } from "./metadata/data_obj";
 import { Entity, EntityProperty } from "./metadata/entity";
 import { generateUUID } from "./uuid";
-import { PageOpts } from "./url-utils";
+import { FullPageOpts, MandatoryPageOpts, AllPageOpts } from "./url-utils";
 import { $PageObjT } from "./metadata/default-metadata";
 
 /**
@@ -71,7 +71,7 @@ export class ServerEventNewApp extends MwzEvent {
 export class ServerEventNewEntity extends MwzEvent {
     readonly type_ = "ServerEventNewEntity";
 
-    constructor(public path: string) {
+    constructor(public entityId: string) {
         super();
     }
 }
@@ -87,7 +87,7 @@ export class ServerEventDeleteEntity extends MwzEvent {
 export class ServerEventSetPage extends MwzEvent {
     readonly type_ = "ServerEventSetPage";
 
-    constructor(public pageOpts: PageOpts, public pageObj: $PageObjT, 
+    constructor(public pageOpts: AllPageOpts, public pageObj: $PageObjT, 
         public startPageName: string | '$LANDING-PAGE$' | '$CONTENT-PAGE$') 
     {
         super();
@@ -97,7 +97,7 @@ export class ServerEventSetPage extends MwzEvent {
 export class ServerEventDeletePage extends MwzEvent {
     readonly type_ = "ServerEventDeletePage";
 
-    constructor(public deletedPagePath: string) {
+    constructor(public pageName: string) {
         super();
     }
 }
@@ -121,7 +121,7 @@ export class ServerEventSetProperty extends MwzEvent {
 export class ServerEventPutPageHtml extends MwzEvent {
     readonly type_ = "ServerEventPutPageHtml";
 
-    constructor(public pageOpts: PageOpts, public pageHtml: string) {
+    constructor(public pageOpts: AllPageOpts, public pageHtml: string) {
         super();
     }
 }

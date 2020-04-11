@@ -1,0 +1,4 @@
+_id: FRMDB_SCHEMA~~users
+entityIds:
+    - $User
+    - $Dictionary

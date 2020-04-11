@@ -58,11 +58,11 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         }
     });
 
-    onEvent(editor.elementEditor, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
+    onEvent(editor.elementEditor, 'FrmdbSelectPageElement', '*', (event: CustomEvent<FrmdbSelectPageElement>) => {
         console.warn("FrmdbSelectPageElement");
         editor.selectElement(event.detail.el);
     });
-    onEvent(editor.componentEditor, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
+    onEvent(editor.componentEditor, 'FrmdbSelectPageElement', '*', (event: CustomEvent<FrmdbSelectPageElement>) => {
         editor.selectElement(event.detail.el);
     });
 

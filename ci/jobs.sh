@@ -15,6 +15,8 @@ export BASEDIR=`dirname $0`
 function _cleanup {
     /usr/bin/killall -q kubectl || true
     /usr/bin/killall -q node || true
+    docker ps|grep "${FRMDB_ENV_NAME}-stress" |cut -d' ' -f1|xargs docker rm -f || true
+    docker ps|grep "${FRMDB_ENV_NAME}-pg" |cut -d' ' -f1|xargs docker rm -f || true
 }
 
 function build_images_and_deploy {
@@ -39,6 +41,7 @@ function build_images_and_deploy {
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
     while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema" | grep 'Room_Type'; do 
         echo "== be not started yet ==================================================="
+        curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema"
         kubectl -n "$NAMESPACE" logs service/be | head -100
         sleep 10; 
     done
@@ -51,22 +54,26 @@ function build_images_and_deploy_dev {
 function test_postgres {
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
-    while nc -z localhost 5434; do echo "port 5434 is busy, waiting..."; sleep 2; done
+    docker ps|grep "${FRMDB_ENV_NAME}-pg" |cut -d' ' -f1|xargs docker rm -f || true
+    while nc -z localhost 5434; do echo "port 5434 is busy, waiting..."; docker ps; sleep 2; done
     docker run --name "${FRMDB_ENV_NAME}-pg" -p5434:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5434; do sleep 1; done
+    docker exec "${FRMDB_ENV_NAME}-pg" sh -c 'until pg_isready -t 1; do echo waiting for database; sleep 2; done;'
     PGPORT=5434 FRMDB_STORAGE=postgres npm test
-    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker rm -f
+    docker ps|grep "${FRMDB_ENV_NAME}-pg" |cut -d' ' -f1|xargs docker rm -f
 }
 
 function test_stress {
     # npm test -- core/src/frmdb_engine.stress.spec.ts
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
-    while nc -z localhost 5435; do echo "port 5435 is busy, waiting..."; sleep 2; done
+    docker ps|grep "${FRMDB_ENV_NAME}-stress" |cut -d' ' -f1|xargs docker rm -f || true
+    while nc -z localhost 5435; do echo "port 5435 is busy, waiting..."; docker ps; sleep 2; done
     docker run --name "${FRMDB_ENV_NAME}-stress" -p5435:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5435; do sleep 1; done
+    docker exec "${FRMDB_ENV_NAME}-stress" sh -c 'until pg_isready -t 1; do echo waiting for database; sleep 2; done;'
     PGPORT=5435 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
-    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker rm -f
+    docker ps|grep "${FRMDB_ENV_NAME}-stress" |cut -d' ' -f1|xargs docker rm -f
 }
 
 function test_e2e {
@@ -99,7 +106,10 @@ function test_e2e {
 
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
+    while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'Room_Type'; do 
+        curl $URL/formuladb-api/hotel-booking/schema
+        sleep 2; 
+    done
 
     npm run test-headless -- -- --specs \
         "tsc-out/docs/1-Intro/6-editor-tables-list.e2e.js,tsc-out/docs/0-GetStarted/7-list-of-pages.e2e.js"
@@ -109,7 +119,8 @@ function e2e_dev_env {
     set -x
 
     if ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; then
-        echo "== ERROR: be not started yet ! "
+        echo "== be not started yet ! "
+        curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/formuladb-io/schema
         kubectl -n "$FRMDB_ENV_NAME" logs service/be
     fi
 
@@ -121,7 +132,10 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do 
+        curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema
+        sleep 2; 
+    done
     # how to upgrade test data without deleting existing user data?
     test_e2e staging "https://staging.formuladb.io" 100
 }
@@ -131,7 +145,10 @@ function build_images_and_deploy_production {
 }
 
 function e2e_production {
-    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do 
+        curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema
+        sleep 2; 
+    done
     #WARNING: make sure only safe tests
     echo test_e2e production "https://formuladb.io" 100
 }

@@ -1,7 +1,7 @@
 import "./look-preview.component";
 import "./theme-preview.component";
 import { dataBindStateToElement } from "@fe/frmdb-element-utils";
-import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
+import { AllPageOpts, makeUrlPath, parseAllPageUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "@fe/frmdb-editor/frmdb-editor-router";
 
 const HTML: string = require('raw-loader!@fe-assets/theme-customizer/theme-customizer.component.html').default;
@@ -38,7 +38,7 @@ export class ThemeCustomizerComponent extends HTMLElement {
         else return null;
     }
 
-    updateState(pageOpts: PageOpts) {
+    updateState(pageOpts: AllPageOpts) {
         let newState = new State();
         for (let cssFile of this.cssFiles) {
             let m = this.parseCssFileName(cssFile);
@@ -95,8 +95,8 @@ export class ThemeCustomizerComponent extends HTMLElement {
     async init() {
         await this.fetchCssFiles();
         await this.fetchThemeNames();
-        this.updateState(parsePageUrl(window.location.pathname));
-        registerFrmdbEditorRouterHandler("theme-customizer", (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
+        this.updateState(parseAllPageUrl(window.location.pathname));
+        registerFrmdbEditorRouterHandler("theme-customizer", (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => {
             this.updateState(newPageOpts);
         });
     }

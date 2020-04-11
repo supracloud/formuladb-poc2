@@ -1,1 +1,1 @@
-_id,email,comments
+_id,email,comments,_owner,_role,_rev

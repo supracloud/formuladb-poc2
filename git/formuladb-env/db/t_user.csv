@@ -1,12 +1,19 @@
 _id,role,password,name,details
-$User~~1,USER,c9d9b8cab32214716ee1b44b3aae2502,Keenan Leffler,Legacy Group Liaison
-$User~~10,USER,c9d9b8cab32214716ee1b44b3aae2502,Lonie Wiza,Customer Division Coordinator
-$User~~2,USER,c9d9b8cab32214716ee1b44b3aae2502,Edwardo McKenzie,Forward Factors Strategist
-$User~~3,USER,c9d9b8cab32214716ee1b44b3aae2502,Vergie Stracke Sr.,Dynamic Markets Architect
-$User~~4,USER,c9d9b8cab32214716ee1b44b3aae2502,Jerrod Dibbert,Corporate Directives Developer
-$User~~5,USER,c9d9b8cab32214716ee1b44b3aae2502,Jerad Buckridge,International Intranet Consultant
-$User~~6,USER,c9d9b8cab32214716ee1b44b3aae2502,Ottis Conn,Future Program Executive
-$User~~7,USER,c9d9b8cab32214716ee1b44b3aae2502,Hobart MacGyver,Regional Interactions Orchestrator
-$User~~8,USER,c9d9b8cab32214716ee1b44b3aae2502,Brandon Ondricka Jr.,Legacy Metrics Planner
-$User~~9,USER,c9d9b8cab32214716ee1b44b3aae2502,Bonita Collins,Central Identity Analyst
-$User~~Fredrick51,ADMIN,c9d9b8cab32214716ee1b44b3aae2502,Fredrick Lehner,International Operations Liaison
+$User~~alexandru.cristu@formuladb.io,$ADMIN,c9d9b8cab32214716ee1b44b3aae2502,alex,""
+$User~~b@b,"",92eb5ffee6ae2fec3ad71c777531578f,b,""
+$User~~bonita.collins@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Bonita Collins,Central Identity Analyst
+$User~~brandon.ondricka@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Brandon Ondricka Jr.,Legacy Metrics Planner
+$User~~edwardo.mckenzie@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Edwardo McKenzie,Forward Factors Strategist
+$User~~fredrick.lehner@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Fredrick Lehner,International Operations Liaison
+$User~~hobart.macgyver@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Hobart MacGyver,Regional Interactions Orchestrator
+$User~~jerad.buckridge@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Jerad Buckridge,International Intranet Consultant
+$User~~jerrod.dibbert@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Jerrod Dibbert,Corporate Directives Developer
+$User~~keenan.leffler@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Keenan Leffler,Legacy Group Liaison
+$User~~laura.cristu@formuladb.io,$ADMIN,c9d9b8cab32214716ee1b44b3aae2502,laura,""
+$User~~laurentiu.soica@formuladb.io,$ADMIN,c9d9b8cab32214716ee1b44b3aae2502,laur,""
+$User~~lonie.wiza@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Lonie Wiza,Customer Division Coordinator
+$User~~miruna.pria@formuladb.io,$ADMIN,c9d9b8cab32214716ee1b44b3aae2502,miru,""
+$User~~ottis.conn@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Ottis Conn,Future Program Executive
+$User~~sorin.cirstoiu@formuladb.io,$ADMIN,c9d9b8cab32214716ee1b44b3aae2502,sorin,""
+$User~~valentin.raduti@formuladb.io,$ADMIN,c9d9b8cab32214716ee1b44b3aae2502,vali,""
+$User~~vergie.stracke@formuladb.io,USER,c9d:9b8cab32214716ee1b44b3aae2502,Vergie Stracke Sr.,Dynamic Markets Architect

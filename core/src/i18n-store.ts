@@ -30,7 +30,7 @@ export class I18nStore {
         return cacheInit.get();
     }
 
-    async updateDictionaryEntry(dictEntry: $DictionaryObjT) {
+    async updateDictionaryEntry(userRole: string, userId: string, dictEntry: $DictionaryObjT) {
         let dictCache, existingEntry;
         try {
             existingEntry = await this.frmdbEngine.frmdbEngineStore.getDataObj(dictEntry._id);
@@ -38,7 +38,7 @@ export class I18nStore {
             console.warn(err);
         }
         try {
-            await this.frmdbEngine.processEvent(
+            await this.frmdbEngine.processEvent(userRole, userId, 
                 new ServerEventModifiedFormData(Object.assign(existingEntry || {}, dictEntry)));
         } catch (err) {
             console.warn(err);

@@ -6,6 +6,9 @@
 import { KeyValueObj } from "../key_value_obj";
 export interface DataObj extends KeyValueObj {
     _id: string;
+    _rev?: string;
+    _owner?: string;
+    _role?: string;
 }
 export interface DataObjId {
     entityId: string;

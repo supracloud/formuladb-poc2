@@ -119,10 +119,10 @@ describe('FrmdbEngine', () => {
     });
 
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        return await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
     async function delObj(obj: KeyValueObj): Promise<ServerEventDeletedFormData> {
-        return await frmdbEngine.processEvent(new ServerEventDeletedFormData(obj)) as ServerEventDeletedFormData;
+        return await frmdbEngine.processEventAnonymous(new ServerEventDeletedFormData(obj)) as ServerEventDeletedFormData;
     }
 
     afterEach(function () {
@@ -205,7 +205,7 @@ describe('FrmdbEngine', () => {
         let b1After: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+        let ev: ServerEventPreviewFormula = await frmdbEngine.processEventAnonymous({
             _id: 'ABC123',
             type_: "ServerEventPreviewFormula",
             targetEntity: stockReservationSchema.entities['B'],
@@ -220,7 +220,7 @@ describe('FrmdbEngine', () => {
         let b1Get: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1Get).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        let ev2: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+        let ev2: ServerEventPreviewFormula = await frmdbEngine.processEventAnonymous({
             _id: 'ABC123',
             type_: "ServerEventPreviewFormula",
             targetEntity: stockReservationSchema.entities['B'],
@@ -246,7 +246,7 @@ describe('FrmdbEngine', () => {
         let b1After: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+        let ev: ServerEventPreviewFormula = await frmdbEngine.processEventAnonymous({
             _id: 'ABC123',
             type_: "ServerEventSetProperty",
             targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],
@@ -261,7 +261,7 @@ describe('FrmdbEngine', () => {
         b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 195}));
 
-        let ev2: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+        let ev2: ServerEventPreviewFormula = await frmdbEngine.processEventAnonymous({
             _id: 'ABC123',
             type_: "ServerEventSetProperty",
             targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],

@@ -1,5 +1,5 @@
 import { I18N_UTILS } from "@core/i18n-utils";
-import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
+import { AllPageOpts, makeUrlPath, parseAllPageUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "@fe/frmdb-editor/frmdb-editor-router";
 import { dataBindStateToElement } from "@fe/frmdb-element-utils";
 import { onEventChildren } from "@fe/delegated-events";
@@ -34,7 +34,7 @@ class I18nCustomizerComponent extends HTMLElement {
             event.stopPropagation();
             let a: HTMLAnchorElement = event.target.closest('[data-frmdb-table="languages[]"]');
             if (!a) { console.error("Link not found for event ", event); return }
-            let pgOpts = parsePageUrl(a.pathname);
+            let pgOpts = parseAllPageUrl(a.pathname);
 
             if (pgOpts.lang != I18N_UTILS.defaultLanguage) {
                 let iframe: HTMLIFrameElement | null = document.body.querySelector('iframe#app');
@@ -56,7 +56,7 @@ class I18nCustomizerComponent extends HTMLElement {
         });
     }
 
-    updateState(pageOpts: PageOpts) {
+    updateState(pageOpts: AllPageOpts) {
         let newState = new State();
         const currentLanguage = I18N_UTILS.getLangDesc(localStorage.getItem('editor-lang') || I18N_UTILS.defaultLanguage)!;
 
@@ -78,8 +78,8 @@ class I18nCustomizerComponent extends HTMLElement {
     }
 
     init() {
-        this.updateState(parsePageUrl(window.location.pathname));
-        registerFrmdbEditorRouterHandler("i18n-customizer", (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
+        this.updateState(parseAllPageUrl(window.location.pathname));
+        registerFrmdbEditorRouterHandler("i18n-customizer", (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => {
             this.updateState(newPageOpts);
         });
     }

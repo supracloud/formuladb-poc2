@@ -60,10 +60,13 @@ export class FormService {
             if (!form) throw new Error("Form not found for button " + button.outerHTML);
             if (form.getAttribute('method')?.toLowerCase() === 'get') return;
 
-            event.preventDefault();
-
             let inputEl: InputElem | null = form.querySelector('input,select,textarea');
             if (!inputEl) throw new Error("No input found for form " + form.outerHTML);
+
+            let pObj = this.getParentObj(inputEl);
+            if (!pObj) return;
+            event.preventDefault();
+
             let alertEl: AlertComponent = form.querySelector('frmdb-alert[data-frmdb-submit-status]') as AlertComponent;
             if (!alertEl) {
                 alertEl = document.createElement('frmdb-alert') as AlertComponent;
@@ -223,7 +226,7 @@ export class FormService {
 
     private getParentEl(control: HTMLElement): HTMLElement | null {
         let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
-        if (!parentEl) {console.warn("Could not get parent of " + control); return null;};
+        if (!parentEl) return null;
         return parentEl;
     }
 

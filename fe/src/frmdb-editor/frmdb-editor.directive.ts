@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
-import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService } from "@fe/backend.service";
+import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService, getData } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { ServerEventNewEntity, ServerEventSetPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
@@ -48,7 +48,7 @@ import { Undo } from "./undo";
 import { $FRMDB_MODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
-import { parsePageUrl, PageOpts } from "@domain/url-utils";
+import { parseAllPageUrl, AllPageOpts } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage, navigateTo } from "./frmdb-editor-router";
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
@@ -60,6 +60,8 @@ import { serializeElemToObj, updateDOM } from "@fe/live-dom-template/live-dom-te
 import { isHTMLElement } from "@core/html-tools";
 import { getPageProperties } from "@core/dom-utils";
 import * as events from "@domain/event";
+import { raiseNotification } from "@fe/notifications.service";
+import { ThemeColors } from "@domain/uimetadata/theme";
 
 declare var $: null, jQuery: null;
 
@@ -108,7 +110,7 @@ export class FrmdbEditorDirective {
 
     }
 
-    updateStateFromUrl(newPageOpts: PageOpts, newUrl: URL) {
+    updateStateFromUrl(newPageOpts: AllPageOpts, newUrl: URL) {
         let { appName } = newPageOpts;
 
         this.setIframeSrc(newUrl);
@@ -160,7 +162,7 @@ export class FrmdbEditorDirective {
             hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
             // this.manageIframeNavigation();
             if (this.iframe.contentWindow?.location && window.location.pathname != this.iframe.contentWindow.location.pathname) {
-                let {appName, pageName} = parsePageUrl(this.iframe.contentWindow.location.pathname);
+                let {appName, pageName} = parseAllPageUrl(this.iframe.contentWindow.location.pathname);
                 navigateEditorToAppAndPage(appName, pageName, this.iframe.contentWindow.location.search);
             }
         }
@@ -170,7 +172,7 @@ export class FrmdbEditorDirective {
         setTimeout(ff, 2000);
         this.setIframeSrc(new URL(window.location.href));
 
-        let newPageOpts = parsePageUrl(window.location.pathname);
+        let newPageOpts = parseAllPageUrl(window.location.pathname);
         this.state.emitChange({
             selectedAppName: newPageOpts.appName,
             selectedPageName: newPageOpts.pageName,
@@ -194,9 +196,18 @@ export class FrmdbEditorDirective {
         })
 
         registerFrmdbEditorRouterHandler('editor-iframe-src',
-            (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => this.updateStateFromUrl(newPageOpts, newUrl),
+            (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => this.updateStateFromUrl(newPageOpts, newUrl),
             () => this.checkSafeNavigation()
         );
+
+        getData('/formuladb-api/user').then((u: {userRole: string, userId: string}) => {
+            if (u.userRole === "$ANONYMOUS") {
+                let {lang} = parseAllPageUrl(window.location.pathname);
+                raiseNotification(ThemeColors.warning, 
+                    "WARNING this is a preview environment.", 
+                    `To be able to save your modifications, please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
+            }
+        })
     }
 
     public changeTable(a: HTMLAnchorElement) {
@@ -218,7 +229,7 @@ export class FrmdbEditorDirective {
             let prevUrl = this.iframeHistory.pop();
             if (prevUrl) {
                 let url = new URL(prevUrl);
-                let {appName, pageName} = parsePageUrl(url.pathname);
+                let {appName, pageName} = parseAllPageUrl(url.pathname);
                 navigateEditorToAppAndPage(appName, pageName, url.search);
             } 
         };
@@ -236,7 +247,7 @@ export class FrmdbEditorDirective {
 
                     if (this.iframe.contentWindow?.location.href) this.iframeHistory.push(this.iframe.contentWindow?.location.href);
 
-                    let {appName, pageName} = parsePageUrl(newPathname);
+                    let {appName, pageName} = parseAllPageUrl(newPathname);
                     navigateEditorToAppAndPage(appName, pageName, url.search);
                 }
             }
@@ -340,7 +351,7 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             newTableModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FRMDB_MODAL(newTableModal, "hide");
-                            this.state.emitChange({ selectedTableId: ev.path });
+                            this.state.emitChange({ selectedTableId: ev.entityId });
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
@@ -362,7 +373,7 @@ export class FrmdbEditorDirective {
         onEvent(document.body, 'click', '#save-btn, #save-btn *', async (event) => {
             await this.saveBlobs();
 
-            $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
+            await $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
             .then(b => {
                 if (b) Undo.clear();
             });
@@ -432,7 +443,7 @@ export class FrmdbEditorDirective {
             //replace nonalphanumeric with dashes and lowercase for name
             pageObj.name = pageObj.name.replace(/[^a-zA-Z0-9]/g, '-');
 
-            let pageOpts = parsePageUrl(window.location.pathname);
+            let pageOpts = parseAllPageUrl(window.location.pathname);
             if (isNewPage) pageOpts = {...pageOpts, pageName: pageObj.name};
 
             BACKEND_SERVICE().putEvent(
@@ -491,6 +502,8 @@ export class FrmdbEditorDirective {
             if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
+            if (entity._id.indexOf('$') === 0) { window.alert(`Default system table ${entity._id} cannot be modified.`); return}
+
             var newColumnModal = $FRMDB_MODAL('#new-column-modal');
             newColumnModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
             let colNameInput = newColumnModal.querySelector('input[name=columnName]') as HTMLInputElement;
@@ -523,7 +536,7 @@ export class FrmdbEditorDirective {
             };
         });
 
-        onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
+        onEvent(document.body, 'UserDeleteColumn', '*', (event: CustomEvent<UserDeleteColumn>) => {
             let currentEntity: Entity | undefined = this.state.data.tables?.find(e => e._id == this.state.data.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;

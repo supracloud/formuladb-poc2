@@ -31,7 +31,7 @@ describe(`[BE] FrmdbEngine hotel_booking [FRMDB_STORAGE=${process.env.FRMDB_STOR
     });
 
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        return await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
 
     console.log("Should allow non-overlapping bookings to be created", async (done) => {

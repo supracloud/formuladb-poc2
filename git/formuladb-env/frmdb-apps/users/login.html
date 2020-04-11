@@ -9,61 +9,37 @@
   <header class="header-global">
     <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light headroom">
       <div class="container">
-        <a class="navbar-brand mr-lg-5" href="index.html"><img src="assets/logo.png"></a>
+        <a class="btn bg-primary mr-lg-5" href="index.html"><img src="/formuladb-env/frmdb-apps/formuladb-io/static/logo.png" style="height: 32px"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false"
           aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="navbar_global">
-          <div class="navbar-collapse-header">
-            <div class="row">
-              <div class="col-6 collapse-brand">
-                <a href="../index.html">
-                  <img src="./assets/img/brand/blue.png">
-                </a>
-              </div>
-              <div class="col-6 collapse-close">
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global"
-                  aria-expanded="false" aria-label="Toggle navigation">
-                  <span></span>
-                  <span></span>
-                </button>
-              </div>
-            </div>
-          </div>
           <ul class="navbar-nav align-items-lg-center ml-lg-auto">
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://www.facebook.com/creativetim" target="_blank" data-toggle="tooltip" title="Like us on Facebook">
+              <a class="nav-link nav-link-icon" href="https://www.facebook.com/formuladb" target="_blank" data-toggle="tooltip" title="Like us on Facebook">
                 <i class="frmdb-i-facebook-square"></i>
                 <span class="nav-link-inner--text d-lg-none">Facebook</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://www.instagram.com/creativetimofficial" target="_blank" data-toggle="tooltip"
+              <a class="nav-link nav-link-icon" href="https://www.instagram.com/formuladb" target="_blank" data-toggle="tooltip"
                 title="Follow us on Instagram">
                 <i class="frmdb-i-instagram"></i>
                 <span class="nav-link-inner--text d-lg-none">Instagram</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://twitter.com/creativetim" target="_blank" data-toggle="tooltip" title="Follow us on Twitter">
+              <a class="nav-link nav-link-icon" href="https://twitter.com/formuladb" target="_blank" data-toggle="tooltip" title="Follow us on Twitter">
                 <i class="frmdb-i-twitter-square"></i>
                 <span class="nav-link-inner--text d-lg-none">Twitter</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="https://github.com/creativetimofficial/argon-design-system" target="_blank" data-toggle="tooltip"
+              <a class="nav-link nav-link-icon" href="https://github.com/formuladb" target="_blank" data-toggle="tooltip"
                 title="Star us on Github">
                 <i class="frmdb-i-github"></i>
                 <span class="nav-link-inner--text d-lg-none">Github</span>
-              </a>
-            </li>
-            <li class="nav-item d-none d-lg-block ml-lg-4">
-              <a href="https://www.creative-tim.com/product/argon-design-system" target="_blank" class="btn btn-neutral btn-icon">
-                <span class="btn-inner--icon">
-                  <i class="frmdb-i-cloud-download mr-2"></i>
-                </span>
-                Download
               </a>
             </li>
           </ul>
@@ -72,7 +48,7 @@
     </nav>
   </header>
   <main>
-    <section class="section section-shaped section-lg">
+    <section class="section section-lg">
       <div class="shape shape-style-1 bg-gradient-default">
         <span></span>
         <span></span>
@@ -104,13 +80,13 @@
                 <div class="text-center text-muted mb-4">
                   <small>Or sign in with credentials</small>
                 </div>
-                <form role="form">
+                <form role="form" method="POST" action="login">
                   <div class="form-group mb-3">
                     <div class="input-group input-group-alternative">
                       <div class="input-group-prepend">
                         <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                       </div>
-                      <input class="form-control" placeholder="Email" type="email">
+                      <input name="email" class="form-control" placeholder="Email" type="email">
                     </div>
                   </div>
                   <div class="form-group">
@@ -118,7 +94,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                       </div>
-                      <input class="form-control" placeholder="Password" type="password">
+                      <input name="password" class="form-control" placeholder="Password" type="password">
                     </div>
                   </div>
                   <div class="custom-control custom-control-alternative custom-checkbox">
@@ -126,7 +102,7 @@
                     <label class="custom-control-label" for=" customCheckLogin"><span>Remember me</span></label>
                   </div>
                   <div class="text-center">
-                    <button type="button" class="btn btn-primary my-4">Sign in</button>
+                    <button type="submit" class="btn btn-primary my-4">Sign in</button>
                   </div>
                 </form>
               </div>
