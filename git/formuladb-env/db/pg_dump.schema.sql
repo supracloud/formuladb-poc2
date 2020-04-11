@@ -457,7 +457,6 @@ ALTER TABLE public.troom_type OWNER TO postgres;
 
 CREATE TABLE public.tsampleapp (
     _id character varying NOT NULL COLLATE pg_catalog."C",
-    name character varying,
     category character varying,
     category2 character varying,
     categories character varying,

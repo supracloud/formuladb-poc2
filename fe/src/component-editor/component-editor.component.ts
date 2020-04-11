@@ -324,71 +324,75 @@ export class ComponentEditorComponent extends HTMLElement {
 		let componentProperties = [DefaultSection].concat(component.properties);
 		for (let i in componentProperties) {
 			let property = componentProperties[i];
-			if (property.tab) tab = this.querySelector(`.tab-pane[id="${property.tab}"]`) as HTMLElement;
-			else tab = contentTab;
-			let element = nodeElement;
-			
 			try {
-				if (property.beforeInit) property.beforeInit(element);
-			} catch (err) {
-				console.warn("Error in beforeInit", component, property, err);
-			}
+				if (property.tab) tab = this.querySelector(`.tab-pane[id="${property.tab}"]`) as HTMLElement;
+				else tab = contentTab;
+				let element = nodeElement;
+				
+				try {
+					if (property.beforeInit) property.beforeInit(element);
+				} catch (err) {
+					console.warn("Error in beforeInit", component, property, err);
+				}
 
-			if (property.hide) continue;
-			
-			if (property.child) element = element.querySelector(property.child) as HTMLElement;
-			
-			if (property.data) {
-				property.data["key"] = property.key;
-			} else {
-				property.data = { "key": property.key };
-			}
-			
-			let propertyInput = createInput(property.inputtype);
-			propertyInput.property = property;
-			propertyInput.component = component;
-			propertyInput.init(property.data);
-			
-			if (property.init) {
-				propertyInput.setValue(property.init(element));
-			} else if (property.htmlAttr) {
-				let value;
-				if (property.htmlAttr == "style") {
-					//value = element.css(property.key);//jquery css returns computed style
-					value = this.styleManager.getStyle(element, property.key);//getStyle returns declared style
-				} else
-				if (property.htmlAttr == "innerHTML") {
-					value = element.innerHTML;
+				if (property.hide) continue;
+				
+				if (property.child) element = element.querySelector(property.child) as HTMLElement;
+				
+				if (property.data) {
+					property.data["key"] = property.key;
 				} else {
-					value = element.getAttribute(property.htmlAttr);
+					property.data = { "key": property.key };
 				}
 				
-				//if attribute is class check if one of valid values is included as class to set the select
-				if (value && property.htmlAttr == "class" && property.validValues) {
-					value = value.split(" ").filter((el) => {
-						return property.validValues ? property.validValues.indexOf(el) != -1 : true;
-					});
+				let propertyInput = createInput(property.inputtype);
+				propertyInput.property = property;
+				propertyInput.component = component;
+				propertyInput.init(property.data);
+				
+				if (property.init) {
+					propertyInput.setValue(property.init(element));
+				} else if (property.htmlAttr) {
+					let value;
+					if (property.htmlAttr == "style") {
+						//value = element.css(property.key);//jquery css returns computed style
+						value = this.styleManager.getStyle(element, property.key);//getStyle returns declared style
+					} else
+					if (property.htmlAttr == "innerHTML") {
+						value = element.innerHTML;
+					} else {
+						value = element.getAttribute(property.htmlAttr);
+					}
+					
+					//if attribute is class check if one of valid values is included as class to set the select
+					if (value && property.htmlAttr == "class" && property.validValues) {
+						value = value.split(" ").filter((el) => {
+							return property.validValues ? property.validValues.indexOf(el) != -1 : true;
+						});
+					}
+					
+					propertyInput.setValue(value);
 				}
 				
-				propertyInput.setValue(value);
-			}
-			
-			if (property.inputtype == 'SectionInput') {
-				tab.appendChild(propertyInput);
-				section = (propertyInput as SectionInput).section;
-			}
-			else {
-				let row = document.createElement('div');
-				row.innerHTML = tmpl(/*html*/`
-					<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
-						{% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
-						<div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input">
-						</div>
-					</div>	
-				`, property);
-				row.querySelector('.input')!.append(propertyInput);
-				if (!section) {console.warn("no section exists yet", component, property); continue}
-				section.append(row.querySelector('.form-group')!);
+				if (property.inputtype == 'SectionInput') {
+					tab.appendChild(propertyInput);
+					section = (propertyInput as SectionInput).section;
+				}
+				else {
+					let row = document.createElement('div');
+					row.innerHTML = tmpl(/*html*/`
+						<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
+							{% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
+							<div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input">
+							</div>
+						</div>	
+					`, property);
+					row.querySelector('.input')!.append(propertyInput);
+					if (!section) {console.warn("no section exists yet", component, property); continue}
+					section.append(row.querySelector('.form-group')!);
+				}
+			} catch (err) {
+				console.warn("Error", err, "for component, property", component, property);
 			}
 		}
 		

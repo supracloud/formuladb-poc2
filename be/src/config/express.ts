@@ -428,7 +428,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/formuladb-api/:app/obj/:id', async function (req, res, next) {
         try {
             let obj = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getDataObj(req.params.id);
-            res.json(obj);
+            res.json(obj||{});
         } catch (err) {
             console.error(err);
             next(err);

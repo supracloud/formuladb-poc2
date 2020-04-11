@@ -18,30 +18,32 @@ const html = require('raw-loader!@fe-assets/table-editor/table-editor.component.
 const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/table-editor/table-editor.component.scss').default;
 
 export class TableEditorComponent extends HTMLElement {
-    
+
     selectedRecord: DataObj;
     tableName: string;
 
     init(): void {
         // calculate stats when new rows loaded, i.e. onModelUpdated
         // this.params.api.addEventListener('modelUpdated', this.updateTotals.bind(this));
-        onEventChildren(this, 'click', '.excel-export', (e) => {this.excel(); e.preventDefault()});
-        onEventChildren(this, 'click', '#add-column-to-table-btn', (e) => { 
-            emit(this, {type: "FrmdbAddColumn"}); //WTF: why I have to explicitly emit from the host element?
+        onEventChildren(this, 'click', '.excel-export', (e) => { this.excel(); e.preventDefault() });
+        onEventChildren(this, 'click', '#add-column-to-table-btn', (e) => {
+            emit(this, { type: "FrmdbAddColumn" }); //WTF: why I have to explicitly emit from the host element?
             e.preventDefault()
         });
-        onEventChildren(this, 'click', '#delete-row-btn', async (e) => { 
+        onEventChildren(this, 'click', '#delete-row-btn', async (e) => {
             if (!this.selectedRecord) { raiseNotification(ThemeColors.info, "Cannot delete row.", "Please select row first."); return }
-            let event: ServerEventDeletedFormData = await BACKEND_SERVICE().putEvent(
-                new ServerEventDeletedFormData(this.selectedRecord)) as ServerEventDeletedFormData;
+            if (confirm(`Delete record ${this.selectedRecord._id}? Please confirm !`)) {
+                let event: ServerEventDeletedFormData = await BACKEND_SERVICE().putEvent(
+                    new ServerEventDeletedFormData(this.selectedRecord)) as ServerEventDeletedFormData;
+            }
         });
-        onEventChildren(this, 'click', '#add-row-btn', async (e) => { 
+        onEventChildren(this, 'click', '#add-row-btn', async (e) => {
             if (!this.tableName) { raiseNotification(ThemeColors.info, "Cannot add row.", "Please select table first."); return }
             let modalEl = this.ownerDocument?.querySelector('#edit-record-modal');
-            if (!modalEl)  { raiseNotification(ThemeColors.warning, "Cannot add row.", "internal problem, modal not found"); return }
+            if (!modalEl) { raiseNotification(ThemeColors.warning, "Cannot add row.", "internal problem, modal not found"); return }
             let formElState = (modalEl?.querySelector('frmdb-form') as FormComponent)?.frmdbState;
-            formElState.rowid = '$FRMDB_NEW_RECORD';
-            formElState.table_name = this.tableName; 
+            formElState.rowid = `${this.tableName}~~$AUTO_GENERATE_ID_FOR_NEW_RECORD`;
+            formElState.table_name = this.tableName;
             $FRMDB_MODAL(modalEl as HTMLElement);
         });
 
@@ -74,7 +76,7 @@ export class TableEditorComponent extends HTMLElement {
     observedAttributes: any;
 
     excel() {
-        
+
     }
 }
 
@@ -82,7 +84,7 @@ window.customElements.define('frmdb-table-editor', TableEditorComponent);
 customElements.whenDefined('frmdb-table-editor').then(() => console.info('frmdb-table-editor is defined'));
 
 export function queryTableEditor(el: Document | HTMLElement): TableEditorComponent {
-    let tableEditor: TableEditorComponent =  el.querySelector('frmdb-table-editor') as TableEditorComponent;
+    let tableEditor: TableEditorComponent = el.querySelector('frmdb-table-editor') as TableEditorComponent;
     if (!tableEditor) throw new Error("formula table not found");
     return tableEditor;
 }

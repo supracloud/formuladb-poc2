@@ -49,7 +49,7 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
                     let {lang} = parseAllPageUrl(window.location.pathname);
                     raiseNotification(ThemeColors.warning, 
                         "Cannot save modifications in preview environment.", 
-                        `Please <a href="${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
+                        `Please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
                 }
                 throw new Error(response.status + "-" + response.statusText);
             }
@@ -170,8 +170,13 @@ export class BackendService {
     }
 
     public async getDataObj(id: string): Promise<DataObj> {
+        let dataObj = await this.getDataObjAcceptNull(id);
+        if (!dataObj) throw new Error('Asked for non-existent object ' + id + '.');
+        return dataObj;
+    }
+    public async getDataObjAcceptNull(id: string): Promise<DataObj | null> {
         let http = await getData<DataObj | null>('/formuladb-api/' + this.appName + '/obj/' + encodeURIComponent(id));
-        if (!http) throw new Error('Asked for non-existent object ' + id + '.');
+        if (!http||!http._id) return null;
         let dataObj = http;
         if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + CircularJSON.stringify(dataObj));
 

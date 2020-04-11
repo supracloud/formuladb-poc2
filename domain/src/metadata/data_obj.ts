@@ -45,7 +45,7 @@ function _parseDataObjId(_id: string | undefined): DataObjId | null {
     return parseDataObjIdES5(_id);
 }
 export function isNewDataObjId(_id: string): boolean {
-    return _id.endsWith('~~') || _id.endsWith('__') || _id.endsWith('$FRMDB_NEW_RECORD');
+    return _id.endsWith('~~') || _id.endsWith('__') || _id.endsWith('$AUTO_GENERATE_ID_FOR_NEW_RECORD');
 }
 export function isNewTopLevelDataObjId(_id: string): boolean {
     return _id.endsWith('~~');

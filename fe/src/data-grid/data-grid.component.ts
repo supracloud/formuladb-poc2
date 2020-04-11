@@ -92,7 +92,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
     /** component internals *************************************************/
 
-    debouncedForceCellRefresh = _.debounce(() => this._forceCellRefresh(), 100);
+    debouncedForceCellRefresh = _.debounce(() => this._forceCellRefresh(), 150);
     gridIsRefreshing: boolean = false;
     public _forceCellRefresh() {
         if (this.gridIsRefreshing) {
@@ -103,7 +103,8 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         this.gridApi && this.gridApi.refreshCells({force: true});
         this.gridIsRefreshing = true;
     }
-    public forceReloadData() {
+    public forceReloadData = _.debounce(() => this._forceReloadData(), 150);
+    private _forceReloadData() {
         if (this.gridApi) {
             this.gridApi.purgeInfiniteCache();
         }
@@ -289,7 +290,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
         if (entityId && hc[entityId] && (
             hc[entityId][params.colDef.field]
-            || params.data._id == hc['$HIGHLIGHT-RECORD$']?._id
+            || params.data?._id == hc['$HIGHLIGHT-RECORD$']?._id
         )){
             let highightColor = hc[entityId][params.colDef.field] || 
                 Object.values(hc[entityId])[0];
@@ -358,7 +359,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             }
             let cols = this.columns || [];
 
-            this.agGridColumns = cols.filter(c => !['owner', 'role', '_rev'].includes(c.name)).map(c => <ColDef>{
+            this.agGridColumns = cols.filter(c => !['_owner', '_role', '_rev'].includes(c.name)).map(c => <ColDef>{
                 headerName: I18N.tt(c.name),
                 field: c.name,
                 width: c.width ? c.width : 100,
@@ -415,7 +416,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         let expandRowTarget = this.expandRow;
         if (expandRowTarget && col.name === '_id') {
             return (params) => {
-                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); s=m.querySelector('frmdb-form').frmdbState; s.rowid='${params.value}'; s.table_name='${entityId}'; $FRMDB_MODAL(m)">${this.valueFormatter(params)}</a>`;
+                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); s=m.querySelector('frmdb-form').frmdbState; s.rowid='${params.value}'; s.table_name='${entityId}'; $FRMDB_MODAL(m)"><i class="frmdb-i-edit"></i></a> ${this.valueFormatter(params)}`;
             }
         } else return null;
     }
