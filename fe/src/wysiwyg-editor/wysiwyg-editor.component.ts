@@ -11,6 +11,11 @@ export class WysiwygEditorComponent extends HighlightComponent {
 
 	oldValue: string = '';
 	private doc: Document | null = null;
+	spaceInsideButtonEventListener = e => {
+		if(e.keyCode == 32){
+			this.insertHtmlAtCursor(' ');
+		}
+	};
 
 	set highlightEl(elem: HTMLElement | null) {
 		if (this.highlightEl === elem) return;
@@ -24,6 +29,9 @@ export class WysiwygEditorComponent extends HighlightComponent {
 			elem.setAttribute('contenteditable', 'true');
 			elem.setAttribute('spellchecker', 'false');
 			this.style.display = 'block';
+			if (elem.tagName.toLowerCase() == 'button') {
+				elem.addEventListener('keyup', this.spaceInsideButtonEventListener);
+			}
 		}
 
 		this.doc = elem ? getDoc(elem) : null;
@@ -31,6 +39,22 @@ export class WysiwygEditorComponent extends HighlightComponent {
 	}
 	get highlightEl() {
 		return super.highlightEl;
+	}
+
+	insertHtmlAtCursor(html) {
+		var range, node;
+		if (window.getSelection && window.getSelection()?.getRangeAt) {
+			range = window.getSelection()?.getRangeAt(0);
+			node = range.createContextualFragment(html);
+			range.insertNode(node);
+			//window.getSelection().collapseToEnd();
+			(window.getSelection() as any).modify('move', 'forward', 'character');
+		} 
+		// else if (document.selection && document.selection?.createRange) {
+		// 	document.selection?.createRange().pasteHTML(html);
+		// 	document.selection?.collapseToEnd();
+		// 	document.selection?.modify('move', 'forward', 'character');
+		// }
 	}
 
 	connectedCallback() {
@@ -65,6 +89,9 @@ export class WysiwygEditorComponent extends HighlightComponent {
 		if (!this.highlightEl) return;
 		this.highlightEl.removeAttribute('contenteditable');
 		this.highlightEl.removeAttribute('spellchecker');
+		if (this.highlightEl.tagName.toLowerCase() == 'button') {
+			this.highlightEl.removeEventListener('keyup', this.spaceInsideButtonEventListener);
+		}
 
 		const nodeValue = this.highlightEl.innerHTML;
 

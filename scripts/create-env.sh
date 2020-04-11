@@ -1,5 +1,7 @@
 set -ex
 
+export BASEDIR="${PWD}/`dirname $0`"
+
 newEnvName=$1
 
 if kubectl get namespace ${newEnvName}; then
@@ -11,7 +13,7 @@ mkdir -p env_workspace/${newEnvName} && cp -r k8s skaffold.yaml env_workspace/${
 cd env_workspace/${newEnvName}
 perl -p -i -e "s!namespace.*#TBD_ENV_NAME!namespace: ${newEnvName} #TBD_ENV_NAME!" k8s/base/kustomization.yaml
             
-bash /scripts/prepare-env.sh "${newEnvName}"
+bash $BASEDIR/prepare-env.sh "${newEnvName}"
             
 images=`kubectl get deployment be -n$FRMDB_ENV_NAME -o=jsonpath='{.spec.template.spec.containers[0].image}'`
 echo "GKE with image ${images} ..."
@@ -34,7 +36,11 @@ fi
 
 for step in `seq 0 24`; do
     if curl ${protocol}://${newEnvName}.${domain}; then
-        echo "Env ready. Data provisioning ..."
+        echo "Env ready...checking schema"
+    if curl ${protocol}://${newEnvName}.${domain}/formuladb-api/base-app/schema; then
+            echo "API ready"
+            break;
+        fi
     fi
     echo "waiting for containers to start"
     sleep 4

@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>FormulaDB - Sign Up</title>
     <meta name="author" content="">
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
+
 <body class="frmdb-editor-preview frmdb-editor-normal">
     <header class="overflow-hidden d-flex flex-column justify-content-center frmdb-section-dark frmdb-bg-2 frmdb-bg-1-primary-gradient frmdb-bg-2-circles" style="background-size: cover">
         <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light headroom">
             <div class="container">
-                <a class="navbar-brand mr-lg-5" href="index.html">
+                <a class="navbar-brand mr-lg-5 btn-info p-1 rounded" href="index.html">
                     <img src="/formuladb-env/frmdb-apps/formuladb-io/static/logo.png" style="height: 32px;">
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global"
+                    aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse" id="navbar_global">
@@ -21,25 +24,29 @@
                     <ul class="navbar-nav navbar-nav-hover align-items-lg-center"></ul>
                     <ul class="navbar-nav align-items-lg-center ml-lg-auto">
                         <li class="nav-item">
-                            <a class="nav-link nav-link-icon" href="https://www.facebook.com/formuladb" target="_blank" data-toggle="tooltip" title="Like us on Facebook">
+                            <a class="nav-link nav-link-icon" href="https://www.facebook.com/formuladb" target="_blank" data-toggle="tooltip"
+                                title="Like us on Facebook">
                                 <i class="frmdb-i-facebook-square"></i>
                                 <span class="nav-link-inner--text d-lg-none">Facebook</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-icon" href="https://www.instagram.com/formuladb" target="_blank" data-toggle="tooltip" title="Follow us on Instagram">
+                            <a class="nav-link nav-link-icon" href="https://www.instagram.com/formuladb" target="_blank" data-toggle="tooltip"
+                                title="Follow us on Instagram">
                                 <i class="frmdb-i-instagram"></i>
                                 <span class="nav-link-inner--text d-lg-none">Instagram</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-icon" href="https://twitter.com/formuladb" target="_blank" data-toggle="tooltip" title="Follow us on Twitter">
+                            <a class="nav-link nav-link-icon" href="https://twitter.com/formuladb" target="_blank" data-toggle="tooltip"
+                                title="Follow us on Twitter">
                                 <i class="frmdb-i-twitter-square"></i>
                                 <span class="nav-link-inner--text d-lg-none">Twitter</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-icon" href="https://github.com/formuladb" target="_blank" data-toggle="tooltip" title="Star us on Github">
+                            <a class="nav-link nav-link-icon" href="https://github.com/formuladb" target="_blank" data-toggle="tooltip"
+                                title="Star us on Github">
                                 <i class="frmdb-i-github"></i>
                                 <span class="nav-link-inner--text d-lg-none">Github</span>
                             </a>
@@ -49,7 +56,7 @@
             </div>
         </nav>
         <div class="text-center pb-2">
-            <h1 class="display-4" contenteditable="true" spellchecker="false">Register</h1>
+            <h1 class="display-4" contenteditable="true" spellchecker="false">Register new environment</h1>
         </div>
     </header>
     <main>
@@ -89,7 +96,7 @@
                                                     <i class="ni ni-hat-3"></i>
                                                 </span>
                                             </div>
-                                            <input name="name" required="" class="form-control" placeholder="Name" type="text">
+                                            <input name="name" required class="form-control" placeholder="Name" type="text">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -99,7 +106,10 @@
                                                     <i class="ni ni-hat-3"></i>
                                                 </span>
                                             </div>
-                                            <input name="envname" required="" class="form-control" placeholder="environment-name" type="text" pattern="[-a-z]+" oninput="this.value = this.value.replace(/[^-a-z+]/g, '-').replace(/[A-Z]/g, v => v.toLowerCase());">
+                                            <input name="envname" required class="form-control" placeholder="environment-name" type="text"
+                                                required pattern="[-a-z]+"
+                                                oninput="this.value = this.value.replace(/[^-a-z+]/g, '-').replace(/[A-Z]/g, v => v.toLowerCase());"
+                                            >
                                             <div class="input-group-append">
                                                 <span class="input-group-text" id="basic-addon2">@formuladb.io</span>
                                             </div>
@@ -112,7 +122,7 @@
                                                     <i class="ni ni-email-83"></i>
                                                 </span>
                                             </div>
-                                            <input name="email" required="" class="form-control" placeholder="Email" type="email">
+                                            <input name="email" required class="form-control" placeholder="Email" type="email">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -122,7 +132,7 @@
                                                     <i class="ni ni-lock-circle-open"></i>
                                                 </span>
                                             </div>
-                                            <input name="password" required="" class="form-control" placeholder="Password" type="password">
+                                            <input name="password" required class="form-control" placeholder="Password" type="password">
                                         </div>
                                     </div>
                                     <div class="text-muted font-italic">
@@ -155,13 +165,12 @@
     </main>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
     <div id="frmdb-notification-container" style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></div>
     <frmdb-fe></frmdb-fe>
     <div id="frmdb-notification-container" style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></div>
     <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
 </body>
+
 </html>
+
 </html>

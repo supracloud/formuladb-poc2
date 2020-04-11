@@ -12,6 +12,7 @@ import * as yaml from 'js-yaml';
 import * as csv from 'csv';
 import * as mime from 'mime';
 import * as serveIndex from 'serve-index';
+const fetch = require('node-fetch')
 let debug = require('debug');
 const url = require('url');
 var flash = require('connect-flash');
@@ -27,7 +28,7 @@ import { App } from "@domain/app";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
 import { i18nTranslateText } from "@be/i18n-be";
-import { cleanupEnvironment } from "./env-manager";
+import { cleanupEnvironment, createNewEnvironment } from "./env-manager";
 import { AuthRoutes } from "./auth-routes";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed-routes";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
@@ -238,7 +239,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     }
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/:page.html', renderHtmlPage);
     app.get('/:lang/:app/:page.html', renderHtmlPage);
-    
+
     async function renderFormuladbCss(req, res, next) {
         let defaultPageOpts: DefaultPageOptsForAppT = DefaultPageOptsForApp;
         if (!req.params.look) {
@@ -322,7 +323,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
             let userRole = authRoutes.roleFromReq(req);
             let userId = authRoutes.userIdFromReq(req);
-                let translations = await i18nTranslateText(userRole, userId, coreFrmdbEngine, req.body.texts, req.body.to);
+            let translations = await i18nTranslateText(userRole, userId, coreFrmdbEngine, req.body.texts, req.body.to);
             res.json(translations);
         } catch (err) {
             console.error(err);
@@ -334,10 +335,26 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         try {
             let userRole = authRoutes.roleFromReq(req);
             let userId = authRoutes.userIdFromReq(req);
-            res.send({userId, userRole});
+            res.send({ userId, userRole });
         } catch (err) {
             console.error(err);
             next(err);
+        }
+    });
+
+    app.get('/formuladb-api/check-env/:env', async function (req, res, next) {
+        try {
+            let resp = await fetch(`https://${req.params.env}.formuladb.io/formuladb-api/base-app/schema`).then(response => {
+                return response.text();
+            });
+            if (resp.indexOf('$Dictionary') >= 0 && resp.indexOf('$Page') >= 0) {
+                res.status(200); res.send('ok');
+            } else {
+                res.status(406); res.send('not-ok');
+            }
+        } catch (err) {
+            console.info(err);
+            res.status(406); res.send('not-ready');            
         }
     });
 

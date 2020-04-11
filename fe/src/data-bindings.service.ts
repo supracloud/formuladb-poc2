@@ -91,14 +91,9 @@ export class DataBindingsService {
         let searchStr = wnd.location.search;
         console.log("updateDOMWithUrlParameters", wnd, searchStr);
         let urlParams = new URLSearchParams(searchStr);
-        urlParams.forEach((val, key) => {
-            let elems: (HTMLInputElement|HTMLSelectElement)[] = Array.from(
-                this.rootEl.querySelectorAll(`input[data-frmdb-value$=":${key}"],input[data-frmdb-value="${key}"]`));
-            for (let el of elems) {
-                el.value = val;
-                el.dispatchEvent(new Event('change', {bubbles: true}));
-            }
-        });
+        let paramValues: any = {}
+        urlParams.forEach((val, key) => paramValues = {...paramValues, [key]: val});
+        updateDOM(paramValues, this.rootEl);
     }
 
     private debouncedUpdateDOMForTable = _.debounce((el) => this.updateDOMForTable(el), 100);

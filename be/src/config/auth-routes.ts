@@ -112,7 +112,7 @@ export class AuthRoutes {
                 await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
                 // res.redirect(`/${req.params.lang}/users/env-creation.html`);
                 let domain = process.env.BUILD_DEVELOPMENT ? 'frmdb.localhost' : 'formuladb.io';
-                res.redirect(`https://${req.body.environment}.${domain}/`);
+                res.redirect(`/${req.params.lang}/users/env-creation.html`);
             } else {
                 login(req, res, next);
                 return;
