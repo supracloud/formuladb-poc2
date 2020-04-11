@@ -3,17 +3,27 @@ kind: Ingress
 metadata:
   name: formuladb
   annotations:
-    # traefik.ingress.kubernetes.io/redirect-entry-point: https
-    # traefik.ingress.kubernetes.io/redirect-permanent: "true"
-    kubernetes.io/ingress.class: nginx
-    # certmanager.k8s.io/issuer: "formuladb-staging"
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    kubernetes.io/ingress.class: "nginx"    
+    certmanager.k8s.io/issuer: "formuladb-prod"
 spec:
-  # tls:
-  # - hosts:
-  #   - $(NAMESPACE_NAME).formuladb.io
-  #   secretName: certificate-formuladb-staging
+  tls:
+  - hosts:
+    - $(NAMESPACE_NAME).formuladb.io
+    secretName: certificate-formuladb-prod-root
+  - hosts:
+    - www.$(NAMESPACE_NAME).formuladb.io
+    secretName: certificate-formuladb-prod-www
   rules:
   - host: $(NAMESPACE_NAME).formuladb.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: be
+          servicePort: 8084
+  - host: www.$(NAMESPACE_NAME).formuladb.io
     http:
       paths:
       - path: /

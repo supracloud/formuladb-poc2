@@ -1,5 +1,8 @@
 import * as express from "express";
 import * as passport from "passport";
+import { Strategy as FacebookStrategy } from "passport-facebook";
+import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
+
 import * as connectEnsureLogin from "connect-ensure-login";
 import { KeyTableStoreI, KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { BeUser } from "@domain/user";
@@ -41,6 +44,49 @@ export function initPassport(app: express.Express,
         }
     ));
 
+    passport.use(new FacebookStrategy({
+        // TODO - these 2 require dynamic update
+        clientID: "2662577554031245",
+        clientSecret: "ca52b75ca69a22f657cf9ec4d12fcbfc",
+        callbackURL: `https://${process.env.FRMDB_ENV_NAME}.formuladb.io/auth/facebook/callback`
+      },
+      async function(accessToken, refreshToken, profile, done) {
+        try {
+            let userKVS = await getUserKvs();
+            let user = await userKVS.get('$User~~' + profile.id);
+
+            if (!user) {
+                let newUser: BeUser = {_id: profile.id, password: "", role: "USER"}
+                await userKVS.set('$User~~' + profile.id, newUser);
+            }
+            return done(null, user);
+        } catch (err) {
+            return done(err);
+        }
+      }
+    ));
+
+    passport.use(new GoogleStrategy({
+        // TODO - these 2 require dynamic update
+        clientID: "544230964028-9lenl9om20v9k5m9gdqcgf5atdfsdvhs.apps.googleusercontent.com",
+        clientSecret: "jIaag_5K00ISafiaYaxCZ2h3",
+        callbackURL: `https://${process.env.FRMDB_ENV_NAME}.formuladb.io/auth/google/callback`
+      },
+      async function(accessToken, refreshToken, profile, done) {
+        try {
+            let userKVS = await getUserKvs();
+            let user = await userKVS.get('$User~~' + profile.id);
+
+            if (!user) {
+                let newUser: BeUser = {_id: profile.id, password: "", role: "USER"}
+                await userKVS.set('$User~~' + profile.id, newUser);
+            }
+        } catch (err) {
+            return done(err);
+        }
+      }
+    ));
+
     passport.serializeUser(function (user: BeUser, cb) {
         cb(null, user._id);
     });
@@ -60,6 +106,19 @@ export function initPassport(app: express.Express,
 }
 
 export function handleAuth(app: express.Express) {
+    app.get('/auth/facebook', passport.authenticate('facebook'));
+    app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { successRedirect: '/',
+                                        failureRedirect: '/login' }));
+
+    app.get('/auth/google',
+    passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
+    app.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function(req, res) {
+      res.redirect('/');
+    });
+
     app.get('/isauthenticated', function(req, res) {
         res.status(200).send({ isauthenticated: req.isAuthenticated() });
     });
