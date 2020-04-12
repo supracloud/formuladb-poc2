@@ -115,33 +115,24 @@
             "trace": true
         },
         {
-            "name": "cli",
+            "name": "remote BE",
             "type": "node",
-            "runtimeArgs": [
-                "--trace-warnings",
-                "--debug-brk",
-                "--inspect=0.0.0.0:9232"
-            ],
-            "env": {
-                "DEBUG": "formuladb:*",
-                "FRMDB_ENV_ROOT_DIR": "/mnt/d/code/metawiz/febe/git",
-            },
-            "protocol": "inspector",
+            "request": "attach",
+            "address": "localhost",
+            "protocol": "auto",
+            "restart": true,
             "port": 9232,
-            "request": "launch",
-            "cwd": "${workspaceRoot}",
-            "program": "${workspaceFolder}/dist-be/frmdb-be.js",
-            "-args": [
-                "init-db"
-            ],
-            "args": [
-                "fix-html",
-                "${relativeFile}"
-            ],
+            "localRoot": "${workspaceFolder}/dist-be",
+            "remoteRoot": "/dist-be",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceRoot}/tsc-out/**/*.js",
-            ]
+                "${workspaceFolder}/dist-be/*.js"
+            ],
+            "skipFiles": [
+                "<eval>/**/*.js",
+                "<node_internals>/**/*.js",
+            ],
+            "trace": true
         },
     ],
 }

@@ -9,7 +9,7 @@
         "compile": "tsc --sourceMap -p .",
         "start-dev-fe": "BUILD_DEVELOPMENT=1 FRMDB_ENV_ROOT_DIR=$PWD nodemon --watch dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "watch-x-compile": "npm run compile -- -w --preserveWatchOutput",
-        "bundle": "webpack",
+        "bundle": "webpack --mode development",
         "bundle:watch": "concurrently -k \"webpack --watch --mode development\" \"npm run watch-sass\" ",
         "tmux-bundle": "webpack --watch --mode development --progress",
         "watch-x-bundle": "webpack --watch --mode development",
