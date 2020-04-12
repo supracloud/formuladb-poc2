@@ -115,17 +115,14 @@
             "trace": true
         },
         {
-            "name": "cli",
+            "name": "remote BE",
             "type": "node",
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
                 "--inspect=0.0.0.0:9232"
             ],
-            "env": {
-                "DEBUG": "formuladb:*",
-                "FRMDB_ENV_ROOT_DIR": "/mnt/d/code/metawiz/febe/git",
-            },
+            "trace": true,
             "protocol": "inspector",
             "port": 9232,
             "request": "launch",
@@ -134,7 +131,7 @@
             "-args": [
                 "init-db"
             ],
-            "args": [
+            "--args": [
                 "fix-html",
                 "${relativeFile}"
             ],
