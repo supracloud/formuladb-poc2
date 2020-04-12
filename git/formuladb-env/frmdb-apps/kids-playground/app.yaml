@@ -1,17 +1,15 @@
-_id: themes
-defaultLook: basic
-defaultPrimaryColor: 008cba
-defaultSecondaryColor: eeeeee
+_id: $App~~kids-playground
+defaultLook: sketchy
+defaultPrimaryColor: eb6864
+defaultSecondaryColor: aaaaaa
 defaultTheme: Clean
-category: 
+category: null
 description: themes
 pages:
-    - index.html
     - _footer.html
     - _form.html
+    - _head.html
     - _nav.html
-    - elements.html
-    - page-elements.html
-    - sections.html
-    - test.html
-    - widgets.html
+    - _scripts.html
+    - index.html
+name: kids-playground

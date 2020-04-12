@@ -96,19 +96,14 @@ export class ThemeCustomizerComponent extends HTMLElement {
     async init() {
         await this.fetchCssFiles();
         await this.fetchThemeNames();
-        let pageOpts = parseAllPageUrl(window.location.pathname);
-        if (!pageOpts.look) {
-            let app = await BACKEND_SERVICE().getAppProperties(pageOpts.appName);
-            if (!app) {console.warn(`app ${pageOpts.appName} not found !`); return}
-            pageOpts.look = app.defaultLook;
-            pageOpts.primaryColor = app.defaultPrimaryColor;
-            pageOpts.secondaryColor = app.defaultSecondaryColor;
-            pageOpts.theme = app.defaultTheme;
-        }
+        let pageOpts = await BACKEND_SERVICE().addFullPageOptsForMandatory(
+            parseAllPageUrl(window.location.pathname)
+        );
 
         this.updateState(pageOpts);
-        registerFrmdbEditorRouterHandler("theme-customizer", (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => {
-            this.updateState(newPageOpts);
+        registerFrmdbEditorRouterHandler("theme-customizer", async (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => {
+            let pageOpts = await BACKEND_SERVICE().addFullPageOptsForMandatory(newPageOpts);
+            this.updateState(pageOpts);
         });
     }
 }

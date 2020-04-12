@@ -75,6 +75,10 @@ export function makeUrlPath(pageOpts: AllPageOpts) {
     }
 }
 
+export function makeSeoFriendlyUrl(pageOpts: AllPageOpts) {
+    let {lang, appName, pageName} = pageOpts;
+    return `/${lang}/${appName}/${pageName}.html`;
+}
 
 //URLSearchParams works in nodejs too
 export function isEditorMode(search: string) {

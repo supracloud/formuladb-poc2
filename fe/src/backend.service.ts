@@ -21,7 +21,7 @@ import { APP_AND_TENANT_ROOT, _resetAppAndTenant } from "./app.service";
 import { waitUntil } from "@domain/ts-utils";
 import { raiseNotification } from "./notifications.service";
 import { ThemeColors } from "@domain/uimetadata/theme";
-import { parseAllPageUrl } from "@domain/url-utils";
+import { parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts } from "@domain/url-utils";
 import { I18nLang } from "@domain/i18n";
 const LOG = new FrmdbLogger('backend-service');
 
@@ -94,6 +94,19 @@ export class BackendService {
 
     async getAppProperties(appName: string): Promise<App | null> {
         return getData<App | null>(`/formuladb-api/${appName}`);
+    }
+    async addFullPageOptsForMandatory(pageOpts: AllPageOpts): Promise<FullPageOpts> {
+        if (!pageOpts.look) {
+            let app = await BACKEND_SERVICE().getAppProperties(pageOpts.appName);
+            if (!app) throw new Error(`app ${pageOpts.appName} not found !`);
+            return {
+                ...pageOpts,
+                look: app.defaultLook,
+                primaryColor: app.defaultPrimaryColor,
+                secondaryColor: app.defaultSecondaryColor,
+                theme: app.defaultTheme,
+            }
+        } else return pageOpts as FullPageOpts;
     }
     // // tslint:disable-next-line:member-ordering
     // private syncId = '0';

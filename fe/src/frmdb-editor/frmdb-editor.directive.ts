@@ -48,7 +48,7 @@ import { Undo } from "./undo";
 import { $FRMDB_MODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
-import { parseAllPageUrl, AllPageOpts } from "@domain/url-utils";
+import { parseAllPageUrl, AllPageOpts, makeUrlPath, makeSeoFriendlyUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage, navigateTo } from "./frmdb-editor-router";
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
@@ -351,6 +351,9 @@ export class FrmdbEditorDirective {
             await $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
             .then(b => {
                 if (b) Undo.clear();
+                let pageOpts = parseAllPageUrl(window.location.pathname);
+                let { appName, lang, pageName } = pageOpts;
+                navigateTo(makeSeoFriendlyUrl(pageOpts));
             });
         });
 
@@ -586,6 +589,15 @@ export class FrmdbEditorDirective {
 
         onEvent(document.body, 'click', '#fullscreen-btn, #fullscreen-btn *', (event) => {
             launchFullScreen(document);
+        });
+
+        onEventChildren(document.body, 'click', '[data-frmdb-editor-change-app]', (event) => {
+            let newAppName: string = event.target.getAttribute('data-frmdb-editor-change-app') || event.target.closest('[data-frmdb-editor-change-app]').getAttribute('data-frmdb-editor-change-app');
+            let pageOpts = parseAllPageUrl(window.location.pathname);
+            let { lang, pageName } = pageOpts;
+            navigateTo(makeSeoFriendlyUrl({
+                appName: newAppName, lang, pageName,
+            }));
         });
 
         let preview = false;
