@@ -42,7 +42,11 @@ function preProcessAst(node: Expression) {
 
         case 'CallExpression':
             if (isIdentifier(node.callee)) {
-                node.callee.name = 'Ctx.' + node.callee.name;
+                if (node.callee.name.indexOf('$') === 0) {
+                    node.callee.name = 'Obj.' + node.callee.name;
+                } else {
+                    node.callee.name = 'Ctx.' + node.callee.name;
+                }
             } else preProcessAst(node.callee);
             node.arguments.forEach(a => preProcessAst(a));
             break;

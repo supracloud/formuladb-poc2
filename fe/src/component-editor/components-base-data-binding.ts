@@ -80,7 +80,7 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			},
 		},
 		{
-			name: "Value From Record",
+			name: "Simple Value From Record",
 			key: "data-frmdb-value",
 			htmlAttr: "data-frmdb-value",
 			tab: "left-panel-tab-data",
@@ -119,7 +119,7 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			inputtype: "TextInput",
 		},
 		{
-			name: "Formula",
+			name: "Formula Value",
 			key: "data-frmdb-value",
 			htmlAttr: "data-frmdb-value",
 			tab: "left-panel-tab-data",

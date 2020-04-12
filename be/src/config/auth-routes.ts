@@ -82,7 +82,10 @@ export class AuthRoutes {
         function login(req, res, next) {
             passport.authenticate('local', function (err, user, info) {
                 if (err) { return next(err); }
-                if (!user) { return res.redirect(`/${req.params.lang}`); }
+                if (!user) { 
+                    req.flash('warning', "login failed, please check if email/pass are correct");
+                    return res.redirect(`/${req.params.lang}/users/login.html`); 
+                }
                 req.logIn(user, function (err) {
                     if (err) { return next(err); }
                     return res.redirect('/');

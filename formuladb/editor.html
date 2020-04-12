@@ -75,7 +75,7 @@
             </div>
         </div>
     </div>
-    <div class="left-panel border-right shadow overflow-auto">
+    <div class="left-panel border-right shadow">
         <div class="d-flex justify-content-between"
             style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
             <img id="logo" src="/formuladb/img/logo.png" style="width: 90px; height: 28px;" />
@@ -94,7 +94,7 @@
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" data-frmdb-table="$FRMDB.$App[]" data-frmdb-table-limit="50" data-frmdb-editor-link
-                        data-frmdb-value="$FRMDB.$App[]._id" data-frmdb-attr="href:CONCATENATE('../', _id, '/index.html?frmdbRender=editor'):$FRMDB.$App[]">app 1</a>
+                        data-frmdb-value=":$ID:$FRMDB.$App[]._id" data-frmdb-attr="href:CONCATENATE('../', $ID(_id), '/index.html?frmdbRender=editor'):$FRMDB.$App[]">app 1</a>
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
@@ -103,9 +103,10 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
                     <a class="dropdown-item" id="new-app-btn" title="New App"><i class="frmdb-i-plus-circle"></i> New App</a>
-                    <!-- <div class="dropdown-divider"></div> -->
-                    <!-- <a class="dropdown-item" id="delete-table-btn" title="Clone this App" data-frmdb-prop="tableToDelete::$frmdb.selectedTableId"><i
-                            class="frmdb-i-copy"></i> Clone App <span data-frmdb-value="$frmdb.selectedTableId"></span></a> -->
+                    <a class="dropdown-item" id="edit-app-btn" title="Edit App Properties"><i class="frmdb-i-edit"></i> Edit App Properties</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="delete-app-btn" title="Delete Page" data-frmdb-prop="pagePathToDelete::$frmdb.selectedPagePath"><i
+                            class="frmdb-i-trash"></i> Delete Page <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
                 </div>
             </li>
         </ul>
@@ -159,7 +160,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
                     <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="frmdb-i-plus-circle"></i> New Page</a>
-                    <a class="dropdown-item" id="edit-page-btn" title="New Page"><i class="frmdb-i-edit"></i> Edit Page</a>
+                    <a class="dropdown-item" id="edit-page-btn" title="Edit Page"><i class="frmdb-i-edit"></i> Edit Page Properties</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="delete-page-btn" title="Delete Page" data-frmdb-prop="pagePathToDelete::$frmdb.selectedPagePath"><i
                             class="frmdb-i-trash"></i> Delete Page <span data-frmdb-value="$frmdb.selectedPageName"></span></a>

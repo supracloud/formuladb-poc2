@@ -46,8 +46,8 @@ export function deleteElem(el: Elem) {
  * @param newData 
  * @param el 
  */
-export function updateDOM(newData: {}, el: Elem): void {
-    updateDOMForScope(newData, el, newData, '', []);
+export function updateDOM(newData: {}, el: Elem, context?: {}): void {
+    updateDOMForScope(newData, el, {...newData, ...context}, '', []);
     let oldScope = (el as any).$_FRMDB_SCOPE;
     (el as any).$_FRMDB_SCOPE = {
         ...oldScope,

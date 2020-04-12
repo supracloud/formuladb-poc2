@@ -91,6 +91,9 @@ export class BackendService {
         return getData<App | null>(`/formuladb-api/${this.appName}`);
     }
 
+    async getAppProperties(appName: string): Promise<App | null> {
+        return getData<App | null>(`/formuladb-api/${appName}`);
+    }
     // // tslint:disable-next-line:member-ordering
     // private syncId = '0';
     // private syncWithOrbico() {

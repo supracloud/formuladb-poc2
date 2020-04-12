@@ -6,6 +6,8 @@ export const _$App = {
     _id: "$App",
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
     }
 };
 export const $App: Entity = _$App;
