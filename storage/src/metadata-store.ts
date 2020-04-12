@@ -17,7 +17,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
-import { makeUrlPath, parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts, OptionalPageOpts, DefaultPageOptsForAppT } from "@domain/url-utils";
+import { makeUrlPath, parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts, OptionalPageOpts, DefaultPageOptsForAppT, DefaultPageOptsForApp } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
@@ -328,10 +328,10 @@ export class MetadataStore {
         let app = await this.getApp(appName);
         if (!app) throw new Error(`app ${appName} not found`);
         return {
-            look: app.defaultLook || 'basic',
-            primaryColor: app.defaultPrimaryColor || '008cba',
-            secondaryColor: app.defaultSecondaryColor || 'eeeeee',
-            theme: app.defaultTheme || 'Clean',
+            look: app.defaultLook || DefaultPageOptsForApp.look,
+            primaryColor: app.defaultPrimaryColor || DefaultPageOptsForApp.primaryColor,
+            secondaryColor: app.defaultSecondaryColor || DefaultPageOptsForApp.secondaryColor,
+            theme: app.defaultTheme || DefaultPageOptsForApp.theme,
         }
     }
     async fullPageOptsFromMandatory(pageOpts: MandatoryPageOpts): Promise<FullPageOpts> {
@@ -609,9 +609,8 @@ export class MetadataStore {
                 await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`)
             );
             apps.push({
+                ...app,
                 _id: `$App~~${appName}`,
-                category: app.category || '',
-                description: app.description || '',
             });
         }
         return apps;

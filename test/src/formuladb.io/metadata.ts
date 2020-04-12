@@ -5,7 +5,7 @@
 
 import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
 import { App } from "@domain/app";
-import { $User, $Dictionary } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, DefaultAppOpts } from "@domain/metadata/default-metadata";
 
 export const AppCategory = {
     _id: "AppCategory",
@@ -58,6 +58,8 @@ export const ContactRequest = {
 export const FormuladbIoApp: App = {
     _id: "formuladb.io",
     description: "formuladb.io",
+    ...DefaultAppOpts,
+    category: "",
     pages: [
         "index.html",
         "no-code.html",

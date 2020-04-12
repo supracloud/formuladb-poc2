@@ -16,10 +16,11 @@ import * as MusicBookingMetadata from "./musicbooking-metadata";
 import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
-import { $User, $Dictionary, $Currency } from '@domain/metadata/default-metadata';
+import { $User, $Dictionary, $Currency, DefaultAppOpts } from '@domain/metadata/default-metadata';
 import { HotelBookingSchema, HotelBookingApp } from '../hotel-booking/metadata';
 import { InventorySchema, InventoryApp } from '../inventory/metadata';
 import { FormuladbIoSchema, FormuladbIoApp } from '@test/formuladb.io/metadata';
+import { DefaultPageOptsForApp } from '@domain/url-utils';
 
 export * from "../inventory/metadata";
 export * from "./general-metadata";
@@ -29,6 +30,8 @@ export * from "./financial-metadata";
 
 export const App_test: App = {
     _id: "App~~test",
+    ...DefaultAppOpts,
+    category: "",
     description: "Test many types of entities",
     pages: [],
 };
@@ -56,6 +59,8 @@ export const Schema_test: Schema = {
 
 export const App_musicbooking: App = {
     _id: "App~~musicbooking",
+    ...DefaultAppOpts,
+    category: "",
     description: "Music Studio Booking",
     pages: [],
 };
@@ -74,6 +79,8 @@ export const Schema_musicbooking: Schema = {
 }
 export const App_booking: App = {
     _id: "App~~booking",
+    ...DefaultAppOpts,
+    category: "",
     description: "Booking Items (e.g. rooms, events, cars)",
     pages: [],
 };
@@ -86,6 +93,8 @@ export const Schema_booking: Schema = {
 }
 export const App_expenses: App = {
     _id: "App~~expenses",
+    ...DefaultAppOpts,
+    category: "",
     description: "Expenses, Accounts, Transactions, Budgets",
     pages: [],
 };
@@ -99,6 +108,8 @@ export const Schema_expenses: Schema = {
 }
 export const App_ticketing: App = {
     _id: "App~~ticketing",
+    ...DefaultAppOpts,
+    category: "",
     description: "Ticketing, Issues",
     pages: [],
 };
@@ -108,6 +119,8 @@ export const Schema_ticketing: Schema = {
 }
 export const App_planning: App = {
     _id: "App~~planning",
+    ...DefaultAppOpts,
+    category: "",
     description: "Planning, Meetings, Sessions",
     pages: [],
 };
@@ -117,6 +130,8 @@ export const Schema_planning: Schema = {
 }
 export const App_ecommerce: App = {
     _id: "App~~ecommerce",
+    ...DefaultAppOpts,
+    category: "",
     description: "Basic eCommerce",
     pages: [],
 };
@@ -126,6 +141,8 @@ export const Schema_ecommerce: Schema = {
 }
 export const App_service: App = {
     _id: "App~~service",
+    ...DefaultAppOpts,
+    category: "",
     description: "Bike/Car Service",
     pages: []
 };
@@ -140,8 +157,11 @@ export const Schema_service: Schema = {
 }
 export const App_reporting: App = {
     _id: "App~~reporting",
+    ...DefaultAppOpts,
+    category: "",
     description: "Reporting",
-    pages: []
+    pages: [],
+    ...DefaultAppOpts,
 };
 export const Schema_reporting: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_reporting._id.replace(/^App~~/, ''),

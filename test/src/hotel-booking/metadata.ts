@@ -4,7 +4,7 @@
  */
 
 import { Pn, EntityProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
-import { $User, $Dictionary } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, DefaultAppOpts } from "@domain/metadata/default-metadata";
 import { App } from "@domain/app";
 
 export const Room_Type = {
@@ -54,7 +54,7 @@ export const Booking = {
             { source: 'PENDING', target: 'CANCELLED' },
             { source: 'FINALIZED', target: 'CANCELLED' },
         ]
-    } as EntityStateGraph,    
+    } as EntityStateGraph,
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         guest: { name: "guest", propType_: Pn.REFERENCE_TO, referencedEntityName: $User._id, referencedPropertyName: '_id' } as EntityProperty,
@@ -81,8 +81,9 @@ export const Booking = {
 
 export const HotelBookingApp: App = {
     _id: "hotel-booking",
+    ...DefaultAppOpts,
+    category: "",
     description: "Booking app for King Hotel",
-    homePage: "index.html",
     pages: [
         "index.html",
         "about.html",

@@ -1,6 +1,10 @@
 _id: $App~~hotel-booking
+defaultLook: basic
+defaultPrimaryColor: ffc208
+defaultSecondaryColor: 353b41
+defaultTheme: Clean
+category: 'Food & Travel, Booking & Appointments'
 description: 'Room Booking, Galery, Contact, Blog'
-homePage: index.html
 pages:
     - _footer.html
     - _form.html
@@ -12,8 +16,3 @@ pages:
     - contact.html
     - gallery.html
     - index.html
-category: 'Food & Travel, Booking & Appointments'
-defaultLook: basic
-defaultPrimaryColor: 008cba
-defaultSecondaryColor: eeeeee
-defaultTheme: Clean

@@ -22,6 +22,7 @@ import { waitUntil } from "@domain/ts-utils";
 import { raiseNotification } from "./notifications.service";
 import { ThemeColors } from "@domain/uimetadata/theme";
 import { parseAllPageUrl } from "@domain/url-utils";
+import { I18nLang } from "@domain/i18n";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -157,7 +158,7 @@ export class BackendService {
         return ret || [];
     }
 
-    public async getDictionary(locale: Exclude<App['defaultLocale'], undefined>) {
+    public async getDictionary(locale: I18nLang) {
         let i18nList = await this.getTableData("$Dictionary~~");
         let dictionary = {};
         for (let i18n of i18nList) {
