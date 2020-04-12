@@ -56,7 +56,8 @@ export const ContactRequest = {
 };
 
 export const FormuladbIoApp: App = {
-    _id: "formuladb.io",
+    _id: "formuladb-io",
+    name: "App~~formuladb-io",
     description: "formuladb.io",
     ...DefaultAppOpts,
     category: "",

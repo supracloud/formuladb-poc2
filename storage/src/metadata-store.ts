@@ -245,6 +245,9 @@ export class MetadataStore {
         let app: App = this.fromYaml(
             await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`)
         );
+        app.name = appName;
+        app._id = `$App~~${appName}`;
+
 
         let htmlPages = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}`, /\.html$/);
         app.pages = htmlPages.map(fName => fName.replace(/.*\//, ''));
@@ -610,6 +613,7 @@ export class MetadataStore {
             );
             apps.push({
                 ...app,
+                name: appName,
                 _id: `$App~~${appName}`,
             });
         }

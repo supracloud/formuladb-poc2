@@ -81,6 +81,7 @@ export const Booking = {
 
 export const HotelBookingApp: App = {
     _id: "hotel-booking",
+    name: "App~~hotel-booking",
     ...DefaultAppOpts,
     category: "",
     description: "Booking app for King Hotel",

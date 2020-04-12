@@ -4,7 +4,7 @@
  */
 
 import { KeyValueObj, isReservedPropName, RESERVED_PROP_NAMES } from '@domain/key_value_obj';
-import { CompiledFormula } from "./execution_plan";
+import { CompiledFormula, CompiledScalar } from "./execution_plan";
 import * as _ from 'lodash';
 import { Expression } from 'jsep';
 import { LogicalCallExpression, LogicalOpBinaryExpression } from '@core/formula_compiler';
@@ -79,6 +79,7 @@ export function queryEntityWithDeepPath(entity: Entity, referencedEntityName: En
 
 
 export const enum Pn {
+    KEY = "KEY",
     NUMBER = "NUMBER",
     STRING = "STRING",
     BOOLEAN = "BOOLEAN",
@@ -200,7 +201,18 @@ export function isFormulaProperty(param): param is FormulaProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.FORMULA;
 }
 
+export interface KeyProperty {
+    propType_: Pn.KEY;
+    name: string;
+    scalarFormula: FormulaExpression;
+}
+export function isKeyProperty(param): param is FormulaProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.KEY;
+}
+
+
 export type ScalarEntityProperty = 
+    | KeyProperty
     | NumberProperty
     | StringProperty
     | BooleanProperty

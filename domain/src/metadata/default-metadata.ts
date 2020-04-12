@@ -6,7 +6,9 @@ import { DefaultPageOptsForApp } from '@domain/url-utils';
 export const _$App = {
     _id: "$App",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.KEY, scalarFormula: 'name' } as EntityProperty,
+        name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        label: { name: "name", propType_: Pn.FORMULA, formula: "REGEXREPLACE(_id, \"SampleApp~~[0-9]+ \", \"\")" } as EntityProperty,
         category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         defaultLook: { name: "defaultLook", propType_: Pn.STRING } as EntityProperty,

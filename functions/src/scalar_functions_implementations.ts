@@ -43,7 +43,10 @@ export const ScalarFunctionsImplementations = {
     NOT: formulajs.NOT,
     ISNUMBER: formulajs.ISNUMBER,
     CONCATENATE: formulajs.CONCATENATE,
-    REGEXREPLACE: formulajs.REGEXREPLACE,
+    REGEXREPLACE: function (text, regular_expression, replacement) {
+        return text.replace(new RegExp(regular_expression, 'g'), replacement);
+    },
+    PROPER: formulajs.PROPER,
     SUBSTITUTE: formulajs.SUBSTITUTE,
     TODAY: formulajs.TODAY,
     EOMONTH: formulajs.EOMONTH,

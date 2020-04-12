@@ -205,7 +205,8 @@ export const LargeSalesProduct = {
 }
 
 export const InventoryApp: App = {
-    _id: "Basic_Inventory",
+    _id: "App~~Basic_Inventory",
+    name: "Basic_Inventory",
     ...DefaultAppOpts,
     category: "",
     description: "Basic Inventory with positive stock",

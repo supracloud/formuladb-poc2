@@ -30,6 +30,7 @@ export * from "./financial-metadata";
 
 export const App_test: App = {
     _id: "App~~test",
+    name: "test",
     ...DefaultAppOpts,
     category: "",
     description: "Test many types of entities",
@@ -59,6 +60,7 @@ export const Schema_test: Schema = {
 
 export const App_musicbooking: App = {
     _id: "App~~musicbooking",
+    name: "musicbooking",
     ...DefaultAppOpts,
     category: "",
     description: "Music Studio Booking",
@@ -79,6 +81,7 @@ export const Schema_musicbooking: Schema = {
 }
 export const App_booking: App = {
     _id: "App~~booking",
+    name: "booking",
     ...DefaultAppOpts,
     category: "",
     description: "Booking Items (e.g. rooms, events, cars)",
@@ -93,6 +96,7 @@ export const Schema_booking: Schema = {
 }
 export const App_expenses: App = {
     _id: "App~~expenses",
+    name: "expenses",
     ...DefaultAppOpts,
     category: "",
     description: "Expenses, Accounts, Transactions, Budgets",
@@ -108,6 +112,7 @@ export const Schema_expenses: Schema = {
 }
 export const App_ticketing: App = {
     _id: "App~~ticketing",
+    name: "ticketing",
     ...DefaultAppOpts,
     category: "",
     description: "Ticketing, Issues",
@@ -119,6 +124,7 @@ export const Schema_ticketing: Schema = {
 }
 export const App_planning: App = {
     _id: "App~~planning",
+    name: "planning",
     ...DefaultAppOpts,
     category: "",
     description: "Planning, Meetings, Sessions",
@@ -130,6 +136,7 @@ export const Schema_planning: Schema = {
 }
 export const App_ecommerce: App = {
     _id: "App~~ecommerce",
+    name: "ecommerce",
     ...DefaultAppOpts,
     category: "",
     description: "Basic eCommerce",
@@ -141,6 +148,7 @@ export const Schema_ecommerce: Schema = {
 }
 export const App_service: App = {
     _id: "App~~service",
+    name: "service",
     ...DefaultAppOpts,
     category: "",
     description: "Bike/Car Service",
@@ -157,6 +165,7 @@ export const Schema_service: Schema = {
 }
 export const App_reporting: App = {
     _id: "App~~reporting",
+    name: 'reporting',
     ...DefaultAppOpts,
     category: "",
     description: "Reporting",

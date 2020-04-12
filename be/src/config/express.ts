@@ -263,6 +263,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/${req.params.fileName}`;
         formuladbEnvStatic(req, res, next);
     });
+    app.get('/:lang/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`);
+    });
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
         req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`;
         formuladbEnvStatic(req, res, next);

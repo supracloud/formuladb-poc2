@@ -19,7 +19,8 @@
                             <div>
                                 <input name="name" data-frmdb-value="name" type="text" class="form-control" placeholder="new-app-name" required pattern="[-a-z]+"
                                     oninput="this.value = this.value.replace(/[A-Z]/g, v => v.toLowerCase()).replace(/[^-a-z]/g, '-'); 
-                                        this.closest('form').querySelector('#appDisplayName').value = this.value.replace(/-/g, ' ').replace(/(^|(?<= ))[a-z]/g, v => v.toUpperCase())">
+                                        this.closest('form').querySelector('#appDisplayName').value = this.value.replace(/-/g, ' ').replace(/(^|(?<= ))[a-z]/g, v => v.toUpperCase())"
+                                >
                             </div>
 
                             <div class="alert alert-danger" role="alert" style="display: none">

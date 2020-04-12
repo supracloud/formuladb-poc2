@@ -52,7 +52,7 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
                         "Cannot save modifications in preview environment.", 
                         `Please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
                 }
-                throw new Error(response.status + "-" + response.statusText);
+                throw new Error(url + ': ' + response.status + "-" + response.statusText);
             }
         });
 }
