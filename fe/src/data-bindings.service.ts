@@ -177,8 +177,7 @@ export class DataBindingsService {
             }
             updateDOM({
                 $FRMDB: { [tableName]: data.slice(0, limit) },
-                ...FeFunctionsForDataBinding
-            }, parentEl);
+            }, parentEl, FeFunctionsForDataBinding);
         } catch (err) {
             console.error(err);
         }
@@ -206,7 +205,7 @@ export class DataBindingsService {
                     tableNames.add(entityId);
                 } else if (event.type_ === "ServerEventDeleteEntity" || event.type_ === "ServerEventNewEntity") {
                     tableNames.add($Table._id);
-                } else if (event.type_ === "ServerEventNewApp") {
+                } else if (event.type_ === "ServerEventSetApp") {
                     tableNames.add($App._id);
                 } else if (event.type_ === "ServerEventSetPage" || event.type_ === "ServerEventDeletePage") {
                     tableNames.add($Page._id);

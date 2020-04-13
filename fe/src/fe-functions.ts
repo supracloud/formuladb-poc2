@@ -171,12 +171,13 @@ export function $SAVE_DOC_PAGE(pagePath: string, doc: Document): Promise<boolean
         })
 }
 
-function $ID(_id: string) {
+export function $ID(_id: string) {
     return _id ? _id.replace(/^.*?~~/, '') : ''
 }
 
 export const FeFunctionsForDataBinding = {
     '$ID': $ID,
+    '$LABEL': $LABEL,
 };
 
 function $FCMP (el: HTMLElement): HTMLElement | null {
@@ -205,10 +206,19 @@ export function $_FRMDB_SCOPE(el: HTMLElement): any {
     return null;
 }
 
+export function $LABEL(id: string) {
+    if (id.indexOf('-') >= 0) {
+        return id.replace(/-/g, ' ').replace(/(^|(?<= ))[a-z]/g, v => v.toUpperCase());
+    } else if (id.indexOf('_') >= 0) {
+        return this.value.replace(/_/g, ' ');
+    } else return id;
+}
+
 (window as any).$MODAL = $MODAL;
 (window as any).$TABLES = $TABLES;
 (window as any).$DATA_COLUMNS_FOR_ELEM = $DATA_COLUMNS_FOR_ELEM;
 (window as any).$ID = $ID;
+(window as any).$LABEL = $LABEL;
 (window as any).$SAVE_DOC_PAGE = $SAVE_DOC_PAGE;
 (window as any).$FCMP = $FCMP;
 (window as any).$FSCMP = $FSCMP;

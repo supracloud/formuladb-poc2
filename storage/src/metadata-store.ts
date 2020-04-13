@@ -17,7 +17,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
-import { makeUrlPath, parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts, OptionalPageOpts, DefaultPageOptsForAppT } from "@domain/url-utils";
+import { makeUrlPath, parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts, OptionalPageOpts, DefaultPageOptsForAppT, DefaultPageOptsForApp } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
@@ -162,17 +162,23 @@ export class MetadataStore {
             schemaNoEntities = this.fromYaml(
                 await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`));
         }
-        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds
+        let entitiesStr: (string|null)[] = await Promise.all(schemaNoEntities.entityIds
             .filter(entityId => {
                 if (entityId.indexOf('$') >= 0) {
                     return false;
                 } else return true;
             })
             .map(entityId => {
-                return this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`)
+                try {
+                    let yamlContent = this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`)
+                    return yamlContent;
+                } catch (err) {
+                    console.warn(err, `Entity definition ${entityId} not found`);
+                    return null;
+                }
             }));
 
-        let entities: Entity[] = entitiesStr.map(entityStr => {
+        let entities: Entity[] = entitiesStr.filter(x => x != null).map((entityStr: string) => {
             try {
                 return this.fromYaml(entityStr)
             } catch (err) {
@@ -245,6 +251,9 @@ export class MetadataStore {
         let app: App = this.fromYaml(
             await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`)
         );
+        app.name = appName;
+        app._id = `$App~~${appName}`;
+
 
         let htmlPages = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}`, /\.html$/);
         app.pages = htmlPages.map(fName => fName.replace(/.*\//, ''));
@@ -262,15 +271,24 @@ export class MetadataStore {
         return cssFiles;
     }
 
-    async newApp(appName: string, basedOnApp?: string): Promise<App | null> {
-        if (basedOnApp) {
-            await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
-        } else {
-            await execShell(`mkdir -p ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
-            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/index.html`);
-            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/_[a-z]*.html ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/`);
-            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/*.yaml ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/`);
+    async setApp(appName: string, category: string, description: string, basedOnApp?: string): Promise<App | null> {
+        let app = await this.getApp(appName);
+        if (!app) {
+            if (basedOnApp) {
+                await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
+            } else {
+                await execShell(`mkdir -p ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
+                await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/index.html`);
+                await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/_[a-z]*.html ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/`);
+                await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/*.yaml ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/`);
+            }
         }
+        app = await this.getApp(appName);
+        if (!app) throw new Error(`app ${appName} creation failed`);
+        app._id = `$App~~${appName}`;
+        app.category = category;
+        app.description = description;
+        await this.putApp(appName, app);
         await execShell(`mkdir -p ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
         return this.getApp(appName);
     }
@@ -319,10 +337,10 @@ export class MetadataStore {
         let app = await this.getApp(appName);
         if (!app) throw new Error(`app ${appName} not found`);
         return {
-            look: app.defaultLook || 'basic',
-            primaryColor: app.defaultPrimaryColor || '008cba',
-            secondaryColor: app.defaultSecondaryColor || 'eeeeee',
-            theme: app.defaultTheme || 'Clean',
+            look: app.defaultLook || DefaultPageOptsForApp.look,
+            primaryColor: app.defaultPrimaryColor || DefaultPageOptsForApp.primaryColor,
+            secondaryColor: app.defaultSecondaryColor || DefaultPageOptsForApp.secondaryColor,
+            theme: app.defaultTheme || DefaultPageOptsForApp.theme,
         }
     }
     async fullPageOptsFromMandatory(pageOpts: MandatoryPageOpts): Promise<FullPageOpts> {
@@ -426,7 +444,7 @@ export class MetadataStore {
                 "--no-first-run",
                 "--no-zygote",
                 "--single-process",
-                "--disable-extensions"
+                "--disable-extensions",
             ], // This was important. Can't remember why
         });
         return browser;
@@ -438,9 +456,38 @@ export class MetadataStore {
         console.info("got to page ", url);
         let browser = await this.runPuppeteer();
         const page = await browser.newPage();
+        await page.setViewport({ width: 1024, height: 768 });
         await page.goto('http://localhost:3000' + url);
         console.info("generate screenshot for ", url);
-        let img: Buffer = await page.screenshot({ encoding: "binary" });
+        let img: Buffer = await page.screenshot({
+            encoding: "binary",
+            // clip: {
+            //     x: 0,
+            //     y: 0,
+            //     width: 1024,
+            //     height: 1600,
+            // }
+        });
+
+        // const bodyHandle = await page.$('body');
+        // if (!bodyHandle) throw new Error(`Cannot get body elem for ${url}`);
+        // let boundingBox = await bodyHandle.boundingBox();
+        // if (!boundingBox) throw new Error(`Cannot get body boundingBox elem for ${url}`);
+        // const { width, height } = boundingBox;
+        // await page.evaluate(`document.querySelectorAll('.min-vh-100').forEach(e => {e.classList.remove('min-vh-100'); e.style.minHeight='768px'})`);
+        // let img: Buffer = await page.screenshot({
+        //     encoding: "binary",
+        //     fullPage: true,
+        //     // clip: {
+        //     //     x: 0,
+        //     //     y: 0,
+        //     //     width: 1024,
+        //     //     height: 1600
+        //     // },
+        //     type: 'png'
+        // });
+        // await bodyHandle.dispose();
+        
         console.info("close browser ", url);
         await browser.close();
         return img;
@@ -455,7 +502,7 @@ export class MetadataStore {
         return pdf;
     }
 
-    async getPageHtml(pageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>, flashMessages?: {[severity: string]: string[]}): Promise<string> {
+    async getPageHtml(pageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>, flashMessages?: { [severity: string]: string[] }): Promise<string> {
         let { appName, pageName } = pageOpts;
         let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName + '.html' || 'index.html'}`);
 
@@ -554,7 +601,7 @@ export class MetadataStore {
             let imgsForApp = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${app}/static`);
             images.push(...imgsForApp);
         }
-        return images.map(i => ({_id: i}));
+        return images.map(i => ({ _id: i }));
     }
 
     async getAvailableIcons(appName: string): Promise<$IconObjT[]> {
@@ -564,7 +611,19 @@ export class MetadataStore {
 
     async getApps(appName: string): Promise<$AppObjT[]> {
         let appDirs = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps`);
-        return appDirs.map(i => ({ _id: i.replace(/^.*\//, '') }))
+        let apps: $AppObjT[] = [];
+        for (let appDir of appDirs) {
+            let appName = appDir.replace(/\/?formuladb-env\/frmdb-apps\//, '');
+            let app: App = this.fromYaml(
+                await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`)
+            );
+            apps.push({
+                ...app,
+                name: appName,
+                _id: `$App~~${appName}`,
+            });
+        }
+        return apps;
     }
 
     async getPages(appName: string): Promise<$PageObjT[]> {

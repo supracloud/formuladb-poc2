@@ -6,3 +6,31 @@
     transform: scale3d(1, 1, 1);
   }
 }
+
+@keyframes slideInRightFromHidden {
+  from {
+    width: 0px;
+    max-width: 0px;
+    overflow: hidden;
+  }
+
+  to {
+    width: auto;
+    max-width: auto;
+    overflow: auto;
+  }
+}
+
+@keyframes slideOutLeftToHidden {
+  from {
+    width: auto;
+    max-width: auto;
+    overflow: auto;
+  }
+
+  to {
+    width: 0px;
+    max-width: 0px;
+    overflow: hidden;
+  }
+}

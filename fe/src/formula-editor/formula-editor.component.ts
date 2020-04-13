@@ -96,7 +96,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         if ("editedProperty" === propName || "editedEntity" === propName) {
             let prop = this.frmdbState.editedProperty;
             this.textarea.value = prop ? (
-                prop.propType_ === Pn.FORMULA ? prop.formula : prop.propType_
+                prop.propType_ === Pn.FORMULA ? prop.formula : prop.propType_ + '()'
             ) : 'empty type';
             this.debouncedOnEdit();
         }

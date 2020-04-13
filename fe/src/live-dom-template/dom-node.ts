@@ -244,7 +244,10 @@ function computeValuesForDataBindingAttrs(attrib: Attr, objValForKey: any, el: E
         value = valueForKey;
     } else {
         if (metaKey.indexOf('(') >= 0) {
-            value = scalarFormulaEvaluate(valueForKey, metaKey);
+            value = scalarFormulaEvaluate({
+                ...context,
+                ...valueForKey,
+            }, metaKey);
         } else {
             metaKeyExpanded = domExpandedKey(metaKey, arrayCurrentIndexes);
             let metaCtx = getValueForDomExpandedKey(metaKeyExpanded, context);

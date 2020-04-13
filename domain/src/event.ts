@@ -60,10 +60,10 @@ export class ServerEventDeletedFormData extends MwzEvent {
     }
 }
 
-export class ServerEventNewApp extends MwzEvent {
-    readonly type_ = "ServerEventNewApp";
+export class ServerEventSetApp extends MwzEvent {
+    readonly type_ = "ServerEventSetApp";
 
-    constructor(public appName: string, public basedOnApp?: string) {
+    constructor(public appName: string, public category: string, public description: string, public basedOnApp?: string) {
         super();
     }
 }
@@ -165,5 +165,5 @@ export type MwzEvents =
     | ServerEventPutIcon
     | ServerEventSetPage
     | ServerEventDeletePage
-    | ServerEventNewApp
+    | ServerEventSetApp
     ;

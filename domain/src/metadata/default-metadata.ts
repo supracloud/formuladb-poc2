@@ -1,15 +1,29 @@
 import { Optional } from 'utility-types';
 import { Entity, Pn, EntityProperty, Schema } from "@domain/metadata/entity";
 import { parseDataObjId, DataObj, entityNameFromDataObjId } from './data_obj';
+import { DefaultPageOptsForApp } from '@domain/url-utils';
 
 export const _$App = {
     _id: "$App",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.KEY, scalarFormula: 'name' } as EntityProperty,
+        name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        defaultLook: { name: "defaultLook", propType_: Pn.STRING } as EntityProperty,
+        defaultPrimaryColor: { name: "defaultPrimaryColor", propType_: Pn.STRING } as EntityProperty,
+        defaultSecondaryColor: { name: "defaultSecondaryColor", propType_: Pn.STRING } as EntityProperty,
+        defaultTheme: { name: "defaultTheme", propType_: Pn.STRING } as EntityProperty,
     }
 };
 export const $App: Entity = _$App;
 export type $AppObjT = {[K in keyof typeof _$App['props']]: string};
+export const DefaultAppOpts = {
+    defaultLook: DefaultPageOptsForApp.look,
+    defaultPrimaryColor: DefaultPageOptsForApp.primaryColor,
+    defaultSecondaryColor: DefaultPageOptsForApp.secondaryColor,
+    defaultTheme: DefaultPageOptsForApp.theme,
+};
 
 export const _$Page = {
     _id: "$Page",

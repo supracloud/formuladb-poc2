@@ -5,7 +5,7 @@
 
 import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
-import { $Currency } from "@domain/metadata/default-metadata";
+import { $Currency, DefaultAppOpts } from "@domain/metadata/default-metadata";
 import { App } from "@domain/app";
 
 export const ProductLocation = {
@@ -205,7 +205,10 @@ export const LargeSalesProduct = {
 }
 
 export const InventoryApp: App = {
-    _id: "Basic_Inventory",
+    _id: "App~~Basic_Inventory",
+    name: "Basic_Inventory",
+    ...DefaultAppOpts,
+    category: "",
     description: "Basic Inventory with positive stock",
     pages: [
         "index.html",

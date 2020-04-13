@@ -1,5 +1,10 @@
 _id: formuladb.io
+category: 
 description: formuladb.io
+defaultLook: cerulean
+defaultPrimaryColor: 7795f8
+defaultSecondaryColor: 6c757d
+defaultTheme: _none_
 pages:
     - _footer.html
     - _head.html
@@ -19,7 +24,3 @@ pages:
     - no-code.html
     - pricing.html
     - versions.html
-defaultLook: cerulean
-defaultPrimaryColor: 7795f8
-defaultSecondaryColor: 6c757d
-defaultTheme: _none_

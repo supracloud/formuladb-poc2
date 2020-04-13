@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
 import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService, getData } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
-import { ServerEventNewEntity, ServerEventSetPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
+import { ServerEventNewEntity, ServerEventSetPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventSetApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
 import { queryTableEditor, TableEditorComponent } from "@fe/table-editor/table-editor.component";
@@ -17,7 +17,7 @@ import '../directives/data-toggle-tab.directive';
 import '../directives/data-toggle-modal.directive';
 
 import { App } from "@domain/app";
-import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
+import { $SAVE_DOC_PAGE, $ID } from "@fe/fe-functions";
 
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
 
@@ -48,12 +48,12 @@ import { Undo } from "./undo";
 import { $FRMDB_MODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
-import { parseAllPageUrl, AllPageOpts } from "@domain/url-utils";
+import { parseAllPageUrl, AllPageOpts, makeUrlPath, makeSeoFriendlyUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage, navigateTo } from "./frmdb-editor-router";
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 import { DATA_BINDING_MONITOR } from "@fe/init";
-import { $Table, $PageObjT, $Page } from "@domain/metadata/default-metadata";
+import { $Table, $PageObjT, $Page, $AppObjT } from "@domain/metadata/default-metadata";
 import { waitUntil } from "@domain/ts-utils";
 import { FrmdbElementState } from "@fe/frmdb-element-state";
 import { serializeElemToObj, updateDOM } from "@fe/live-dom-template/live-dom-template";
@@ -300,37 +300,12 @@ export class FrmdbEditorDirective {
             this.checkSafeNavigationForEvent(event);
         });
 
-
-        onEventChildren(document.body, 'click', '#new-app-btn', (event) => {
-            var newAppModal = $FRMDB_MODAL('#new-app-modal');
-            let alert = newAppModal.querySelector('.alert')!;
-            alert.classList.add('d-none');
-            let nameInput: HTMLInputElement = newAppModal.querySelector('input[name="appName"]') as HTMLInputElement;
-            nameInput.value = '';
-
-            newAppModal.querySelector("form")!.onsubmit = (event) => {
-
-                event.preventDefault();
-
-                var appName = nameInput.value;
-                if (typeof appName !== 'string') { console.warn("Invalid app name", appName); return }
-                var basedOnApp = (newAppModal.querySelector("select[name=basedOnApp]") as HTMLSelectElement).value;
-                if (typeof basedOnApp !== 'string') { console.warn("Invalid base app name", basedOnApp); return }
-
-                BACKEND_SERVICE().putEvent(new ServerEventNewApp(appName, basedOnApp != '-' ? basedOnApp : undefined))
-                    .then(async (ev: ServerEventNewEntity) => {
-                        if (ev.state_ != 'ABORT') {
-                            newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');
-                            $FRMDB_MODAL(newAppModal, 'hide');
-                            navigateEditorToAppAndPage(appName, 'index', '');
-                        } else {
-                            alert.classList.replace('d-none', 'd-block');
-                            alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
-                        }
-                        return ev;
-                    })
-
-            };
+        onEventChildren(document.body, 'click', '#new-app-btn, #edit-app-btn', (event) => {
+            if (isHTMLElement(event.target) && (event.target.matches('#edit-app-btn') || event.target.closest('#edit-app-btn'))) {
+                this.setAppProperties(false);
+            } else {
+                this.setAppProperties(true);
+            }
         });
 
         onEvent(document.body, 'click', '#new-table-btn, #new-table-btn *', (event) => {
@@ -376,6 +351,9 @@ export class FrmdbEditorDirective {
             await $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
             .then(b => {
                 if (b) Undo.clear();
+                let pageOpts = parseAllPageUrl(window.location.pathname);
+                let { appName, lang, pageName } = pageOpts;
+                navigateTo(makeSeoFriendlyUrl(pageOpts));
             });
         });
 
@@ -418,6 +396,57 @@ export class FrmdbEditorDirective {
             }
         });
 
+    }
+
+    async setAppProperties(isNewApp: boolean) {
+        var newAppModal = $FRMDB_MODAL('#new-app-modal');
+        let alert = newAppModal.querySelector('.alert')!;
+        alert.classList.add('d-none');
+
+        let setAppModalState: any = {
+            isNewApp,
+            isExisingApp: !isNewApp,
+            buttonText: isNewApp ? 'Create App' : 'Save App Properties',
+        };
+        if (isNewApp) {
+        } else {
+            let app = await BACKEND_SERVICE().getAppProperties(this.state.data.selectedAppName);
+            setAppModalState = {
+                ...app,
+                ...setAppModalState, 
+                name: this.state.data.selectedAppName,
+            };
+        }
+        updateDOM(setAppModalState, newAppModal);
+
+        newAppModal.querySelector("form")!.onsubmit = (event) => {
+
+            event.preventDefault();
+
+            let appObj: $AppObjT = serializeElemToObj(newAppModal) as any;
+            let {appName} = parseAllPageUrl(window.location.pathname);
+            if (isNewApp) appName = `$App~~${appObj._id}`;
+
+            if (typeof appName !== 'string') { console.warn("Invalid app name", appName); return }
+            var basedOnApp = (newAppModal.querySelector("select[name=basedOnApp]") as HTMLSelectElement).value;
+            if (typeof basedOnApp !== 'string') { console.warn("Invalid base app name", basedOnApp); return }
+
+            BACKEND_SERVICE().putEvent(new ServerEventSetApp(appName, appObj.category, appObj.description, basedOnApp != '-' ? basedOnApp : undefined))
+                .then(async (ev: ServerEventSetApp) => {
+                    if (ev.state_ != 'ABORT') {
+                        newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');
+                        $FRMDB_MODAL(newAppModal, 'hide');
+                        if (isNewApp) {
+                            navigateEditorToAppAndPage(appName, 'index', '');
+                        }
+                    } else {
+                        alert.classList.replace('d-none', 'd-block');
+                        alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
+                    }
+                    return ev;
+                })
+
+        };
     }
 
     setPageProperties(isNewPage: boolean) {
@@ -562,6 +591,15 @@ export class FrmdbEditorDirective {
             launchFullScreen(document);
         });
 
+        onEventChildren(document.body, 'click', '[data-frmdb-editor-change-app]', (event) => {
+            let newAppName: string = event.target.getAttribute('data-frmdb-editor-change-app') || event.target.closest('[data-frmdb-editor-change-app]').getAttribute('data-frmdb-editor-change-app');
+            let pageOpts = parseAllPageUrl(window.location.pathname);
+            let { lang } = pageOpts;
+            navigateTo(makeSeoFriendlyUrl({
+                appName: newAppName, lang, pageName: 'index',
+            }));
+        });
+
         let preview = false;
         onEventChildren(document.body, 'click', '#preview-btn', (event) => {
             preview = !preview;
@@ -656,5 +694,9 @@ export class FrmdbEditorDirective {
 
     addPageElement() {
         this.addElementCmp.start();
+    }
+
+    reloadCanvas() {
+        this.iframe?.contentWindow?.location.reload();
     }
 }

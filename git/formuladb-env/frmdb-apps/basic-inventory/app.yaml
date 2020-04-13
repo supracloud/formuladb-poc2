@@ -1,4 +1,9 @@
 _id: Basic_Inventory
+defaultLook: basic
+defaultPrimaryColor: 008cba
+defaultSecondaryColor: eeeeee
+defaultTheme: Clean
+category: 
 description: Basic Inventory with positive stock
 pages:
     - index.html

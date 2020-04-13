@@ -5,10 +5,6 @@ props:
         name: _id
         propType_: STRING
         allowNull: false
-    name:
-        name: name
-        propType_: FORMULA
-        formula: 'REGEXREPLACE(_id, "SampleApp~~[0-9]+ ", "")'
     category:
         name: category
         propType_: REFERENCE_TO

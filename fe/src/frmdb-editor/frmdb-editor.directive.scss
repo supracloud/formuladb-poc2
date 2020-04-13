@@ -87,9 +87,13 @@ $pages-height: 28px;
     display: block;
 }
 
-frmdb-element-editor {
-    height: calc(100vh - #{$dom-tree-heigth} - 34px - 2 * 21px);
-    overflow: auto;
+frmdb-component-editor {
+    max-height: calc(100vh - #{$dom-tree-heigth} - 35px - 3 * 28px);
+
+    .tab-content {
+        max-height: calc(100vh - #{$dom-tree-heigth} - 35px - 3 * 28px - 26px);
+        overflow: auto;
+    }
 }
 
 label.header {

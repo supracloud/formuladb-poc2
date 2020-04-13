@@ -21,7 +21,8 @@ import { APP_AND_TENANT_ROOT, _resetAppAndTenant } from "./app.service";
 import { waitUntil } from "@domain/ts-utils";
 import { raiseNotification } from "./notifications.service";
 import { ThemeColors } from "@domain/uimetadata/theme";
-import { parseAllPageUrl } from "@domain/url-utils";
+import { parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts } from "@domain/url-utils";
+import { I18nLang } from "@domain/i18n";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -49,9 +50,9 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
                     let {lang} = parseAllPageUrl(window.location.pathname);
                     raiseNotification(ThemeColors.warning, 
                         "Cannot save modifications in preview environment.", 
-                        `Please <a href="${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
+                        `Please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
                 }
-                throw new Error(response.status + "-" + response.statusText);
+                throw new Error(url + ': ' + response.status + "-" + response.statusText);
             }
         });
 }
@@ -91,6 +92,22 @@ export class BackendService {
         return getData<App | null>(`/formuladb-api/${this.appName}`);
     }
 
+    async getAppProperties(appName: string): Promise<App | null> {
+        return getData<App | null>(`/formuladb-api/${appName}`);
+    }
+    async addFullPageOptsForMandatory(pageOpts: AllPageOpts): Promise<FullPageOpts> {
+        if (!pageOpts.look) {
+            let app = await BACKEND_SERVICE().getAppProperties(pageOpts.appName);
+            if (!app) throw new Error(`app ${pageOpts.appName} not found !`);
+            return {
+                ...pageOpts,
+                look: app.defaultLook,
+                primaryColor: app.defaultPrimaryColor,
+                secondaryColor: app.defaultSecondaryColor,
+                theme: app.defaultTheme,
+            }
+        } else return pageOpts as FullPageOpts;
+    }
     // // tslint:disable-next-line:member-ordering
     // private syncId = '0';
     // private syncWithOrbico() {
@@ -154,7 +171,7 @@ export class BackendService {
         return ret || [];
     }
 
-    public async getDictionary(locale: Exclude<App['defaultLocale'], undefined>) {
+    public async getDictionary(locale: I18nLang) {
         let i18nList = await this.getTableData("$Dictionary~~");
         let dictionary = {};
         for (let i18n of i18nList) {
@@ -170,8 +187,13 @@ export class BackendService {
     }
 
     public async getDataObj(id: string): Promise<DataObj> {
+        let dataObj = await this.getDataObjAcceptNull(id);
+        if (!dataObj) throw new Error('Asked for non-existent object ' + id + '.');
+        return dataObj;
+    }
+    public async getDataObjAcceptNull(id: string): Promise<DataObj | null> {
         let http = await getData<DataObj | null>('/formuladb-api/' + this.appName + '/obj/' + encodeURIComponent(id));
-        if (!http) throw new Error('Asked for non-existent object ' + id + '.');
+        if (!http||!http._id) return null;
         let dataObj = http;
         if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + CircularJSON.stringify(dataObj));
 

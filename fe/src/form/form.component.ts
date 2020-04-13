@@ -16,6 +16,7 @@ import { CssWidth } from '@domain/uimetadata/css-classes';
 import { elvis } from '@core/elvis';
 import { FORM_SERVICE } from '@fe/form.service';
 import { ImgEditorComponent } from '@fe/frmdb-editor/img-editor.component';
+import { isNewDataObjId, DataObj, entityNameFromDataObjId } from '@domain/metadata/data_obj';
 const LOG = new FrmdbLogger('frmdb-form');
 
 /** Component constants (loaded by webpack) **********************************/
@@ -37,7 +38,7 @@ export interface FormComponentState extends FormComponentAttr {
         required: boolean,
         inputType: "text" | "datetime-local" | "date" | "number",
     })[];
-    dataObj: {},
+    dataObj: DataObj,
 };
 
 @FrmdbElementDecorator({
@@ -49,34 +50,49 @@ export interface FormComponentState extends FormComponentAttr {
 })
 export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
 
+    async setProps(entityId: string) {
+        this.entity = await BACKEND_SERVICE().getEntity(entityId);
+        let props: FormComponentState["props"] = [];
+        for (let prop of Object.values(this.entity.props)) {
+            if (['_owner', '_role', '_rev'].includes(prop.name)) continue;
+
+            let inputType: "text" | "datetime-local" | "date" | "number" = "text";
+            if (prop.propType_ === Pn.DATETIME) {
+                inputType = prop.timeMandatory ? "datetime-local" : "date";
+            } else if (prop.propType_ === Pn.NUMBER) {
+                inputType = "number";
+            }
+            props.push({
+                ...prop,
+                isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
+                isImage: prop.propType_ == Pn.IMAGE, 
+                nameI18n: I18N.tt(prop.name),
+                disabled: this.getDisabled(this.entity, prop),
+                required: (prop as any).allowNull === false,
+                inputType,
+                cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
+            });
+        }
+        
+        this.frmdbState.props = props;
+    }
+
+    entity: Entity;
     async frmdbPropertyChangedCallback<T extends keyof FormComponentState>(attrName: T, oldVal: FormComponentState[T], newVal: FormComponentState[T]) {
         if (attrName === "table_name") {
             let entityId = this.frmdbState.table_name || 'n/a';
-            let entity = await BACKEND_SERVICE().getEntity(entityId);
-            let props: FormComponentState["props"] = [];
-            for (let prop of Object.values(entity.props)) {
-                let inputType: "text" | "datetime-local" | "date" | "number" = "text";
-                if (prop.propType_ === Pn.DATETIME) {
-                    inputType = prop.timeMandatory ? "datetime-local" : "date";
-                } else if (prop.propType_ === Pn.NUMBER) {
-                    inputType = "number";
-                }
-                props.push({
-                    ...prop,
-                    isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
-                    isImage: prop.propType_ == Pn.IMAGE, 
-                    nameI18n: I18N.tt(prop.name),
-                    disabled: this.getDisabled(entity, prop),
-                    required: (prop as any).allowNull === false,
-                    inputType,
-                    cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
-                });
-            }
-
-            this.frmdbState.props = props;
+            await this.setProps(entityId);
         } else if (attrName === "rowid") {
-            let dataObj = await BACKEND_SERVICE().getDataObj(this.frmdbState.rowid!);
-            this.frmdbState.dataObj = dataObj;
+            let dataObj = await BACKEND_SERVICE().getDataObjAcceptNull(this.frmdbState.rowid!);
+            if (dataObj) {
+                this.frmdbState.dataObj = dataObj;
+            } else {
+                this.frmdbState.dataObj = {
+                    _id: this.frmdbState.rowid!,
+                }                
+            }
+            let entityId = entityNameFromDataObjId(this.frmdbState.rowid!);
+            await this.setProps(entityId);
             this.querySelector('form')?.setAttribute('data-frmdb-record', this.frmdbState.rowid!);
         } else if (attrName === "fields") {
             if (this.frmdbState.props && this.frmdbState.props.length > 0) {
@@ -90,7 +106,8 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
     }
 
     private getDisabled(entity: Entity, prop: EntityProperty): boolean {
-        return entity.isEditable != true || '_id' == prop.name;
+        let haveId: boolean = (this.frmdbState?.dataObj != null && this.frmdbState?.dataObj?._id != null && !isNewDataObjId(this.frmdbState.dataObj._id));
+        return entity.isEditable != true || ('_id' == prop.name && haveId);
     }
 }
 

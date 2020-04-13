@@ -1,12 +1,14 @@
-_id: themes
-description: themes
+_id: $App~~beauty-salon
+defaultLook: basic
+defaultPrimaryColor: 008cba
+defaultSecondaryColor: eeeeee
+defaultTheme: Clean
+category: Booking & Appointments
+description: 'Appointments, Galery, Showcase, Supplies/Beauty products, Services, Prices'
 pages:
-    - index.html
     - _footer.html
     - _form.html
+    - _head.html
     - _nav.html
-    - elements.html
-    - page-elements.html
-    - sections.html
-    - test.html
-    - widgets.html
+    - _scripts.html
+    - index.html

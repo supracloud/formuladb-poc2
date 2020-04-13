@@ -32,7 +32,7 @@ export function tmpl(str, data?) {
     try {
         return data ? fn(data) : fn;
     } catch (err) {
-        console.error(err, fn, data);
+        console.warn(err, fn, data);
         return '';
     }
 };

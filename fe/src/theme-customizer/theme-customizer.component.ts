@@ -3,6 +3,7 @@ import "./theme-preview.component";
 import { dataBindStateToElement } from "@fe/frmdb-element-utils";
 import { AllPageOpts, makeUrlPath, parseAllPageUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "@fe/frmdb-editor/frmdb-editor-router";
+import { BACKEND_SERVICE } from "@fe/backend.service";
 
 const HTML: string = require('raw-loader!@fe-assets/theme-customizer/theme-customizer.component.html').default;
 // const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/theme-customizer/theme-customizer.component.scss').default;
@@ -95,9 +96,14 @@ export class ThemeCustomizerComponent extends HTMLElement {
     async init() {
         await this.fetchCssFiles();
         await this.fetchThemeNames();
-        this.updateState(parseAllPageUrl(window.location.pathname));
-        registerFrmdbEditorRouterHandler("theme-customizer", (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => {
-            this.updateState(newPageOpts);
+        let pageOpts = await BACKEND_SERVICE().addFullPageOptsForMandatory(
+            parseAllPageUrl(window.location.pathname)
+        );
+
+        this.updateState(pageOpts);
+        registerFrmdbEditorRouterHandler("theme-customizer", async (newUrl: URL, oldPageOpts: AllPageOpts, newPageOpts: AllPageOpts) => {
+            let pageOpts = await BACKEND_SERVICE().addFullPageOptsForMandatory(newPageOpts);
+            this.updateState(pageOpts);
         });
     }
 }

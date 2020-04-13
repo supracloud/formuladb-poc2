@@ -105,7 +105,7 @@ export class Auth {
                 return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $Page._id, resourceId: `${$Page._id}~~${event.pageOpts.pageName}`});
             case "ServerEventDeletePage":
                 return this.authResource({userId, userRole, permission: "7DELETE", appName, resourceEntityId: $Page._id, resourceId: `${$Page._id}~~${event.pageName}`});
-            case "ServerEventNewApp":
+            case "ServerEventSetApp":
                 return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $App._id, resourceId: `${$App._id}~~${event.appName}`});
             default:
                 return Promise.reject("n/a event");
