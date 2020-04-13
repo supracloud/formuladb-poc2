@@ -169,6 +169,7 @@ data:
 
     output.elasticsearch:
       hosts: ['${ELASTICSEARCH_HOST:https://elasticsearch.formuladb.io}:${ELASTICSEARCH_PORT:443}']
+      index: "filebeat-%{[agent.version]}-%{[fields][kubernetes][namespace]}-%{+yyyy.MM.dd}"
       username: formuladb
       password: HEwAXwhG5Tqd
     setup.template.fields: "/usr/share/filebeat/fields.yml"

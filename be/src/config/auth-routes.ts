@@ -2,6 +2,8 @@ import * as express from "express";
 import * as passport from "passport";
 import * as connectEnsureLogin from "connect-ensure-login";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as FacebookStrategy } from "passport-facebook";
+import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
 import * as md5 from 'md5';
 import * as events from "@domain/event";
 import { $UserObjT, DefaultSchema, PermissionType, $Table, $Page, $Image, $Icon, $App, AuthSchema } from "@domain/metadata/default-metadata";
@@ -39,6 +41,51 @@ export class AuthRoutes {
             }
         ));
 
+        passport.use(new FacebookStrategy({
+            // TODO - these 2 require dynamic update
+            clientID: "2662577554031245",
+            clientSecret: "ca52b75ca69a22f657cf9ec4d12fcbfc",
+            callbackURL: `https://formuladb.io/auth/facebook/callback`,
+            profileFields: ['email', 'displayName', 'name', 'gender', 'profileUrl']
+          },
+          async (accessToken, refreshToken, profile, done) => {
+              console.log("facebook strategy");
+            try {
+                let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
+                console.log("profile", profile);
+    
+                if (!user) {
+                    user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+                }
+                console.log("returning done with user ", user);
+                return done(null, user);
+            } catch (err) {
+                return done(err);
+            }
+          }
+        ));
+    
+        passport.use(new GoogleStrategy({
+            // TODO - these 2 require dynamic update
+            clientID: "544230964028-9lenl9om20v9k5m9gdqcgf5atdfsdvhs.apps.googleusercontent.com",
+            clientSecret: "jIaag_5K00ISafiaYaxCZ2h3",
+            callbackURL: `https://formuladb.io/auth/google/callback`
+          },
+          async (accessToken, refreshToken, profile, done) => {
+            try {
+                let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
+                console.log("profile", profile);
+
+                if (!user) {
+                    user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+                }
+                return done(null, user);
+            } catch (err) {
+                return done(err);
+            }
+          }
+        ));
+    
         passport.serializeUser(function (user: $UserObjT, cb) {
             cb(null, user._id);
         });
@@ -65,6 +112,25 @@ export class AuthRoutes {
     }
 
     setupAuthRoutes(app: express.Express) {
+        app.get('/auth/facebook', passport.authenticate('facebook', {state: process.env.FRMDB_ENV_NAME,
+                                                                     scope: 'email'}));
+        app.get('/auth/facebook/callback',
+        passport.authenticate('facebook', { successRedirect: '/',
+                                            failureRedirect: '/login' }));
+    
+        app.get('/auth/google',
+        passport.authenticate('google', { scope: [
+                                                    'https://www.googleapis.com/auth/plus.login',
+                                                    'https://www.googleapis.com/auth/userinfo.profile',
+                                                    'https://www.googleapis.com/auth/userinfo.email'
+                                                 ],
+                                          state: process.env.FRMDB_ENV_NAME }));
+        app.get('/auth/google/callback', 
+        passport.authenticate('google', { failureRedirect: '/login' }),
+        function(req, res) {
+          res.redirect('/');
+        });
+        
         app.get('/isauthenticated', function (req, res) {
             res.status(200).send({ isauthenticated: req.isAuthenticated() });
         });
