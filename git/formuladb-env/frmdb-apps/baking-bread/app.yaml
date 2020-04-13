@@ -1,7 +1,7 @@
 _id: $App~~baking-bread
-defaultLook: basic
-defaultPrimaryColor: 008cba
-defaultSecondaryColor: eeeeee
+defaultLook: materia
+defaultPrimaryColor: eb6864
+defaultSecondaryColor: aaaaaa
 defaultTheme: Clean
 category: Food & Travel
 description: 'Presentation, Online Orders, Contact'
@@ -12,3 +12,4 @@ pages:
     - _nav.html
     - _scripts.html
     - index.html
+name: baking-bread
