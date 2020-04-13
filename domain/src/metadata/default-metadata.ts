@@ -97,9 +97,10 @@ export type $PermissionObjT = Optional<PermissionWithEnums,"resource_id" | "deta
 
 export const _$System_Param = {
     _id: "$System_Param",
+    isEditable: true,
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        value: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        value: { name: "value", propType_: Pn.STRING, allowNull: false } as EntityProperty,
     }
 };
 export const $System_Param: Entity = _$System_Param;

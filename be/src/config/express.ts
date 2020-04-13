@@ -259,10 +259,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/formuladb-look.css', renderFormuladbCss);
     app.get('/:lang/:app/formuladb-look.css', renderFormuladbCss);
 
-    app.get('/:lang-:look-:primary-:secondary-:theme/:app/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+    app.get('/:lang-:look-:primary-:secondary-:theme/:app/:fileName([-_a-zA-Z0-9./]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
         res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/${req.params.fileName}`);
     });
-    app.get('/:lang/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+    app.get('/:lang/:app/static/:fileName([-_a-zA-Z0-9./]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
         res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`);
     });
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
