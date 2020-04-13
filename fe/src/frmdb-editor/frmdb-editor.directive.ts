@@ -594,9 +594,9 @@ export class FrmdbEditorDirective {
         onEventChildren(document.body, 'click', '[data-frmdb-editor-change-app]', (event) => {
             let newAppName: string = event.target.getAttribute('data-frmdb-editor-change-app') || event.target.closest('[data-frmdb-editor-change-app]').getAttribute('data-frmdb-editor-change-app');
             let pageOpts = parseAllPageUrl(window.location.pathname);
-            let { lang, pageName } = pageOpts;
+            let { lang } = pageOpts;
             navigateTo(makeSeoFriendlyUrl({
-                appName: newAppName, lang, pageName,
+                appName: newAppName, lang, pageName: 'index',
             }));
         });
 
@@ -694,5 +694,9 @@ export class FrmdbEditorDirective {
 
     addPageElement() {
         this.addElementCmp.start();
+    }
+
+    reloadCanvas() {
+        this.iframe?.contentWindow?.location.reload();
     }
 }

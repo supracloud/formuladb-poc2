@@ -354,10 +354,11 @@ export class ComponentEditorComponent extends HTMLElement {
 					propertyInput.setValue(property.init(element));
 				} else if (property.htmlAttr) {
 					let value;
-					if (property.htmlAttr == "style") {
-						//value = element.css(property.key);//jquery css returns computed style
-						value = this.styleManager.getStyle(element, property.key);//getStyle returns declared style
-					} else
+					// if (property.htmlAttr == "style") {
+					// 	//value = element.css(property.key);//jquery css returns computed style
+					// 	value = this.styleManager.getStyle(element, property.key);//getStyle returns declared style
+					// } 
+					// else 
 					if (property.htmlAttr == "innerHTML") {
 						value = element.innerHTML;
 					} else {
@@ -427,9 +428,9 @@ export class ComponentEditorComponent extends HTMLElement {
 				element.classList.remove(property.validValues.join(" "));
 				element.classList.add('' + value);
 			}
-			else if (property.htmlAttr === "style") {
-				this.styleManager.setStyle(element, property.key, '' + value);
-			}
+			// else if (property.htmlAttr === "style") {
+			// 	this.styleManager.setStyle(element, property.key, '' + value);
+			// }
 			else if (property.htmlAttr === "innerHTML") {
 				oldValue = element.innerHTML;
 				element.innerHTML = '' + value;

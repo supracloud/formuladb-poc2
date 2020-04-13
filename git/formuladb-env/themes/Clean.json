@@ -30,7 +30,8 @@
             "grid-align-self-center",
             "d-flex",
             "flex-column",
-            "justify-content-center"
+            "justify-content-center",
+            "align-items-center"
         ]
     },
     "frmdb-t-cover frmdb-t-aside": {

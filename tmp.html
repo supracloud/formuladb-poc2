@@ -1,0 +1,32 @@
+<style>
+    @keyframes slideInRightFromHidden {
+        from {
+            width: 0px;
+            /* max-width: 0px; */
+            overflow: hidden;
+        }
+
+        to {
+            width: auto;
+            /* max-width: auto; */
+            overflow: auto;
+        }
+    }
+
+    @keyframes slideOutLeftToHidden {
+        from {
+            width: auto;
+            max-width: auto;
+            overflow: auto;
+            /* transform: translate3d(0, 0, 0); */
+        }
+
+        to {
+            width: 0px;
+            max-width: 0px;
+            overflow: hidden;
+            /* transform: translate3d(-100%, 0, 0); */
+        }
+    }
+</style>
+<h1 class="display-1 text-white" style="font-weight: 700; animation-name: slideInRightFromHidden, slideOutLeftToHidden; animation-duration: 1.5s, 1.5s; animation-delay: 0s;">No Coding</h1>

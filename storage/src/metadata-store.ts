@@ -162,17 +162,23 @@ export class MetadataStore {
             schemaNoEntities = this.fromYaml(
                 await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`));
         }
-        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds
+        let entitiesStr: (string|null)[] = await Promise.all(schemaNoEntities.entityIds
             .filter(entityId => {
                 if (entityId.indexOf('$') >= 0) {
                     return false;
                 } else return true;
             })
             .map(entityId => {
-                return this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`)
+                try {
+                    let yamlContent = this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`)
+                    return yamlContent;
+                } catch (err) {
+                    console.warn(err, `Entity definition ${entityId} not found`);
+                    return null;
+                }
             }));
 
-        let entities: Entity[] = entitiesStr.map(entityStr => {
+        let entities: Entity[] = entitiesStr.filter(x => x != null).map((entityStr: string) => {
             try {
                 return this.fromYaml(entityStr)
             } catch (err) {
