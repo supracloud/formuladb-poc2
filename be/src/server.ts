@@ -67,7 +67,7 @@ async function startServer(port: number) {
         }
 
         // Init the express application
-        const app = require('./config/express').default(kvsFactory);
+        const app = await require('./config/express').default(kvsFactory);
 
         const server: http.Server = http.createServer(app);
 

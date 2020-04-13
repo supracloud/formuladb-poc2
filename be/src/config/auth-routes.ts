@@ -22,12 +22,16 @@ export class AuthRoutes {
         this.auth = new Auth(new FrmdbStore(kvsFactory, AuthSchema));
     }
 
-    initPassport(app: express.Express) {
+    async initPassport(app: express.Express) {
+        let facebookClientID = await this.auth.getSystemParam('FacebookAppClientID');
+        let FacebookAppClientSecret = await this.auth.getSystemParam('FacebookAppClientSecret');
+        let googleAppClientID = await this.auth.getSystemParam('GoogleAppClientID');
+        let googleAppClientSecret = await this.auth.getSystemParam('GoogleAppClientSecret');
 
         passport.use(new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'password'
-        },
+                usernameField: 'email',
+                passwordField: 'password'
+            },
             async (username, password, cb) => {
                 try {
                     let user = await this.auth.getUser('$User~~' + username);
@@ -42,48 +46,48 @@ export class AuthRoutes {
         ));
 
         passport.use(new FacebookStrategy({
-            // TODO - these 2 require dynamic update
-            clientID: "2662577554031245",
-            clientSecret: "ca52b75ca69a22f657cf9ec4d12fcbfc",
-            callbackURL: `https://formuladb.io/auth/facebook/callback`,
-            profileFields: ['email', 'displayName', 'name', 'gender', 'profileUrl']
-          },
-          async (accessToken, refreshToken, profile, done) => {
-              console.log("facebook strategy");
-            try {
-                let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
-                console.log("profile", profile);
-    
-                if (!user) {
-                    user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+                // TODO - these 2 require dynamic update
+                clientID: facebookClientID?.value,
+                clientSecret: FacebookAppClientSecret?.value,
+                callbackURL: `https://formuladb.io/auth/facebook/callback`,
+                profileFields: ['email', 'displayName', 'name', 'gender', 'profileUrl']
+            },
+            async (accessToken, refreshToken, profile, done) => {
+                console.log("facebook strategy");
+                try {
+                    let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
+                    console.log("profile", profile);
+        
+                    if (!user) {
+                        user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+                    }
+                    console.log("returning done with user ", user);
+                    return done(null, user);
+                } catch (err) {
+                    return done(err);
                 }
-                console.log("returning done with user ", user);
-                return done(null, user);
-            } catch (err) {
-                return done(err);
             }
-          }
         ));
     
         passport.use(new GoogleStrategy({
-            // TODO - these 2 require dynamic update
-            clientID: "544230964028-9lenl9om20v9k5m9gdqcgf5atdfsdvhs.apps.googleusercontent.com",
-            clientSecret: "jIaag_5K00ISafiaYaxCZ2h3",
-            callbackURL: `https://formuladb.io/auth/google/callback`
-          },
-          async (accessToken, refreshToken, profile, done) => {
-            try {
-                let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
-                console.log("profile", profile);
+                // TODO - these 2 require dynamic update
+                clientID: googleAppClientID?.value,
+                clientSecret: googleAppClientSecret?.value,
+                callbackURL: `https://formuladb.io/auth/google/callback`
+            },
+            async (accessToken, refreshToken, profile, done) => {
+                try {
+                    let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
+                    console.log("profile", profile);
 
-                if (!user) {
-                    user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+                    if (!user) {
+                        user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+                    }
+                    return done(null, user);
+                } catch (err) {
+                    return done(err);
                 }
-                return done(null, user);
-            } catch (err) {
-                return done(err);
             }
-          }
         ));
     
         passport.serializeUser(function (user: $UserObjT, cb) {
@@ -128,7 +132,7 @@ export class AuthRoutes {
         app.get('/auth/google/callback', 
         passport.authenticate('google', { failureRedirect: '/login' }),
         function(req, res) {
-          res.redirect('/');
+            res.redirect('/');
         });
         
         app.get('/isauthenticated', function (req, res) {
