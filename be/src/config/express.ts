@@ -260,23 +260,19 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/:lang/:app/formuladb-look.css', renderFormuladbCss);
 
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/${req.params.fileName}`;
-        formuladbEnvStatic(req, res, next);
+        res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/${req.params.fileName}`);
     });
     app.get('/:lang/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
         res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`);
     });
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`;
-        formuladbEnvStatic(req, res, next);
+        res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.fileName}`);
     });
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:dirName/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.fileName}`;
-        formuladbEnvStatic(req, res, next);
+        res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.fileName}`);
     });
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/static/:dirName/:dirName2/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
-        req.url = `${req.baseUrl}/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.dirName2}/${req.params.fileName}`;
-        formuladbEnvStatic(req, res, next);
+        res.redirect(`/formuladb-env/frmdb-apps/${req.params.app}/static/${req.params.dirName}/${req.params.dirName2}/${req.params.fileName}`);
     });
     app.get('/:app/:name.yaml', function (req, res, next) {
         formuladbEnvStatic(req, res, next);
