@@ -401,7 +401,9 @@ CREATE TABLE public.trestaurant_menu_item (
     _role character varying,
     _rev character varying,
     name character varying,
-    picture character varying
+    picture character varying,
+    description character varying,
+    price character varying
 );
 
 

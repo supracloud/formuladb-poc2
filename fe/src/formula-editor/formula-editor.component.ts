@@ -347,6 +347,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     }
 
     nextSuggestion(): void {
+        if (this.activeSuggestion == undefined) this.activeSuggestion = -1;
         if (this.activeSuggestion < this.currentSuggestions.length - 1) {
             this.activeSuggestion++;
             this.debouncedOnEdit();
@@ -354,6 +355,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     }
 
     prevSuggestion(): void {
+        if (this.activeSuggestion == undefined) this.activeSuggestion = 0;
         if (this.activeSuggestion > 0) {
             this.activeSuggestion--;
             this.debouncedOnEdit();

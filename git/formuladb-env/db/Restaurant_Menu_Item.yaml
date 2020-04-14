@@ -23,5 +23,13 @@ props:
         required: true
     picture:
         name: picture
-        propType_: FORMULA
-        formula: IMAGE()
+        propType_: IMAGE
+        required: true
+    description:
+        name: description
+        propType_: STRING
+        required: true
+    price:
+        name: price
+        propType_: NUMBER
+        required: true

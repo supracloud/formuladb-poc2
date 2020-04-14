@@ -602,7 +602,8 @@ export class MetadataStore {
         let images: string[] = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
         for (let app of apps.map(a => a._id)) {
             if (app === appName) continue;
-            let imgsForApp = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${app}/static`);
+            let imgsForApp = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${app}/static`)
+                .catch(err => {console.warn(err); return []});
             images.push(...imgsForApp);
         }
         return images.map(i => ({ _id: i }));

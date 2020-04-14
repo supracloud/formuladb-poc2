@@ -169,7 +169,7 @@ class FormImageComponent extends HTMLElement {
 
             this.innerHTML = /*html*/ `
                 <a href="javascript:void(0)">
-                    <img src="${inputEl.value}" style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
+                    <img src="${newVal}" style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
                 </a>
             `;
             let img: HTMLImageElement = this.querySelector('img') as HTMLImageElement;

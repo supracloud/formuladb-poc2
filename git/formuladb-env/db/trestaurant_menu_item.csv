@@ -1,10 +1,2 @@
-_id,_owner,_role,_rev,name,picture
-Restaurant_Menu_Item~~27Cb4YUpdE5NiRkLToycK6,AnounymousUserId,$ANONYMOUS,"","",
-Restaurant_Menu_Item~~8WmY7bPmLYTwDJavRG5mXq,AnounymousUserId,$ANONYMOUS,"","",
-Restaurant_Menu_Item~~9YZFXfjxRzgH1gSbov9kxq,AnounymousUserId,$ANONYMOUS,"",dddd,
-Restaurant_Menu_Item~~gKfeYyC43Vu8q7ch1n71uN,AnounymousUserId,$ANONYMOUS,"",vvv,
-Restaurant_Menu_Item~~gWZNvTe2sUaKMQQNMd2CD,AnounymousUserId,$ANONYMOUS,"",dddd,
-Restaurant_Menu_Item~~mqk7KpVkYrqpf1o7tjbxSN,AnounymousUserId,$ANONYMOUS,"",pizzadddddd,
-Restaurant_Menu_Item~~sFLNL2j9zLEMKMhBSD12Mc,AnounymousUserId,$ANONYMOUS,"","",
-Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,AnounymousUserId,$ANONYMOUS,"",pizza 2,
-Restaurant_Menu_Item~~wG4xTX4EZtemaRJFrdwMFh,AnounymousUserId,$ANONYMOUS,"",pizza,
+_id,_owner,_role,_rev,name,picture,description,price
+Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,,$ANONYMOUS,,pizza 2,/formuladb-env/frmdb-apps/pizza-time/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg,best pizza in town,10
