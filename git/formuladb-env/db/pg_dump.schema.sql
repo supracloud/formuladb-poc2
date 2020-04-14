@@ -403,7 +403,7 @@ CREATE TABLE public.trestaurant_menu_item (
     name character varying,
     picture character varying,
     description character varying,
-    price character varying
+    price numeric(12,5)
 );
 
 
@@ -434,7 +434,10 @@ CREATE TABLE public.trestaurant_order_item (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     _owner character varying,
     _role character varying,
-    _rev character varying
+    _rev character varying,
+    order_id character varying,
+    menu_item_id character varying,
+    quantity character varying
 );
 
 

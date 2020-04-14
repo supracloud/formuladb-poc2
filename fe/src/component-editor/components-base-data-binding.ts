@@ -73,7 +73,9 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 				disabled: true,
 			},
 			beforeInit: function (node) {
-				if (!node.getAttribute('data-frmdb-record')) {
+				if (node.tagName.toLowerCase() === "form") {
+					this.data.disabled = false;
+				} else if (!node.getAttribute('data-frmdb-record')) {
 					let parentRecordEl = node.closest('[data-frmdb-record]');
 					if (!parentRecordEl) return;
 					this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record');

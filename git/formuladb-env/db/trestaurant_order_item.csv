@@ -1,1 +1,2 @@
-_id,_owner,_role,_rev
+_id,_owner,_role,_rev,order_id,menu_item_id,quantity
+Restaurant_Order_Item~~4Tk9Q7g85G29Vue6xNirNm,AnounymousUserId,$ANONYMOUS,"",d,"",

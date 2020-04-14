@@ -90,12 +90,20 @@
                 <div class="card-body">
                     <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name">pizza 2</h5>
                     <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description">best pizza in town</p>
+                    <form data-frmdb-record="Restaurant_Order_Item~~">
+                        <div class="form-group row">
+                            <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
+                            <div class="col col-md-6">
+                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="1" data-frmdb-value="$FRMDB.Restaurant_Order_Item[].quantity" name="$FRMDB.Restaurant_Order_Item[].quantity">
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <frmdb-t-card-action class="">
                     <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
-                    <span data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].price">10</span>
+                    <span data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].price">10.00000</span>
                     <small>EUR</small>
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
@@ -233,6 +241,10 @@
     <frmdb-t-section-divider></frmdb-t-section-divider>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
+    <frmdb-fe></frmdb-fe>
     <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
     <frmdb-fe></frmdb-fe>
     <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>

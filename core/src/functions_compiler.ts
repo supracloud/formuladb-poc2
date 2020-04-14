@@ -382,7 +382,7 @@ function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
     };
 }
 
-function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression, tableAlias: Identifier, required: "true" | "false"): CompiledScalar {
+function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression, required: "true" | "false", tableAlias: Identifier): CompiledScalar {
     if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO expects an TableName.column_name as argument");
     return propertyTypeFunction(fc);
 }
@@ -730,7 +730,7 @@ export const FunctionSignatures = {
     _RANGE: `function _RANGE(fc, basicRange, startExpr, endExpr, inclusive_start?, inclusive_end?)`,
     _REDUCE: `function _REDUCE(fc, inputRange, reduceFun)`,
     SUM: `function SUM(fc, tableRange)`,
-    REFERENCE_TO: `function REFERENCE_TO(fc, tableRange, required)`,
+    REFERENCE_TO: `function REFERENCE_TO(fc, tableRange, required, alias)`,
     NUMBER: `function NUMBER(fc, required)`,
     STRING: `function STRING(fc, required)`,
     IMAGE: `function IMAGE(fc, required)`,
