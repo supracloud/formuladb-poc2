@@ -4,16 +4,25 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     _owner:
         name: _owner
         propType_: STRING
-        allowNull: false
+        required: true
     _role:
         name: _role
         propType_: STRING
-        allowNull: false
+        required: true
     _rev:
         name: _rev
         propType_: STRING
-        allowNull: false
+        required: true
+    email:
+        propType_: STRING
+        name: email
+    phone:
+        propType_: STRING
+        name: phone
+    delivery_address:
+        propType_: STRING
+        name: delivery_address

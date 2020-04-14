@@ -11,10 +11,10 @@ import { App } from "@domain/app";
 export const ProductLocation = {
     _id: 'ProductLocation',
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
-        location_code: { name: 'location_code', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
-        category: { name: 'category', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        product_id: { name: 'product_id', propType_: Pn.STRING, required: true, defaultValue: 'DEFAULT-location' } as EntityProperty,
+        location_code: { name: 'location_code', propType_: Pn.STRING, required: true, defaultValue: 'DEFAULT-location' } as EntityProperty,
+        category: { name: 'category', propType_: Pn.STRING, required: true } as EntityProperty,
         received_stock__: {
             name: 'received_stock__',
             propType_: Pn.FORMULA,
@@ -30,16 +30,16 @@ export const ProductLocation = {
             propType_: Pn.FORMULA,
             formula: 'SUMIF(OrderItem.quantity, product_id == @[_id])'
         } as FormulaProperty,
-        price: { name: 'price', propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
+        price: { name: 'price', propType_: Pn.NUMBER } as EntityProperty,
         currency: {
             propType_: Pn.REFERENCE_TO,
             referencedEntityName: 'General_Currency',
             referencedPropertyName: 'code',
             name: 'currency__'
         } as EntityProperty,
-        minimal_stock: { name: 'minimal_stock', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
-        moving_stock: { name: 'moving_stock', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
-        state: { name: 'state', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        minimal_stock: { name: 'minimal_stock', propType_: Pn.NUMBER, required: true } as EntityProperty,
+        moving_stock: { name: 'moving_stock', propType_: Pn.NUMBER, required: true } as EntityProperty,
+        state: { name: 'state', propType_: Pn.STRING, required: true } as EntityProperty,
     },
     validations: {
         positiveStock: { conditionExpr: $s2e('available_stock__ >= 0') }
@@ -50,10 +50,10 @@ const eeee: Entity = ProductLocation as Entity;
 export const InventoryProduct = {
     _id: 'InventoryProduct',
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        code: { name: 'code', propType_: Pn.STRING, required: true } as EntityProperty,
         barcode: { name: 'barcode', propType_: Pn.STRING } as EntityProperty,
-        name: { name: 'name', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        name: { name: 'name', propType_: Pn.STRING, required: true } as EntityProperty,
         description: { name: 'description', propType_: Pn.STRING } as EntityProperty,
         inventory_location: {
             name: 'inventory_location',
@@ -65,8 +65,8 @@ export const InventoryProduct = {
 export const InventoryProductUnit = {
     _id: 'InventoryProductUnit',
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        code: { name: 'code', propType_: Pn.STRING, required: true } as EntityProperty,
         productCode: {
             propType_: Pn.REFERENCE_TO,
             name: 'product_code',
@@ -79,7 +79,7 @@ export const InventoryProductUnit = {
             referencedEntityName: InventoryProduct._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
-        inventory_location: { name: 'inventory_location', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        inventory_location: { name: 'inventory_location', propType_: Pn.STRING, required: true } as EntityProperty,
         serial1: { name: 'serial1', propType_: Pn.STRING } as EntityProperty,
         serial2: { name: 'serial2', propType_: Pn.STRING } as EntityProperty,
         serial3: { name: 'serial3', propType_: Pn.STRING } as EntityProperty,
@@ -88,7 +88,7 @@ export const InventoryProductUnit = {
         serial6: { name: 'serial6', propType_: Pn.STRING } as EntityProperty,
         serial7: { name: 'serial7', propType_: Pn.STRING } as EntityProperty,
         install_date: { name: 'install_date', propType_: Pn.DATETIME } as EntityProperty,
-        state: { name: 'state', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        state: { name: 'state', propType_: Pn.STRING, required: true } as EntityProperty,
         nb_piston_cycles: { name: 'nb_piston_cycles', propType_: Pn.STRING } as EntityProperty,
         brita_counter: { name: 'brita_counter', propType_: Pn.STRING } as EntityProperty,
         washing_cycles: { name: 'washing_cycles', propType_: Pn.STRING, } as EntityProperty,
@@ -100,7 +100,7 @@ export const InventoryReceipt = {
     _id: 'InventoryReceipt',
     isEditable: true,
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
         receipt_item_table: {
             name: 'receipt_item_table', propType_: Pn.CHILD_TABLE,
             referencedEntityName: 'ReceiptItem', props: {}, isLargeTable: true
@@ -111,9 +111,9 @@ export const InventoryReceipt = {
 export const ReceiptItem = {
     _id: 'ReceiptItem',
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
         product_id: { name: 'product_id', propType_: Pn.REFERENCE_TO, referencedEntityName: ProductLocation._id, referencedPropertyName: ProductLocation.props._id.name } as EntityProperty,
-        quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
+        quantity: { name: 'quantity', propType_: Pn.NUMBER, required: true } as EntityProperty,
         price: { name: 'price', propType_: Pn.REFERENCE_TO, referencedEntityName: ProductLocation._id, referencedPropertyName: ProductLocation.props.price.name } as EntityProperty,
         units: {
             name: 'units',
@@ -127,9 +127,9 @@ export const ReceiptItem = {
 export const OrderItem = {
     _id: 'OrderItem',
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
         product_id: { name: 'product_id', propType_: Pn.REFERENCE_TO, referencedEntityName: ProductLocation._id, referencedPropertyName: ProductLocation.props._id.name } as EntityProperty,
-        quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
+        quantity: { name: 'quantity', propType_: Pn.NUMBER, required: true } as EntityProperty,
         error_quantity: { name: 'error_quantity', propType_: Pn.NUMBER } as EntityProperty,
         client_stock: { name: 'client_stock', propType_: Pn.NUMBER } as EntityProperty,
         units: {
@@ -161,9 +161,9 @@ export const InventoryOrder = {
         ]
     } as EntityStateGraph,
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        sales_agent: { name: 'sales_agent', propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        creation_date: { name: 'creation_date', propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        sales_agent: { name: 'sales_agent', propType_: Pn.STRING, required: true } as EntityProperty,
+        creation_date: { name: 'creation_date', propType_: Pn.DATETIME, required: true } as EntityProperty,
         order_item_table: {
             name: 'order_item_table',
             propType_: Pn.CHILD_TABLE,
@@ -177,8 +177,8 @@ export const InventoryOrder = {
 export const LargeSalesReport = {
     _id: "LargeSalesReport",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        client: { name: "client", propType_: Pn.STRING, required: true } as EntityProperty,
         month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
         large_sales_product_table: {
             name: "large_sales_product_table",
@@ -193,9 +193,9 @@ export const LargeSalesReport = {
 export const LargeSalesProduct = {
     _id: "LargeSalesProduct",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        product_id: { name: "product_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        product_name: { name: "product_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        product_id: { name: "product_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        product_name: { name: "product_name", propType_: Pn.STRING, required: true } as EntityProperty,
         large_sales_value: {
             name: "large_sales_value",
             propType_: Pn.FORMULA,

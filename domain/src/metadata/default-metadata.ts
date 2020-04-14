@@ -7,9 +7,9 @@ export const _$App = {
     _id: "$App",
     props: {
         _id: { name: "_id", propType_: Pn.KEY, scalarFormula: 'name' } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        name: { name: "name", propType_: Pn.STRING, required: true } as EntityProperty,
+        category: { name: "category", propType_: Pn.STRING, required: true } as EntityProperty,
+        description: { name: "description", propType_: Pn.STRING, required: true } as EntityProperty,
         defaultLook: { name: "defaultLook", propType_: Pn.STRING } as EntityProperty,
         defaultPrimaryColor: { name: "defaultPrimaryColor", propType_: Pn.STRING } as EntityProperty,
         defaultSecondaryColor: { name: "defaultSecondaryColor", propType_: Pn.STRING } as EntityProperty,
@@ -28,13 +28,13 @@ export const DefaultAppOpts = {
 export const _$Page = {
     _id: "$Page",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        title: { name: "title", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        author: { name: "author", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        frmdb_display_date: { name: "display_date", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        screenshot: { name: "screenshot", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        name: { name: "name", propType_: Pn.STRING, required: true } as EntityProperty,
+        title: { name: "title", propType_: Pn.STRING, required: true } as EntityProperty,
+        author: { name: "author", propType_: Pn.STRING, required: true } as EntityProperty,
+        frmdb_display_date: { name: "display_date", propType_: Pn.STRING, required: true } as EntityProperty,
+        description: { name: "description", propType_: Pn.STRING, required: true } as EntityProperty,
+        screenshot: { name: "screenshot", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };
 export const $Page: Entity = _$Page;
@@ -43,7 +43,7 @@ export type $PageObjT = {[K in keyof typeof _$Page['props']]: string};
 export const _$Table = {
     _id: "$Table",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };
 export const $Table: Entity = _$Table;
@@ -51,11 +51,11 @@ export const $Table: Entity = _$Table;
 export const _$FrmdbEnv = {
     _id: "$FrmdbEnv",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        default_app_name: { name: "default_app_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        _owner: { name: "_owner", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        _role: { name: "_role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        _rev: { name: "_rev", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        default_app_name: { name: "default_app_name", propType_: Pn.STRING, required: true } as EntityProperty,
+        _owner: { name: "_owner", propType_: Pn.STRING, required: true } as EntityProperty,
+        _role: { name: "_role", propType_: Pn.STRING, required: true } as EntityProperty,
+        _rev: { name: "_rev", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };
 export const $FrmdbEnv: Entity = _$FrmdbEnv;
@@ -64,8 +64,8 @@ export type $FrmdbEnvObjT = {[K in keyof typeof _$FrmdbEnv['props']]: string};
 export const _$User = {
     _id: "$User",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        role: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        role: { name: "role", propType_: Pn.STRING, required: true } as EntityProperty,
         password: { name: "password", propType_: Pn.STRING } as EntityProperty,
         name: { name: "name", propType_: Pn.STRING } as EntityProperty,
         details: { name: "details", propType_: Pn.STRING } as EntityProperty,
@@ -77,10 +77,10 @@ export type $UserObjT = {[K in keyof typeof _$User['props']]: string};
 export const _$Permission = {
     _id: "$Permission",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
         role: { name: "role", propType_: Pn.STRING } as EntityProperty,
-        app_name: { name: "app_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        resource_entity_id: { name: "resource_entity_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        app_name: { name: "app_name", propType_: Pn.STRING, required: true } as EntityProperty,
+        resource_entity_id: { name: "resource_entity_id", propType_: Pn.STRING, required: true } as EntityProperty,
         resource_id: { name: "resource_id", propType_: Pn.STRING } as EntityProperty,
         permission: { name: "permission", propType_: Pn.STRING, enumValues: ["READ", "WRITE", "DELETE"]} as EntityProperty,
         for_who: { name: "for_who", propType_: Pn.STRING, enumValues: ["OWNER", "ROLE", "ALL"]} as EntityProperty,
@@ -99,8 +99,8 @@ export const _$System_Param = {
     _id: "$System_Param",
     isEditable: true,
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        value: { name: "value", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        value: { name: "value", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };
 export const $System_Param: Entity = _$System_Param;
@@ -109,7 +109,7 @@ export type $System_ParamObjT = {[K in keyof typeof _$System_Param['props']]: st
 const _$Dictionary = {
     _id: "$Dictionary",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
         gb: { name: "gb", propType_: Pn.STRING } as EntityProperty,
         fr: { name: "fr", propType_: Pn.STRING } as EntityProperty,
         de: { name: "de", propType_: Pn.STRING } as EntityProperty,
@@ -139,7 +139,7 @@ export const $Currency: Entity = {
 export const _$Icon = {
     _id: "$Icon",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };
 export const $Icon: Entity = _$Icon;
@@ -148,7 +148,7 @@ export type $IconObjT = {[K in keyof typeof _$Icon['props']]: string};
 export const _$Image = {
     _id: "$Image",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };
 export const $Image: Entity = _$Image;

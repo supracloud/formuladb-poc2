@@ -3,11 +3,11 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     code:
         name: code
         propType_: STRING
-        allowNull: false
+        required: true
     productCode:
         propType_: REFERENCE_TO
         name: product_code
@@ -21,7 +21,7 @@ props:
     inventory_location:
         name: inventory_location
         propType_: STRING
-        allowNull: false
+        required: true
     serial1:
         name: serial1
         propType_: STRING
@@ -49,7 +49,7 @@ props:
     state:
         name: state
         propType_: STRING
-        allowNull: false
+        required: true
     nb_piston_cycles:
         name: nb_piston_cycles
         propType_: STRING

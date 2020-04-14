@@ -437,6 +437,9 @@ export class ComponentEditorComponent extends HTMLElement {
 			}
 			else {
 				element.setAttribute(property.htmlAttr, '' + value);
+				if (property.htmlAttr === "data-frmdb-value" && ['input', 'select', 'textarea'].includes(element.tagName.toLowerCase())) {
+					element.setAttribute('name', '' + value);
+				}
 			}
 			
 			if (property.htmlAttr === "innerHTML") {

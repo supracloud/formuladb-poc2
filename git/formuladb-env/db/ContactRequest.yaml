@@ -4,14 +4,14 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     email:
         name: email
         propType_: STRING
-        allowNull: false
+        required: true
     comments:
         name: comments
         propType_: STRING
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }

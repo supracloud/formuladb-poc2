@@ -126,7 +126,7 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     if (!entity) { console.warn("entity not found", tableName, el.outerHTML); return [] }
     return Object.values(entity.props).map(p => ({
         text: `${prefix}.${p.name}`,
-        value: `${tableDataBindingName}.${p.name}`,
+        value: `$FRMDB.${tableName}[].${p.name}`,
     }));
 }
 

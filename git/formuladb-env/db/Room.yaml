@@ -4,16 +4,16 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     nb:
         name: nb
         propType_: NUMBER
-        allowNull: false
+        required: true
     room_type:
         name: room_type
         propType_: REFERENCE_TO
         referencedEntityName: Room_Type
         referencedPropertyName: _id
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }

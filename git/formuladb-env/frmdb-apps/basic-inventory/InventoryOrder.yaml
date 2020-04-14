@@ -29,15 +29,15 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     sales_agent:
         name: sales_agent
         propType_: STRING
-        allowNull: false
+        required: true
     creation_date:
         name: creation_date
         propType_: DATETIME
-        allowNull: false
+        required: true
     order_item_table:
         name: order_item_table
         propType_: CHILD_TABLE

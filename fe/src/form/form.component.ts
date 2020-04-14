@@ -79,7 +79,7 @@ export class FormComponent extends HTMLElement {
                 isImage: prop.propType_ == Pn.IMAGE, 
                 nameI18n: I18N.tt(prop.name),
                 disabled: this.getDisabled(this.entity, prop),
-                required: (prop as any).allowNull === false,
+                required: (prop as any).required === true,
                 inputType,
                 cssWidth: elvis(elvis(this.state.fields)[prop.name]).width || "col-12",
             });

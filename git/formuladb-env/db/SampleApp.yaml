@@ -4,7 +4,7 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     category:
         name: category
         propType_: REFERENCE_TO
@@ -22,11 +22,11 @@ props:
     app_url:
         name: app_url
         propType_: STRING
-        allowNull: false
+        required: true
     short_description:
         name: short_description
         propType_: STRING
-        allowNull: false
+        required: true
     wish_list_count:
         name: wish_list_count
         propType_: FORMULA
@@ -34,23 +34,23 @@ props:
     status:
         name: status
         propType_: STRING
-        allowNull: false
+        required: true
     call_to_action:
         name: call_to_action
         propType_: STRING
-        allowNull: false
+        required: true
     small_img:
         name: small_img
         propType_: IMAGE
-        allowNull: false
+        required: true
     long_img:
         name: long_img
         propType_: IMAGE
-        allowNull: false
+        required: true
     guiorder:
         name: guiorder
         propType_: STRING
-        allowNull: false
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+        required: true
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }

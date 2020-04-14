@@ -3,22 +3,22 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     product_id:
         name: product_id
         propType_: STRING
-        allowNull: false
+        required: true
     product_name:
         name: product_name
         propType_: STRING
-        allowNull: false
+        required: true
     large_sales_value:
         name: large_sales_value
         propType_: FORMULA
         formula: >-
             SUMIF(OrderItem.quantity, product_id == @[product_id] && quantity >
             100)
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }
 isEditable: true

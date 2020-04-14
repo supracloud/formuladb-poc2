@@ -4,11 +4,11 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     guiorder:
         name: guiorder
         propType_: STRING
-        allowNull: false
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+        required: true
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }

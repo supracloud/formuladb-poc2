@@ -19,7 +19,7 @@ const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/table-editor/
 
 export class TableEditorComponent extends HTMLElement {
 
-    selectedRecord: DataObj;
+    selectedRecord: DataObj | null;
     tableName: string;
 
     init(): void {
@@ -35,6 +35,7 @@ export class TableEditorComponent extends HTMLElement {
             if (confirm(`Delete record ${this.selectedRecord._id}? Please confirm !`)) {
                 let event: ServerEventDeletedFormData = await BACKEND_SERVICE().putEvent(
                     new ServerEventDeletedFormData(this.selectedRecord)) as ServerEventDeletedFormData;
+                if (event.state_ != "ABORT" && !event.error_) this.selectedRecord = null;
             }
         });
         onEventChildren(this, 'click', '#add-row-btn', async (e) => {

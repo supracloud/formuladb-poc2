@@ -10,8 +10,8 @@ export const FIN__Account = {
     _id: "FIN__Account",
     props: {
 
-        code: { name: 'code', propType_: Pn.STRING, 'allowNull': false } as EntityProperty,
-        name: { name: 'name', propType_: Pn.STRING, 'allowNull': false } as EntityProperty,
+        code: { name: 'code', propType_: Pn.STRING, required: true } as EntityProperty,
+        name: { name: 'name', propType_: Pn.STRING, required: true } as EntityProperty,
         actor_code: {
             name: 'actor_code',
             propType_: Pn.REFERENCE_TO,

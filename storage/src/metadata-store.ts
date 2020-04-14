@@ -57,8 +57,7 @@ export class MetadataStore {
                         if (err) {
                             console.error(err);
                             reject(err);
-                        }
-                        resolve();
+                        } else resolve();
                     });
                 }
             })
@@ -71,6 +70,7 @@ export class MetadataStore {
                 //handling error
                 if (err) {
                     reject(err);
+                    return;
                 }
                 let retFiles = files.map(file => `${directoryPath.slice(FRMDB_ENV_ROOT_DIR.length)}/${file}`);
                 if (filter) {
@@ -110,8 +110,7 @@ export class MetadataStore {
                 if (err) {
                     console.error(err);
                     reject(err);
-                }
-                resolve(data);
+                } else resolve(data);
             });
         });
     }
@@ -123,8 +122,7 @@ export class MetadataStore {
                 if (err) {
                     console.error(err);
                     reject(err);
-                }
-                resolve();
+                } else resolve();
             });
         });
     }
@@ -677,8 +675,7 @@ async function execShell(cmd: string): Promise<{ error: Error, stdout: string | 
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
                 reject({ error, stdout, stderr });
-            }
-            resolve({ error, stdout, stderr });
+            } else resolve({ error, stdout, stderr });
         });
     });
 }

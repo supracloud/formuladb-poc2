@@ -4,7 +4,7 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     receipt_item_table:
         name: receipt_item_table
         propType_: CHILD_TABLE

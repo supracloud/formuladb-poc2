@@ -3,15 +3,15 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     product_id:
         name: product_id
         propType_: STRING
-        allowNull: false
+        required: true
     product_name:
         name: product_name
         propType_: STRING
-        allowNull: false
+        required: true
     large_sales_value:
         name: large_sales_value
         propType_: FORMULA
