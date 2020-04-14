@@ -69,10 +69,16 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                     </div>
                 `;
             } else {
+                let editTextBtn = `class="btn" onclick="$FSCMP(this).editSelectedElement()" title="Edit element text"`;
+                if (!isElementWithTextContentEditable(this.state.selectedEl)) {
+                    editTextBtn = `class="btn disabled" title="Complex elements cannot use the plain text editor"`
+                } else if (this.state.selectedEl.hasAttribute('data-frmdb-value')) {
+                    editTextBtn = `class="btn disabled" title="Cannot edit text, value from data ${this.state.selectedEl.getAttribute('data-frmdb-value')}. Please edit the table data instead."`
+                }
                 this.selectedBox.innerHTML = /*html*/`
                     <div slot="actions-top" class="d-flex flex-nowrap">
                         <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
-                        <a ${isElementWithTextContentEditable(this.state.selectedEl) ? `class="btn" onclick="$FSCMP(this).editSelectedElement()" title="Edit element text"` : `class="btn disabled" title="Complex elements cannot use the plain text editor"`} href="javascript:void(0)"><i class="frmdb-i-pen-fancy"></i></a>
+                        <a ${editTextBtn} href="javascript:void(0)"><i class="frmdb-i-pen-fancy"></i></a>
                         <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
                         <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
                         <!--<div class="btn dropdown frmdb-dropdown-hover">

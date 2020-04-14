@@ -368,6 +368,19 @@ export class FrmdbEditorDirective {
             }
         });
 
+        onEventChildren(document.body, 'click', '#delete-app-btn', (event) => {
+            if (confirm(`Please confirm deletion of page ${this.state.data.selectedPageName} ?`)) {
+
+                // BACKEND_SERVICE().putEvent(new ServerEventDeleteAp(window.location.pathname))
+                //     .then(async (ev: ServerEventDeletePage) => {
+                //         if (ev.state_ != 'ABORT') {
+                //             navigateEditorToPage('index');
+                //         }
+                //         return ev;
+                //     });
+            }
+        });
+
         onEventChildren(document.body, 'click', '#delete-page-btn', (event) => {
             if (confirm(`Please confirm deletion of page ${this.state.data.selectedPageName} ?`)) {
 
@@ -425,7 +438,7 @@ export class FrmdbEditorDirective {
 
             let appObj: $AppObjT = serializeElemToObj(newAppModal) as any;
             let {appName} = parseAllPageUrl(window.location.pathname);
-            if (isNewApp) appName = `$App~~${appObj._id}`;
+            if (isNewApp) appName = appObj.name;
 
             if (typeof appName !== 'string') { console.warn("Invalid app name", appName); return }
             var basedOnApp = (newAppModal.querySelector("select[name=basedOnApp]") as HTMLSelectElement).value;

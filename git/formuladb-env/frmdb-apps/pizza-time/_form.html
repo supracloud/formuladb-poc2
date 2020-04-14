@@ -1,50 +1,42 @@
-<form class="p-3" data-frmdb-fragment="_form.html">
+<form class="p-3" data-frmdb-fragment="_form.html" method="GET" action="order.html">
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 d-flex flex-column justify-content-center">
         <div class="form-group">
             <div class="input-group date">
-                <input type="date" class="form-control" placeholder="Date Field">
+                <input type="tel" class="form-control" placeholder="phone" name="phone">
                 <div class="input-group-append">
                     <span class="input-group-text">
-                        <i class="frmdb-i-calendar" aria-hidden="true"></i>
+                        <frmdb-icon name="fontawesome-solid-phone-call-earphone-number-support-telephone-voice" class="text-white sz-1"></frmdb-icon>
                     </span>
                 </div>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group date">
-                <select class="form-control" placeholder="Select Field">
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
+                <input type="email" name="email" class="form-control" placeholder="email@domain.com">
                 <div class="input-group-append">
                     <span class="input-group-text">
-                        <i class="frmdb-i-bars" aria-hidden="true"></i>
+                        <frmdb-icon name="fontawesome-solid-at-address-author-e-mail-email-handle" class="text-white sz-1"></frmdb-icon>
                     </span>
                 </div>
             </div>
         </div>
+        <div class="form-group">
+            <div class="input-group date">
+                <input type="tel" class="form-control" placeholder="delivery address" name="phone">
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <frmdb-icon name="fontawesome-solid-map-marker-alt-address-coordinates-destination-gps-localize-location-map-navigation-paper-pin-place-point_of_interest-position-route-travel" class="text-white sz-1"></frmdb-icon>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100" href="javascript:void(0)">Order</button>
     </div>
-    <div class="col-md-4">
-        <div class="form-group">
-            <div class="input-group">
-                <input type="number" class="form-control" placeholder="Number Field" required="" max="4">
-            </div>
+    <div class="col-md-6 text-center">
+        <div class="col vh-35">
+            <iframe class="w-100 h-100 border-0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d22236.40558254599!2d-118.25292394686001!3d34.057682914027104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf6f254608f4!2z4Kay4Ka4IOCmj-CmnuCnjeCmnOCnh-CmsuCnh-CmuCwg4KaV4KeN4Kav4Ka-4Kay4Ka_4Kar4KeL4Kaw4KeN4Kao4Ka_4Kav4Ka84Ka-LCDgpq7gpr7gprDgp43gppXgpr_gpqgg4Kav4KeB4KaV4KeN4Kak4Kaw4Ka-4Ka34KeN4Kaf4KeN4Kaw!5e0!3m2!1sbn!2sbd!4v1532328708137" allowfullscreen=""></iframe>
         </div>
-        <div class="form-group">
-            <div class="input-group">
-                <input type="number" class="form-control" title="Nb Field" value="0">
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 text-center">
-        <div class="form-group">
-            <div class="input-group">
-                <input type="number" class="form-control" placeholder="Nb Field">
-            </div>
-        </div>
-        <a class="btn btn-primary w-100" href="javascript:void(0)">ORDER</a>
     </div>
 </div>
 </form>

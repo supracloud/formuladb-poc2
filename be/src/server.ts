@@ -6,21 +6,21 @@
 require('source-map-support').install();
 require('module-alias/register');
 
-// Add this to the VERY top of the first file loaded in your app
-var apm = require('elastic-apm-node').start({
-    // Override service name from package.json
-    serviceName: 'formuladb-be',
-    // Use if APM Server requires a token
-    //secretToken: '',
-    serverUrl: 'https://apmserver.formuladb.io',
-    // for now send events for both dev and prod. Update in the future to disable dev
-    active: true,
-    environment: process.env.FRMDB_ENV_NAME || 'not-known',
-    // captureBody: true,
-    // transactionSampleRate: 1.0,
-    verifyServerCert: false,//TODO: fix this
-    logUncaughtExceptions: true,
-})
+// // Add this to the VERY top of the first file loaded in your app
+// var apm = require('elastic-apm-node').start({
+//     // Override service name from package.json
+//     serviceName: 'formuladb-be',
+//     // Use if APM Server requires a token
+//     //secretToken: '',
+//     serverUrl: 'https://apmserver.formuladb.io',
+//     // for now send events for both dev and prod. Update in the future to disable dev
+//     active: true,
+//     environment: process.env.FRMDB_ENV_NAME || 'not-known',
+//     // captureBody: true,
+//     // transactionSampleRate: 1.0,
+//     verifyServerCert: false,//TODO: fix this
+//     logUncaughtExceptions: true,
+// })
 
 import * as http from 'http';
 
@@ -83,7 +83,7 @@ async function startServer(port: number) {
             startBackupDb();
         });
     } catch (ex) {
-        console.error('error', ex), process.exit(1);
+        console.error('error', ex); process.exit(1);
     }
 }
 

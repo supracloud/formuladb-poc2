@@ -6,7 +6,6 @@ import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/ke
 import * as _ from "lodash";
 import * as fs from 'fs';
 import * as util from 'util';
-const exists = util.promisify(fs.exists);
 
 import * as jsyaml from 'js-yaml';
 import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image, $System_Param, $Permission, $ImageObjT } from "@domain/metadata/default-metadata";
@@ -272,7 +271,7 @@ export class MetadataStore {
     }
 
     async setApp(appName: string, category: string, description: string, basedOnApp?: string): Promise<App | null> {
-        let app = await this.getApp(appName);
+        let app = await this.getApp(appName).catch(err => {if (err.code === 'ENOENT') return null; else throw err});
         if (!app) {
             if (basedOnApp) {
                 await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);

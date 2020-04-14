@@ -14,9 +14,13 @@ const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
 const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
 
 async function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
-    let event = await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj));
-    if (event.error_ || event.state_ === "ABORT") {
-        throw new Error("Error saving object " + obj._id + "; " + event.error_);
+    try {
+        let event = await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj));
+        if (event.error_ || event.state_ === "ABORT") {
+            throw new Error("Error saving object " + obj._id + "; " + event.error_);
+        }
+    } catch (err) {
+        console.error(err);
     }
 }
 
@@ -54,9 +58,11 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
         }
 
         // await Promise.all(records.map(r => putObj(frmdbEngine, r)));
-        await Promise.all(records.slice(0, 50).map(r => putObj(frmdbEngine, r)));
-        await Promise.all(records.slice(50, 100).map(r => putObj(frmdbEngine, r)));
-        await Promise.all(records.slice(100, 20000).map(r => putObj(frmdbEngine, r)));
+        let batchSize = 50;
+        for (let i = 0; i < 100; i++) {
+            if (records.length < i * batchSize) break;
+            await Promise.all(records.slice(i * batchSize, (i + 1) * batchSize).map(r => putObj(frmdbEngine, r).catch(err => {console.error(err); throw err})));
+        }
         // for (let r of records) {
         //     await putObj(frmdbEngine, r);
         // }
