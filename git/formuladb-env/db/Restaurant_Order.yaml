@@ -1,0 +1,19 @@
+_id: Restaurant_Order
+isEditable: true
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    _owner:
+        name: _owner
+        propType_: STRING
+        allowNull: false
+    _role:
+        name: _role
+        propType_: STRING
+        allowNull: false
+    _rev:
+        name: _rev
+        propType_: STRING
+        allowNull: false

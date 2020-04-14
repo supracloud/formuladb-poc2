@@ -334,6 +334,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     }
     
     async updateEntity(entity: Entity) {
+        await this.createTable();
         for (let prop of Object.values(entity.props)) {
             if (!this.entity.props[prop.name]) {
                 //FIXME: handle column type change not only new columns

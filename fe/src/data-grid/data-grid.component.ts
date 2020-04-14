@@ -107,6 +107,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     private _forceReloadData() {
         if (this.gridApi) {
             this.gridApi.purgeInfiniteCache();
+            this.gridApi.refreshCells({force: true})
         }
     }
 
@@ -416,7 +417,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         let expandRowTarget = this.expandRow;
         if (expandRowTarget && col.name === '_id') {
             return (params) => {
-                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); s=m.querySelector('frmdb-form').frmdbState; s.rowid='${params.value}'; s.table_name='${entityId}'; $FRMDB_MODAL(m)"><i class="frmdb-i-edit"></i></a> ${this.valueFormatter(params)}`;
+                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); f=m.querySelector('frmdb-form'); f.rowId='${params.value}'; $FRMDB_MODAL(m)"><i class="frmdb-i-edit"></i></a> ${this.valueFormatter(params)}`;
             }
         } else return null;
     }

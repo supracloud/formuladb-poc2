@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
-<body class="frmdb-editor-normal">
+<body class="frmdb-editor-normal" data-frmdb-record="Restaurant_Order~~$AUTO_GENERATE_ID_FOR_NEW_RECORD">
     <frmdb-t-main-nav class="">
         <div data-frmdb-fragment="_nav.html"></div>
     </frmdb-t-main-nav>
@@ -18,7 +18,48 @@
             </div>
         </frmdb-t-main>
         <frmdb-t-aside class="">
-            <div data-frmdb-fragment="_form.html"></div>
+            <form class="p-3">
+                <div class="row">
+                    <div class="col-md-6 d-flex flex-column justify-content-center">
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input type="tel" class="form-control" placeholder="phone" name="phone">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <frmdb-icon name="fontawesome-solid-phone-call-earphone-number-support-telephone-voice" class="text-white sz-1"></frmdb-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input type="email" name="email" class="form-control" placeholder="email@domain.com">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <frmdb-icon name="fontawesome-solid-at-address-author-e-mail-email-handle" class="text-white sz-1"></frmdb-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input type="tel" class="form-control" placeholder="delivery address" name="phone">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <frmdb-icon name="fontawesome-solid-map-marker-alt-address-coordinates-destination-gps-localize-location-map-navigation-paper-pin-place-point_of_interest-position-route-travel" class="text-white sz-1"></frmdb-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" href="javascript:void(0)">Order</button>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <div class="col vh-35">
+                            <iframe class="w-100 h-100 border-0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d22236.40558254599!2d-118.25292394686001!3d34.057682914027104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf6f254608f4!2z4Kay4Ka4IOCmj-CmnuCnjeCmnOCnh-CmsuCnh-CmuCwg4KaV4KeN4Kav4Ka-4Kay4Ka_4Kar4KeL4Kaw4KeN4Kao4Ka_4Kav4Ka84Ka-LCDgpq7gpr7gprDgp43gppXgpr_gpqgg4Kav4KeB4KaV4KeN4Kak4Kaw4Ka-4Ka34KeN4Kaf4KeN4Kaw!5e0!3m2!1sbn!2sbd!4v1532328708137" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </frmdb-t-aside>
         <frmdb-t-section-divider></frmdb-t-section-divider>
     </frmdb-t-cover>
@@ -179,6 +220,8 @@
     <frmdb-t-section-divider></frmdb-t-section-divider>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
+    <frmdb-fe></frmdb-fe>
     <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
     <frmdb-fe></frmdb-fe>
     <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>

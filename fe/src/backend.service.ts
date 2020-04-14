@@ -41,18 +41,23 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
         body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
         .then(async (response) => {
-            if (response.status === 200) {
-                let json = await response.json();
-                return json
-            } else {
-                let u: any = await getData('/formuladb-api/user');
-                if (response.status == 403 && u.userRole === "$ANONYMOUS") {
-                    let {lang} = parseAllPageUrl(window.location.pathname);
-                    raiseNotification(ThemeColors.warning, 
-                        "Cannot save modifications in preview environment.", 
-                        `Please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
+            try {
+                if (response.status === 200) {
+                    let json = await response.json();
+                    return json
+                } else {
+                    let u: any = await getData('/formuladb-api/user');
+                    if (response.status == 403 && u.userRole === "$ANONYMOUS") {
+                        let {lang} = parseAllPageUrl(window.location.pathname);
+                        raiseNotification(ThemeColors.warning, 
+                            "Cannot save modifications in preview environment.", 
+                            `Please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
+                    }
+                    throw new Error(url + ': ' + response.status + "-" + response.statusText);
                 }
-                throw new Error(url + ': ' + response.status + "-" + response.statusText);
+            } catch (err) {
+                console.error("Error reading post data: ", err, url, data);
+                throw err;
             }
         });
 }

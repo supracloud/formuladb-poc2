@@ -71,7 +71,7 @@ export class ServerEventSetApp extends MwzEvent {
 export class ServerEventNewEntity extends MwzEvent {
     readonly type_ = "ServerEventNewEntity";
 
-    constructor(public entityId: string) {
+    constructor(public appName: string, public entityId: string) {
         super();
     }
 }

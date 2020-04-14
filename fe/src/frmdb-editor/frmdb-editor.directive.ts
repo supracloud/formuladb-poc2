@@ -321,7 +321,8 @@ export class FrmdbEditorDirective {
                 if (typeof name !== 'string') { console.warn("Invalid table name", name); return }
                 event.preventDefault();
 
-                BACKEND_SERVICE().putEvent(new ServerEventNewEntity(name))
+                let {appName} = parseAllPageUrl(window.location.pathname);
+                BACKEND_SERVICE().putEvent(new ServerEventNewEntity(appName, name))
                     .then(async (ev: ServerEventNewEntity) => {
                         if (ev.state_ != 'ABORT') {
                             newTableModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')

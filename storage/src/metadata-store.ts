@@ -218,9 +218,16 @@ export class MetadataStore {
         return entity;
     }
 
-    public async putEntity(entity: Entity): Promise<Entity> {
+    public async putEntity(entity: Entity, appName?: string): Promise<Entity> {
         await this.writeFile(`${FRMDB_ENV_DIR}/db/${entity._id}.yaml`, this.toYaml(entity))
 
+        if (appName) {
+            let schemaNoEntities: SchemaEntityList = this.fromYaml(
+                await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`));
+            schemaNoEntities.entityIds.push(entity._id);
+            await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
+        }
+        
         return entity;
     }
 

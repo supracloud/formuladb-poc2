@@ -392,6 +392,49 @@ CREATE TABLE public.treceiptitem (
 ALTER TABLE public.treceiptitem OWNER TO postgres;
 
 --
+-- Name: trestaurant_menu_item; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trestaurant_menu_item (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    _owner character varying,
+    _role character varying,
+    _rev character varying,
+    name character varying
+);
+
+
+ALTER TABLE public.trestaurant_menu_item OWNER TO postgres;
+
+--
+-- Name: trestaurant_order; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trestaurant_order (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    _owner character varying,
+    _role character varying,
+    _rev character varying
+);
+
+
+ALTER TABLE public.trestaurant_order OWNER TO postgres;
+
+--
+-- Name: trestaurant_order_item; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trestaurant_order_item (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    _owner character varying,
+    _role character varying,
+    _rev character varying
+);
+
+
+ALTER TABLE public.trestaurant_order_item OWNER TO postgres;
+
+--
 -- Name: troom; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -699,6 +742,30 @@ ALTER TABLE ONLY public.tproductlocation
 
 ALTER TABLE ONLY public.treceiptitem
     ADD CONSTRAINT treceiptitem_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: trestaurant_menu_item trestaurant_menu_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trestaurant_menu_item
+    ADD CONSTRAINT trestaurant_menu_item_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: trestaurant_order_item trestaurant_order_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trestaurant_order_item
+    ADD CONSTRAINT trestaurant_order_item_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: trestaurant_order trestaurant_order_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trestaurant_order
+    ADD CONSTRAINT trestaurant_order_pkey PRIMARY KEY (_id);
 
 
 --
