@@ -26,7 +26,8 @@ COPY --from=download-kubectl kubectl /usr/local/bin/
 COPY --from=download-skaffold skaffold /usr/local/bin/
 
 ARG BUILD_DEVELOPMENT
-ENV NPM_SCRIPT=start_dev
+ENV NPM_SCRIPT=${BUILD_DEVELOPMENT:+start_dev}
+ENV NPM_SCRIPT=${NPM_SCRIPT:-start}
 ENV BUILD_DEVELOPMENT=${BUILD_DEVELOPMENT}
 
 ENV GIT_SSH_COMMAND="ssh -i /ssh/frmdb.id_rsa"
