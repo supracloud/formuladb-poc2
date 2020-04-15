@@ -42,6 +42,13 @@ kubectl apply -n kube-system -f k8s/extras/elasticstack/filebeat-kubernetes-remo
 # Import index pattern, analytics dashboard and analytics visualizations from json file.
 ```
 
+## Curator
+```sh
+# ILM cannot be used for now with dynamic index names from events fields so we rely on curator for filebeat indices cleanup
+helm upgrade --install elastic-curator stable/elasticsearch-curator --namespace monitoring -f k8s/extras/elasticstack/curator-values.yaml
+
+```
+
 ## Heartbeat
 `kubectl apply -n monitoring -f k8s/extras/elasticstack/heartbeat-kubernetes.yaml`
 

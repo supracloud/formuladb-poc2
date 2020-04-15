@@ -44,7 +44,7 @@ let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const SECRET = 'bla-bla-secret';
 
-export default function (kvsFactory: KeyValueStoreFactoryI) {
+export default async function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
 
     let coreFrmdbEngine: FrmdbEngine | undefined;
@@ -90,7 +90,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use(flash());
 
     let authRoutes = new AuthRoutes(kvsFactory);
-    authRoutes.initPassport(app);
+    await authRoutes.initPassport(app);
 
     app.use(bodyParser.json({ limit: "10mb" }));
     app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));

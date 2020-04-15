@@ -7,6 +7,13 @@ metadata:
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
     kubernetes.io/ingress.class: "nginx"    
     certmanager.k8s.io/issuer: "formuladb-prod"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri ~ ^/auth/facebook/callback) {
+        return 302 https://$arg_state.formuladb.io$request_uri;
+      }
+      if ($request_uri ~ ^/auth/google/callback) {
+        return 302 https://$arg_state.formuladb.io$request_uri;
+      }
 spec:
   tls:
   - hosts:
