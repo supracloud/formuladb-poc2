@@ -68,3 +68,9 @@ I=35; for i in [a-z]*; do idx=`printf '%07d' $I`; k=`echo $i | sed 's/^/'$idx'-/
 #####################################
 cat t_permission.csv | psql -h db -U postgres -c "COPY t_permission FROM STDIN WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'"
 cat  | psql -h db -U postgres -c "COPY t_user FROM STDIN WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'"
+
+#####################################
+## API stuff
+#####################################
+
+#curl -XPOST  -H "Content-Type: application/json" -d '{"type_": "ServerEventModifiedFormData", "obj": {"_id": "$System_Param~~x", "value": "value1"}}' http://localhost:${PORT:-3000}/formuladb-api/formuladb-io/event

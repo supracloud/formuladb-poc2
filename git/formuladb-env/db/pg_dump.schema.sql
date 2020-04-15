@@ -169,6 +169,18 @@ CREATE TABLE public.t_permission (
 ALTER TABLE public.t_permission OWNER TO postgres;
 
 --
+-- Name: t_system_param; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_system_param (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    value character varying
+);
+
+
+ALTER TABLE public.t_system_param OWNER TO postgres;
+
+--
 -- Name: t_user; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -655,6 +667,14 @@ ALTER TABLE ONLY public.t_dictionary
 
 ALTER TABLE ONLY public.t_permission
     ADD CONSTRAINT t_permission_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: t_system_param t_system_param_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_system_param
+    ADD CONSTRAINT t_system_param_pkey PRIMARY KEY (_id);
 
 
 --

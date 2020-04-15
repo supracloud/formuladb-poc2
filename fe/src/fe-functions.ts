@@ -109,10 +109,10 @@ export function $REFERENCE_TO_OPTIONS(el: HTMLElement): {name: string, value: st
 }
 
 export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: string }[] {
-    let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
+    let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') || el.getAttribute('data-frmdb-bind-to-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement | null;
     if (!parentRecordEl) { return [] }
 
-    let tableDataBindingName = parentRecordEl.getAttribute('data-frmdb-table');
+    let tableDataBindingName = parentRecordEl.getAttribute('data-frmdb-table') || parentRecordEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '[]');
     let tableName: string, prefix: string;
     if (!tableDataBindingName) {
         tableName = entityNameFromDataObjId(parentRecordEl.getAttribute('data-frmdb-record') || '');

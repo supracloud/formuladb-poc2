@@ -181,7 +181,7 @@ export { getAllElemsWithDataBindingAttrs } from './dom-node';
 
 export function serializeElemToObj(rootEl: HTMLElement): {} {
     let ret: any = {};
-    let prefix = rootEl.getAttribute('data-frmdb-table') || rootEl.getAttribute('data-frmdb-bind-to-record');
+    let prefix = rootEl.getAttribute('data-frmdb-table') || rootEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '[]');
     for(let elem of getAllElemsWithDataBindingAttrs(rootEl)) {
         for (let i = 0; i < elem.attributes.length; i++) {
             let attr = elem.attributes[i];

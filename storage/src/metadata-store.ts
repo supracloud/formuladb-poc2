@@ -386,6 +386,11 @@ export class MetadataStore {
             }
         }
 
+        //cleanup record bindings
+        for (let recordBindingEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-bind-to-record]'))) {
+            recordBindingEl.removeAttribute('data-frmdb-record');
+        }
+
         //<head> is managed like a special type of fragment
         {
             let headEl = cleanedUpDOM.querySelector('head');

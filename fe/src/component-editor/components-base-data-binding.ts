@@ -102,9 +102,9 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			},
 			beforeInit: function (node) {
 				if (!node.getAttribute('data-frmdb-record')) {
-					let parentRecordEl = node.closest('[data-frmdb-record]');
+					let parentRecordEl = node.closest('[data-frmdb-record],[data-frmdb-bind-to-record]');
 					if (!parentRecordEl) return;
-					this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record');
+					this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record') || parentRecordEl.getAttribute('data-frmdb-bind-to-record');
 					this.name = "Parent Record";
 					this.data.disabled = true;
 				} else if (node.hasAttribute('data-frmdb-bind-to-record')) {
