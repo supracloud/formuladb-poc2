@@ -25,6 +25,8 @@ import { GitStorage } from "@storage/git-storage";
 const calculateSlot = require('cluster-key-slot');
 const logger = new FrmdbLogger("kvs:pg");
 
+const TableMap: Map<string, "initial" | "initializing" | "initialized"> = new Map();
+
 /**
  * Key Value Store with optimistic locking functionality
  */
@@ -32,9 +34,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     static db: pgPromise.IDatabase<any> | undefined = undefined;
     static pgp: pgPromise.IMain | undefined = undefined;
-    private initialized: boolean = false;
     private tableCreated: boolean | null = null
-    protected table_id: string | undefined = undefined;
+    protected table_id: string;
     protected isJSONTable: boolean = true;
 
     constructor(name: string) {
@@ -85,14 +86,15 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         }
     }
     protected async initialize() {
-        if (this.initialized == false) {
-            this.initialized = true;
-            await this.createTable();
-            this.tableCreated = true;
+        let tableState = TableMap.get(this.table_id);
+        if (tableState === "initialized") return;
+        if (tableState === "initializing") {
+            await waitUntil(() => Promise.resolve(TableMap.get(this.table_id) === "initialized"), 2000);
+            if (TableMap.get(this.table_id) != "initialized") throw new Error(`Table ${this.table_id} creation timeout`);
         } else {
-            await waitUntil(() => Promise.resolve(this.tableCreated), 500);
-            let tableExists = await this.checkIfTableExists();
-            if (!tableExists) throw new Error(`Table creation timeout ${this.table_id}`);
+            TableMap.set(this.table_id, "initializing");
+            await this.createTable();
+            TableMap.set(this.table_id, "initialized");
         }
     }
 
@@ -113,18 +115,16 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         return 'SELECT val FROM ' + this.table_id + ' WHERE _id = $1';
     }
 
-    public get(_id: string): Promise<VALUET> {
-        return new Promise((resolve) => {
-            this.initialize().then(() => {
-                let query: string = this.getSQL();
-
-                this.getDB().oneOrNone<VALUET>(query, [this.pgSpecialChars(_id)]).then((res) => {
-                    resolve(res != null ? res['val'] : undefined);
-                }).catch((err) => {
-                    logger.error("%o", err);
-                })
-            })
-        });
+    public async get(_id: string): Promise<VALUET> {
+        await this.initialize();
+        try {
+            let query: string = this.getSQL();
+            let res = await this.getDB().oneOrNone<VALUET>(query, [this.pgSpecialChars(_id)]);
+            return res != null ? res['val'] : undefined;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
     }
 
     protected rangeSQL(sign1: string, sign2: string) {
