@@ -1,6 +1,6 @@
 import * as micromatch from 'micromatch';
 import * as connectEnsureLogin from "connect-ensure-login";
-import { $UserObjT, $PermissionObjT, $Permission, PermissionType, $Table, $Page, $Image, $Icon, $App } from "@domain/metadata/default-metadata";
+import { $UserObjT, $PermissionObjT, $Permission, PermissionType, $Table, $Page, $Image, $Icon, $App, $System_ParamObjT } from "@domain/metadata/default-metadata";
 import { FrmdbStore } from "@core/frmdb_store";
 import * as events from "@domain/event";
 import { parseDataObjId } from '@domain/metadata/data_obj';
@@ -19,6 +19,10 @@ export interface AuthInputData {
 export class Auth {
 
     constructor(private frmdbStore: FrmdbStore) {
+    }
+
+    async getSystemParam(systemParamId: string): Promise<$System_ParamObjT | null> {
+        return this.frmdbStore.getDataObj(`$System_Param~~${systemParamId}`) as Promise<$System_ParamObjT | null>;
     }
 
     async getUser(userId: string): Promise<$UserObjT | null> {

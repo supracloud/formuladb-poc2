@@ -1,0 +1,41 @@
+cronjob:
+    schedule: "0 1 * * *"
+    rbac:
+        # Specifies whether RBAC should be enabled
+        enabled: true
+  
+configMaps:
+    # Delete indices older than 7 days
+    action_file_yml: |-
+        ---
+        actions:
+            1:
+                action: delete_indices
+                description: "Clean up old filebeat indices"
+                options:
+                    timeout_override:
+                    continue_if_exception: False
+                    disable_action: False
+                    ignore_empty_list: True
+                filters:
+                    - filtertype: age
+                      source: name
+                      direction: older
+                      timestring: '%Y.%m.%d'
+                      unit: days
+                      unit_count: 7
+                    - filtertype: pattern
+                      kind: regex
+                      value: '^filebeat.*$'
+
+    # Having config_yaml WILL override the other config
+    config_yml: |-
+        ---
+        client:
+            hosts: formuladb-master.monitoring
+            port: 9200
+        logging:
+            loglevel: INFO
+            logfile:
+            logformat: default
+            blacklist: ['elasticsearch', 'urllib3']
