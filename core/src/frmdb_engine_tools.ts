@@ -53,36 +53,39 @@ export class FrmdbEngineTools {
             case Pn.NUMBER:
                 if ((propertyValue + '').match(/^[\d.]+$/) == null) {
                     return `Number expected for ${entityId}.${propertyName} = ${propertyValue}`;
-                } else if (property.allowNull === false && propertyValue == '') {
+                } else if (property.required === true && propertyValue == '') {
                     return `Value is mandatory`;
                 } 
                 break;
             case Pn.STRING:
-                if (property.allowNull === false && propertyValue == '') {
+                if (property.required === true && propertyValue == '') {
                     return `Value is mandatory`;
                 }                
                 break;
             case Pn.BOOLEAN:
-                if (property.allowNull === false && propertyValue == '') {
+                if (property.required === true && propertyValue == '') {
                     return `Value is mandatory`;
                 }                
                 break;
             case Pn.DOCUMENT:
-                if (property.allowNull === false && propertyValue == '') {
+                if (property.required === true && propertyValue == '') {
                     return `Value is mandatory`;
                 }                
                 break;
             case Pn.DATETIME:
-                if (property.allowNull === false && propertyValue == '') {
+                if (property.required === true && propertyValue == '') {
                     return `Value is mandatory`;
                 }                
                 break;
             case Pn.ACTION:
-                if (property.allowNull === false && propertyValue == '') {
+                if (property.required === true && propertyValue == '') {
                     return `Value is mandatory`;
                 }                
                 break;
             case Pn.IMAGE:
+                if (property.required === true && propertyValue == '') {
+                    return `Value is mandatory`;
+                }                
                 break;
             case Pn.ATTACHMENT:
                 break;

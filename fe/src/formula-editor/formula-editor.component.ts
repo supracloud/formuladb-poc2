@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { TokenType, Token, Suggestion, DEFAULT_TOKEN, FormulaTokenizer } from "@core/formula_tokenizer";
-import { Pn, EntityProperty, Entity } from '@domain/metadata/entity';
+import { Pn, EntityProperty, Entity, ReferenceToProperty } from '@domain/metadata/entity';
 import { FrmdbElementDecorator, FrmdbElementBase } from "@fe/live-dom-template/frmdb-element";
 import { DataObj } from "@domain/metadata/data_obj";
 import { elvis } from "@core/elvis";
@@ -85,8 +85,8 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         this.toggleEditorBtn = this.elem.querySelector('#toggle-formula-editor') as HTMLButtonElement;
         this.applyChangesBtn = this.elem.querySelector('#apply-formula-changes') as HTMLButtonElement;
 
-        onEvent(this.shadowRoot!, 'keydown', '*', e => this.keydown(e));
-        onEvent(this.shadowRoot!, 'keyup', '*', e => this.keyup(e));
+        this.textarea.addEventListener('keydown', e => this.keydown(e));
+        this.textarea.addEventListener('keyup', e => this.keyup(e));
         onEvent(this.shadowRoot!, 'click', '.editor *', e => this.click());
         onEventChildren(this.shadowRoot!, 'click', '#toggle-formula-editor', e => this.toggleEditor());
         onEvent(this.shadowRoot!, 'click', '#apply-formula-changes:enabled *', e => this.applyChanges());
@@ -259,6 +259,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         if (editorExpr.indexOf(Pn.REFERENCE_TO) === 0) {
             let entityNameToken = tokens[2];
             let propertyNameToken = tokens[4];
+            let entityAliasToken = tokens[6];
             if (!entityNameToken) {
                 tokens[0].errors.push("missing referenced table name");
                 return undefined;
@@ -276,11 +277,65 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 return undefined;
             }
 
-            return {
+            let prop: ReferenceToProperty = {
                 name: elvis(this.st.editedProperty).name!,
                 propType_: Pn.REFERENCE_TO,
                 referencedEntityName: entityNameToken.value,
                 referencedPropertyName: propertyNameToken.value,
+            };
+            if (entityNameToken) {
+                if (entityNameToken.type !== TokenType.TABLE_NAME) {
+                    tokens[0].errors.push("Expected table name but found " + entityNameToken.value + " at " + entityNameToken.pstart);
+                    return undefined;
+                } else {
+                    prop.referencedEntityAlias = entityAliasToken.value;
+                }
+            }
+            return prop;
+        } else if (editorExpr.indexOf(Pn.STRING) === 0) {
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[2];
+            if (requiredToken && requiredToken.value === "true") required = true;
+            return {
+                name: elvis(this.st.editedProperty).name!,
+                propType_: Pn.STRING,
+                required,
+            };
+        } else if (editorExpr.indexOf(Pn.NUMBER) === 0) {
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[2];
+            if (requiredToken && requiredToken.value === "true") required = true;
+            return {
+                name: elvis(this.st.editedProperty).name!,
+                propType_: Pn.NUMBER,
+                required,
+            };
+        } else if (editorExpr.indexOf(Pn.DATETIME) === 0) {
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[2];
+            if (requiredToken && requiredToken.value === "true") required = true;
+            return {
+                name: elvis(this.st.editedProperty).name!,
+                propType_: Pn.DATETIME,
+                required,
+            };
+        } else if (editorExpr.indexOf(Pn.IMAGE) === 0) {
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[2];
+            if (requiredToken && requiredToken.value === "true") required = true;
+            return {
+                name: elvis(this.st.editedProperty).name!,
+                propType_: Pn.IMAGE,
+                required,
+            };
+        } else if (editorExpr.indexOf(Pn.BOOLEAN) === 0) {
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[2];
+            if (requiredToken && requiredToken.value === "true") required = true;
+            return {
+                name: elvis(this.st.editedProperty).name!,
+                propType_: Pn.BOOLEAN,
+                required,
             };
         } else {
             return {
@@ -292,6 +347,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     }
 
     nextSuggestion(): void {
+        if (this.activeSuggestion == undefined) this.activeSuggestion = -1;
         if (this.activeSuggestion < this.currentSuggestions.length - 1) {
             this.activeSuggestion++;
             this.debouncedOnEdit();
@@ -299,6 +355,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     }
 
     prevSuggestion(): void {
+        if (this.activeSuggestion == undefined) this.activeSuggestion = 0;
         if (this.activeSuggestion > 0) {
             this.activeSuggestion--;
             this.debouncedOnEdit();

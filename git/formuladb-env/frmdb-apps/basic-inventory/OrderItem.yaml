@@ -3,7 +3,7 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     product_id:
         name: product_id
         propType_: REFERENCE_TO
@@ -12,7 +12,7 @@ props:
     quantity:
         name: quantity
         propType_: NUMBER
-        allowNull: false
+        required: true
     error_quantity:
         name: error_quantity
         propType_: NUMBER

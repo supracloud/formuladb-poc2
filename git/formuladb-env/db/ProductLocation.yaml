@@ -3,21 +3,21 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     product_id:
         name: product_id
         propType_: STRING
-        allowNull: false
+        required: true
         defaultValue: DEFAULT-location
     location_code:
         name: location_code
         propType_: STRING
-        allowNull: false
+        required: true
         defaultValue: DEFAULT-location
     category:
         name: category
         propType_: STRING
-        allowNull: false
+        required: true
     received_stock__:
         name: received_stock__
         propType_: FORMULA
@@ -33,7 +33,6 @@ props:
     price:
         name: price
         propType_: NUMBER
-        allowNull: true
     currency:
         propType_: REFERENCE_TO
         referencedEntityName: General_Currency
@@ -42,18 +41,18 @@ props:
     minimal_stock:
         name: minimal_stock
         propType_: NUMBER
-        allowNull: false
+        required: true
     moving_stock:
         name: moving_stock
         propType_: NUMBER
-        allowNull: false
+        required: true
     state:
         name: state
         propType_: STRING
-        allowNull: false
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+        required: true
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }
 validations:
     positiveStock:
         conditionExpr:

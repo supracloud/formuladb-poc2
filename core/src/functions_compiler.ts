@@ -43,6 +43,7 @@ import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName,
 import { _throw, _throwEx } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 import { $s2e } from "@functions/s2e";
+import { Pn } from "@domain/metadata/entity";
 
 function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     fc: FuncCommon,
@@ -381,17 +382,20 @@ function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
     };
 }
 
-function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression): CompiledScalar {
+function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression, required: "true" | "false", tableAlias: Identifier): CompiledScalar {
     if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO expects an TableName.column_name as argument");
     return propertyTypeFunction(fc);
 }
-function NUMBER(fc: FuncCommon) {
+function NUMBER(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
-function STRING(fc: FuncCommon) {
+function STRING(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
-function DATETIME(fc: FuncCommon) {
+function IMAGE(fc: FuncCommon, required: "true" | "false") {
+    return propertyTypeFunction(fc);
+}
+function DATETIME(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
 
@@ -700,11 +704,11 @@ export const ScalarFunctions = {
 }
 
 export const PropertyTypeFunctions = {
-    NUMBER: NUMBER,
-    STRING: STRING,
-    TEXT: TEXT,
-    DATETIME: DATETIME,
-    REFERENCE_TO: REFERENCE_TO,
+    [Pn.NUMBER]: NUMBER,
+    [Pn.STRING]: STRING,
+    [Pn.IMAGE]: IMAGE,
+    [Pn.DATETIME]: DATETIME,
+    [Pn.REFERENCE_TO]: REFERENCE_TO,
 }
 
 export const FunctionsDict: { [x: string]: Function } = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
@@ -726,10 +730,12 @@ export const FunctionSignatures = {
     _RANGE: `function _RANGE(fc, basicRange, startExpr, endExpr, inclusive_start?, inclusive_end?)`,
     _REDUCE: `function _REDUCE(fc, inputRange, reduceFun)`,
     SUM: `function SUM(fc, tableRange)`,
-    REFERENCE_TO: `function REFERENCE_TO(fc, tableRange)`,
-    NUMBER: `function NUMBER(fc)`,
-    STRING: `function STRING(fc)`,
-    DATETIME: `function DATETIME(fc)`,
+    REFERENCE_TO: `function REFERENCE_TO(fc, tableRange, required, alias)`,
+    NUMBER: `function NUMBER(fc, required)`,
+    STRING: `function STRING(fc, required)`,
+    IMAGE: `function IMAGE(fc, required)`,
+    BOOLEAN: `function BOOLEAN(fc, required)`,
+    DATETIME: `function DATETIME(fc, required)`,
     SUMIF: `function SUMIF(fc, tableRange, logicalExpression)`,
     COUNT: `function COUNT(fc, tableRange)`,
     COUNTIF: `function COUNTIF(fc, tableRange, logicalExpression)`,

@@ -1,5 +1,6 @@
 import { Component } from "./component-editor.component";
 import { $TABLES, $DATA_COLUMNS_FOR_ELEM, $REFERENCE_TO_OPTIONS } from "@fe/fe-functions";
+import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
 
 let propsSort = 2500;
 
@@ -72,10 +73,26 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 				disabled: true,
 			},
 			beforeInit: function (node) {
-				if (!node.getAttribute('data-frmdb-record')) {
+				if (node.tagName.toLowerCase() === "form") {
+					this.data.disabled = false;
+				} else if (!node.getAttribute('data-frmdb-record')) {
 					let parentRecordEl = node.closest('[data-frmdb-record]');
 					if (!parentRecordEl) return;
 					this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record');
+					this.name = "Parent Record";
+					this.data.disabled = true;
+				} else {
+					this.name = "Bound to Record";
+					let parentTableName = node.parentElement?.getAttribute('data-frmdb-table')?.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
+					let recordId = node.getAttribute('data-frmdb-record');
+					if (!recordId) return;
+					let recordTableName = entityNameFromDataObjId(recordId);
+					if (parentTableName && parentTableName == recordTableName)  {
+						this.data.placeholder = recordId;
+						this.data.disabled = true;
+					} else {
+						this.data.disabled = false;
+					}
 				}
 			},
 		},

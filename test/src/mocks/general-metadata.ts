@@ -38,8 +38,8 @@ export const GEN__Person: Entity = {
     _id: "GEN__Person",
     props: {
 
-        code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
-        actor_code: { name: "actor_code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        code: { name: "code", propType_: Pn.STRING, required: true } as EntityProperty,
+        actor_code: { name: "actor_code", propType_: Pn.STRING, required: true } as EntityProperty,
         name: { name: "name", propType_: Pn.STRING } as EntityProperty,
         district: { name: "district", propType_: Pn.STRING } as EntityProperty,
         city: { name: "city", propType_: Pn.STRING } as EntityProperty,
@@ -50,7 +50,7 @@ export const GEN__Person: Entity = {
         fax: { name: "fax", propType_: Pn.STRING } as EntityProperty,
         tax_number: { name: "tax_number", propType_: Pn.STRING } as EntityProperty,
         details: { name: "details", propType_: Pn.STRING } as EntityProperty,
-        state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
+        state: { name: "state", propType_: Pn.STRING, required: true, } as EntityProperty,
     }
 };
 
@@ -58,7 +58,7 @@ export const GEN__Client: Entity = {
     _id: "GEN__Client",
     props: {
 
-        code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        code: { name: "code", propType_: Pn.STRING, required: true } as EntityProperty,
         username: { name: "username", propType_: Pn.STRING } as EntityProperty,
         name: { name: "name", propType_: Pn.STRING } as EntityProperty,
         role: { name: "role", propType_: Pn.STRING } as EntityProperty,
@@ -67,7 +67,7 @@ export const GEN__Client: Entity = {
         type: { name: "type", propType_: Pn.STRING } as EntityProperty,
         parent_code: { name: "parent_code", propType_: Pn.STRING } as EntityProperty,
         param1: { name: "param1", propType_: Pn.STRING } as EntityProperty,
-        state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
+        state: { name: "state", propType_: Pn.STRING, required: true, } as EntityProperty,
     }
 };
 

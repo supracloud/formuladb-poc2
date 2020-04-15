@@ -3,18 +3,18 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     code:
         name: code
         propType_: STRING
-        allowNull: false
+        required: true
     barcode:
         name: barcode
         propType_: STRING
     name:
         name: name
         propType_: STRING
-        allowNull: false
+        required: true
     description:
         name: description
         propType_: STRING
@@ -23,7 +23,7 @@ props:
         propType_: CHILD_TABLE
         referencedEntityName: ProductLocation
         props: {}
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }
 isEditable: true

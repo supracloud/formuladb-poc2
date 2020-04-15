@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
-<body class="frmdb-editor-normal" data-fr="" data-frmdb-record="Restaurant_Order~~$AUTO_GENERATE_ID_FOR_NEW_RECORD">
+<body class="frmdb-editor-normal" data-frmdb-record="Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd">
     <frmdb-t-main-nav class="">
         <div data-frmdb-fragment="_nav.html"></div>
     </frmdb-t-main-nav>
@@ -14,15 +14,67 @@
         <frmdb-t-main class="">
             <div class="jumbotron col-12 col-lg-8">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
-                <h1 class="display-4">PIZZA TIME</h1>
-                <p>Lead paragraph providing a short introduction to you website or app,
-                    <br>it would be good to keep it under two lines of text
-                </p>
-                <a href="order.html" class="btn btn-primary mx-auto">Menu</a>
+                <h1 class="display-4">Order Now</h1>
             </div>
         </frmdb-t-main>
-        <frmdb-t-aside class="" data-frmdb-record="Restaurant_Order~~$AUTO_GENERATE_ID_FOR_NEW_RECORD">
-            <div data-frmdb-fragment="_form.html"></div>
+        <frmdb-t-aside class="">
+            <form class="p-3 was-validated">
+                <div class="row">
+                    <div class="col-md-4 d-flex flex-column justify-content-center">
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input type="tel" class="form-control" placeholder="phone" name="$FRMDB.Restaurant_Order[].phone" data-frmdb-value="$FRMDB.Restaurant_Order[].phone" title="" data-frmdb-pending="undefined" required="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <frmdb-icon name="fontawesome-solid-phone-call-earphone-number-support-telephone-voice" class="text-white sz-1"></frmdb-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input type="email" name="$FRMDB.Restaurant_Order[].email" class="form-control" placeholder="email@domain.com" data-frmdb-value="$FRMDB.Restaurant_Order[].email" title="" data-frmdb-pending="undefined" required="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <frmdb-icon name="fontawesome-solid-at-address-author-e-mail-email-handle" class="text-white sz-1"></frmdb-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input type="tel" class="form-control" placeholder="delivery address" name="$FRMDB.Restaurant_Order[].delivery_address" data-frmdb-value="$FRMDB.Restaurant_Order[].delivery_address" title="" data-frmdb-pending="undefined">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <frmdb-icon name="fontawesome-solid-map-marker-alt-address-coordinates-destination-gps-localize-location-map-navigation-paper-pin-place-point_of_interest-position-route-travel" class="text-white sz-1"></frmdb-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col text-center d-flex flex-column justify-content-center">
+                        <div class="col vh-25">
+                            <iframe class="w-100 h-100 border-0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d22236.40558254599!2d-118.25292394686001!3d34.057682914027104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf6f254608f4!2z4Kay4Ka4IOCmj-CmnuCnjeCmnOCnh-CmsuCnh-CmuCwg4KaV4KeN4Kav4Ka-4Kay4Ka_4Kar4KeL4Kaw4KeN4Kao4Ka_4Kav4Ka84Ka-LCDgpq7gpr7gprDgp43gppXgpr_gpqgg4Kav4KeB4KaV4KeN4Kak4Kaw4Ka-4Ka34KeN4Kaf4KeN4Kaw!5e0!3m2!1sbn!2sbd!4v1532328708137" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex flex-column justify-content-top">
+                        <div class="form-group">
+                            <label class="col-form-label col-md-3" for="inputDefault">Total</label>
+                            <input type="text" class="form-control" placeholder="0" id="inputDefault">
+                        </div>
+                        <button type="submit" class="btn btn-primary " href="javascript:void(0)">FinalizeOrder</button>
+                    </div>
+                </div>
+                <frmdb-alert data-frmdb-submit-status="" class="d-none" style="position: fixed; top: 0px; right: 0px; padding: 5px;">
+                    <div class="alert shadow border alert-dismissible alert-success fade show" role="alert">
+                        <strong>some event!</strong>
+                        <span>details of the event.</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                </frmdb-alert>
+            </form>
         </frmdb-t-aside>
         <frmdb-t-section-divider></frmdb-t-section-divider>
     </frmdb-t-cover>
@@ -32,21 +84,27 @@
             <h2 id="thememediacards">Menu</h2>
             <p>Section lead paragraph, some text about the content described in this section.</p>
         </div>
-        <frmdb-t-card-deck class="frmdb-cards-4">
+        <frmdb-t-card-deck class="frmdb-cards-4" data-frmdb-table="$FRMDB.Restaurant_Menu_Item[]" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-table-limit="1">
             <frmdb-t-card-media-main class="">
-                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/pizza-time/static/52e8d544425aa814f6da8c7dda2936771d3edce4524c704c7d2979d2924ec35f_1280.jpg&quot;);"></frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(\/formuladb-env\/frmdb-apps\/pizza-time\/static\/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280\.jpg);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture"></frmdb-t-img>
                 <div class="card-body">
-                    <h5>NEW Pizza</h5>
-                    <h6>Card 1 subtitle</h6>
-                    <p>Quisque ornare, quam a blandit malesuada</p>
+                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name">pizza 2</h5>
+                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description">best pizza in town</p>
+                    <form data-frmdb-record="Restaurant_Order_Item~~" class="was-validated">
+                        <div class="form-group row">
+                            <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
+                            <div class="col col-md-6">
+                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="1" data-frmdb-value="$FRMDB.Restaurant_Order_Item[].quantity" name="$FRMDB.Restaurant_Order_Item[].quantity" title="" data-frmdb-pending="">
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <frmdb-t-card-action class="">
-                    <a href="order.html" class="">Order</a>
+                    <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
-                    <span>INFO 
-                        <small>info</small>
-                    </span>
+                    <span data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].price">10.00000</span>
+                    <small>EUR</small>
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
             <frmdb-t-card-media-main class="">
@@ -57,7 +115,7 @@
                     <p>Integer sit amet nisi viverra, pharetra nibh</p>
                 </div>
                 <frmdb-t-card-action class="">
-                    <a href="order.html" class="">Order</a>
+                    <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
                     <span>INFO 
@@ -73,7 +131,7 @@
                     <p>Curabitur suscipit, massa eu maximus fringilla</p>
                 </div>
                 <frmdb-t-card-action class="">
-                    <a href="order.html" class="">Order</a>
+                    <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
                     <span>INFO 
@@ -89,7 +147,7 @@
                     <p>Etiam porta magna eu rutrum rhoncus</p>
                 </div>
                 <frmdb-t-card-action class="">
-                    <a href="order.html" class="">Order</a>
+                    <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
                     <span>INFO 
@@ -100,7 +158,7 @@
         </frmdb-t-card-deck>
         <frmdb-t-section-divider></frmdb-t-section-divider>
     </section>
-    <frmdb-t-media-section-main style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/pizza-time/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg&quot;);" class="frmdb-bg-2 frmdb-bg-2-dark-solid-tint-50">
+    <frmdb-t-media-section-main style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/pizza-time/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg&quot;);" class="">
         <frmdb-t-section-divider></frmdb-t-section-divider>
         <div class="container py-5">
             <div class="row py-5">
@@ -183,6 +241,8 @@
     <frmdb-t-section-divider></frmdb-t-section-divider>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
+    <frmdb-fe></frmdb-fe>
     <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
     <frmdb-fe></frmdb-fe>
     <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>

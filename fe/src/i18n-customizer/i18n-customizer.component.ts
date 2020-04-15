@@ -58,7 +58,7 @@ class I18nCustomizerComponent extends HTMLElement {
 
     updateState(pageOpts: AllPageOpts) {
         let newState = new State();
-        const currentLanguage = I18N_UTILS.getLangDesc(localStorage.getItem('editor-lang') || I18N_UTILS.defaultLanguage)!;
+        const currentLanguage = I18N_UTILS.getLangDesc(pageOpts.lang || I18N_UTILS.defaultLanguage)!;
 
         newState.selectedFlag = `flag-icons-4x3-${currentLanguage!.flag}`;
         for (let lang of I18N_UTILS.languages) {

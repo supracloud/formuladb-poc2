@@ -10,7 +10,7 @@ import { Fn } from "@domain/metadata/functions";
 export const REP__DetailedCentralizerReport = {
     _id: "REP__DetailedCentralizerReport",
     props: {
-        dummy: { name: "dummy", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        dummy: { name: "dummy", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };
 
@@ -20,7 +20,7 @@ export const REP__ServiceCentralizerReport = {
         thisMonthServiceForms: Fn.IF(`Forms_ServiceForm`, Fn.EOMONTH(`time_of_arrival`, `-1`) + ` == ` + Fn.EOMONTH(`@[month]`, `-1`)),
     },
     props: {
-        client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        client: { name: "client", propType_: Pn.STRING, required: true } as EntityProperty,
         month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
         serviceForms: {
             name: "serviceForms",

@@ -187,14 +187,14 @@ export class FrmdbEngine {
 
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
         if (!event.entityId.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
-        let newEntity: Entity = { _id: event.entityId, props: {
-            _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-            owner: { name: "owner", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-            role: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-            _rev: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        let newEntity: Entity = { _id: event.entityId, isEditable: true, props: {
+            _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+            _owner: { name: "_owner", propType_: Pn.STRING, required: true } as EntityProperty,
+            _role: { name: "_role", propType_: Pn.STRING, required: true } as EntityProperty,
+            _rev: { name: "_rev", propType_: Pn.STRING, required: true } as EntityProperty,
         } };
 
-        return this.frmdbEngineStore.kvsFactory.metadataStore.putEntity(newEntity)
+        return this.frmdbEngineStore.putEntity(newEntity, event.appName)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;

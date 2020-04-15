@@ -801,10 +801,13 @@ export class ParamListInput extends Input {
 				{% } %}
 				<div class="parameter">
 					<div class="input-group">
-						<input name="{%=key%}_{%=i%}_paramName" type="text" class="form-control" value="{%=param.name%}"/>
+						<label for="{%=key%}_100_paramName">New attribute:</label>
 					</div>
 					<div class="input-group">
-						<textarea name="{%=key%}_{%=i%}_paramValue" rows="1" class="form-control">{%=param.value%}</textarea>
+						<input name="{%=key%}_100_paramName" type="text" class="form-control" value="" placeholder="attribute-name"/>
+					</div>
+					<div class="input-group">
+						<textarea name="{%=key%}_100_paramValue" rows="1" class="form-control" placeholder="attribute value"></textarea>
 					</div>
 				</div>
 					

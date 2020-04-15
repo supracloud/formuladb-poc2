@@ -104,11 +104,12 @@ export class FrmdbStore {
         return Object.values(this.schema.entities).find(e => e._id === entityId);
     }
 
-    public async putEntity(entity: Entity): Promise<Entity> {
+    public async putEntity(entity: Entity, appName?: string): Promise<Entity> {
+        //TODO transactional
+        let ret = await this.kvsFactory.metadataStore.putEntity(entity, appName);
+        this.schema.entities[entity._id] = entity;
         let kvs = await this.getDataKvs(entity._id);
         await kvs.updateEntity(entity);
-        let ret = await this.kvsFactory.metadataStore.putEntity(entity);
-        this.schema.entities[entity._id] = entity;
         return ret;
     }
 

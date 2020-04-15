@@ -321,7 +321,8 @@ export class FrmdbEditorDirective {
                 if (typeof name !== 'string') { console.warn("Invalid table name", name); return }
                 event.preventDefault();
 
-                BACKEND_SERVICE().putEvent(new ServerEventNewEntity(name))
+                let {appName} = parseAllPageUrl(window.location.pathname);
+                BACKEND_SERVICE().putEvent(new ServerEventNewEntity(appName, name))
                     .then(async (ev: ServerEventNewEntity) => {
                         if (ev.state_ != 'ABORT') {
                             newTableModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
@@ -365,6 +366,19 @@ export class FrmdbEditorDirective {
 
             if (confirm(`Please confirm deletion of table ${link.dataset.id} ?`)) {
                 BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(tableName));
+            }
+        });
+
+        onEventChildren(document.body, 'click', '#delete-app-btn', (event) => {
+            if (confirm(`Please confirm deletion of page ${this.state.data.selectedPageName} ?`)) {
+
+                // BACKEND_SERVICE().putEvent(new ServerEventDeleteAp(window.location.pathname))
+                //     .then(async (ev: ServerEventDeletePage) => {
+                //         if (ev.state_ != 'ABORT') {
+                //             navigateEditorToPage('index');
+                //         }
+                //         return ev;
+                //     });
             }
         });
 
@@ -425,7 +439,7 @@ export class FrmdbEditorDirective {
 
             let appObj: $AppObjT = serializeElemToObj(newAppModal) as any;
             let {appName} = parseAllPageUrl(window.location.pathname);
-            if (isNewApp) appName = `$App~~${appObj._id}`;
+            if (isNewApp) appName = appObj.name;
 
             if (typeof appName !== 'string') { console.warn("Invalid app name", appName); return }
             var basedOnApp = (newAppModal.querySelector("select[name=basedOnApp]") as HTMLSelectElement).value;

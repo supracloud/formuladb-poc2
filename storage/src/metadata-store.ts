@@ -6,7 +6,6 @@ import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/ke
 import * as _ from "lodash";
 import * as fs from 'fs';
 import * as util from 'util';
-const exists = util.promisify(fs.exists);
 
 import * as jsyaml from 'js-yaml';
 import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image, $System_Param, $Permission, $ImageObjT } from "@domain/metadata/default-metadata";
@@ -58,8 +57,7 @@ export class MetadataStore {
                         if (err) {
                             console.error(err);
                             reject(err);
-                        }
-                        resolve();
+                        } else resolve();
                     });
                 }
             })
@@ -72,6 +70,7 @@ export class MetadataStore {
                 //handling error
                 if (err) {
                     reject(err);
+                    return;
                 }
                 let retFiles = files.map(file => `${directoryPath.slice(FRMDB_ENV_ROOT_DIR.length)}/${file}`);
                 if (filter) {
@@ -111,8 +110,7 @@ export class MetadataStore {
                 if (err) {
                     console.error(err);
                     reject(err);
-                }
-                resolve(data);
+                } else resolve(data);
             });
         });
     }
@@ -124,8 +122,7 @@ export class MetadataStore {
                 if (err) {
                     console.error(err);
                     reject(err);
-                }
-                resolve();
+                } else resolve();
             });
         });
     }
@@ -219,9 +216,16 @@ export class MetadataStore {
         return entity;
     }
 
-    public async putEntity(entity: Entity): Promise<Entity> {
+    public async putEntity(entity: Entity, appName?: string): Promise<Entity> {
         await this.writeFile(`${FRMDB_ENV_DIR}/db/${entity._id}.yaml`, this.toYaml(entity))
 
+        if (appName) {
+            let schemaNoEntities: SchemaEntityList = this.fromYaml(
+                await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`));
+            schemaNoEntities.entityIds.push(entity._id);
+            await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
+        }
+        
         return entity;
     }
 
@@ -272,7 +276,7 @@ export class MetadataStore {
     }
 
     async setApp(appName: string, category: string, description: string, basedOnApp?: string): Promise<App | null> {
-        let app = await this.getApp(appName);
+        let app = await this.getApp(appName).catch(err => {if (err.code === 'ENOENT') return null; else throw err});
         if (!app) {
             if (basedOnApp) {
                 await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
@@ -598,7 +602,8 @@ export class MetadataStore {
         let images: string[] = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
         for (let app of apps.map(a => a._id)) {
             if (app === appName) continue;
-            let imgsForApp = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${app}/static`);
+            let imgsForApp = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${app}/static`)
+                .catch(err => {console.warn(err); return []});
             images.push(...imgsForApp);
         }
         return images.map(i => ({ _id: i }));
@@ -671,8 +676,7 @@ async function execShell(cmd: string): Promise<{ error: Error, stdout: string | 
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
                 reject({ error, stdout, stderr });
-            }
-            resolve({ error, stdout, stderr });
+            } else resolve({ error, stdout, stderr });
         });
     });
 }

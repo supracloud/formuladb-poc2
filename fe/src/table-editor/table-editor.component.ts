@@ -19,7 +19,7 @@ const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/table-editor/
 
 export class TableEditorComponent extends HTMLElement {
 
-    selectedRecord: DataObj;
+    selectedRecord: DataObj | null;
     tableName: string;
 
     init(): void {
@@ -35,15 +35,16 @@ export class TableEditorComponent extends HTMLElement {
             if (confirm(`Delete record ${this.selectedRecord._id}? Please confirm !`)) {
                 let event: ServerEventDeletedFormData = await BACKEND_SERVICE().putEvent(
                     new ServerEventDeletedFormData(this.selectedRecord)) as ServerEventDeletedFormData;
+                if (event.state_ != "ABORT" && !event.error_) this.selectedRecord = null;
             }
         });
         onEventChildren(this, 'click', '#add-row-btn', async (e) => {
             if (!this.tableName) { raiseNotification(ThemeColors.info, "Cannot add row.", "Please select table first."); return }
             let modalEl = this.ownerDocument?.querySelector('#edit-record-modal');
             if (!modalEl) { raiseNotification(ThemeColors.warning, "Cannot add row.", "internal problem, modal not found"); return }
-            let formElState = (modalEl?.querySelector('frmdb-form') as FormComponent)?.frmdbState;
-            formElState.rowid = `${this.tableName}~~$AUTO_GENERATE_ID_FOR_NEW_RECORD`;
-            formElState.table_name = this.tableName;
+            let formEl = modalEl?.querySelector('frmdb-form') as FormComponent;
+            if (!formEl) { raiseNotification(ThemeColors.warning, "Cannot add row.", "internal problem, form not found"); return }
+            formEl.setState(`${this.tableName}~~$AUTO_GENERATE_ID_FOR_NEW_RECORD`);
             $FRMDB_MODAL(modalEl as HTMLElement);
         });
 

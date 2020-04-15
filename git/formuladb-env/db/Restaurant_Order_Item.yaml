@@ -1,0 +1,35 @@
+_id: Restaurant_Order_Item
+isEditable: true
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        required: true
+    _owner:
+        name: _owner
+        propType_: STRING
+        required: true
+    _role:
+        name: _role
+        propType_: STRING
+        required: true
+    _rev:
+        name: _rev
+        propType_: STRING
+        required: true
+    order_id:
+        name: order_id
+        propType_: REFERENCE_TO
+        referencedEntityName: Restaurant_Order
+        referencedPropertyName: _id
+        referencedEntityAlias: 'true'
+    menu_item_id:
+        name: menu_item_id
+        propType_: REFERENCE_TO
+        referencedEntityName: Restaurant_Menu_Item
+        referencedPropertyName: _id
+        referencedEntityAlias: 'true'
+    quantity:
+        name: quantity
+        propType_: NUMBER
+        required: true

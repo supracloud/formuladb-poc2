@@ -217,7 +217,7 @@ for (let sch of Schemas) {
     }
 
     for (let ent of Object.values(sch.schema.entities)) {
-        ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
+        ent.props._id = { name: "_id", propType_: Pn.STRING, required: true };
         ent.isEditable = true;
     }
 }

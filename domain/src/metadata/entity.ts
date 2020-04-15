@@ -99,30 +99,30 @@ export interface NumberProperty {
     name: string;
     format?: "default" | "currency" | "percentage";
     defaultValue?: number;
-    allowNull?: boolean;
+    required?: boolean;
 }
 export interface StringProperty {
     propType_: Pn.STRING;
     name: string;
     defaultValue?: string;
-    allowNull?: boolean;
+    required?: boolean;
     enumValues?: string[];
 }
 export interface BooleanProperty {
     propType_: Pn.BOOLEAN;
     name: string;
-    allowNull?: boolean;
+    required?: boolean;
 }
 export interface DocumentProperty {
     propType_: Pn.DOCUMENT;
     name: string;
-    allowNull?: boolean;
+    required?: boolean;
 }
 export interface DatetimeProperty {
     propType_: Pn.DATETIME;
     name: string;
     timeMandatory?: boolean;
-    allowNull?: boolean;
+    required?: boolean;
 }
 
 export interface AttachmentProperty {
@@ -135,13 +135,14 @@ export interface AttachmentProperty {
 export interface ImageProperty {
     propType_: Pn.IMAGE;
     name: string;
+    required?: boolean;
 }
 
 export interface ActionProperty {
     propType_: Pn.ACTION;
     name: string;
     defaultValue?: string;
-    allowNull?: boolean;
+    required?: boolean;
 }
 
 /**

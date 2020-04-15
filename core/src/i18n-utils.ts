@@ -1,8 +1,9 @@
 import { LANGUAGES, DEFAULT_LANGUAGE, I18nLang, DEFAULT_FLAG } from "@domain/i18n";
 import { $DictionaryObjT, $Dictionary } from "@domain/metadata/default-metadata";
 
-const translatableSelector = 'th,td,p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,[placeholder]';
+const translatableSelector = 'th,td,p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,legend,[placeholder]';
 const allowedInnerTags = 'b,strong,i,br,hr,em,q';
+const notAllowedTagsForTextEditing = ['input', 'select', 'textarea', 'video', 'img'];
 
 export function getTranslationKey(el) {
     return el.hasAttribute('data-i18n-key') ? el.getAttribute('data-i18n-key') : (
@@ -26,7 +27,7 @@ export function isElementWithTextContent(el: any) {
         return true;
     }
     if (el.childNodes && [...el.childNodes]
-        .some(cn => cn.nodeType !== 3 && cn.tagName && allowedInnerTags.indexOf(cn.tagName.toLowerCase()) < 0)) {
+        .some(cn => cn.nodeType !== 3 && cn.tagName && allowedInnerTags.indexOf(cn.tagName.toLowerCase()) < 0 && !notAllowedTagsForTextEditing.includes(cn.tagName.toLowerCase()))) {
         return false;
     }
     if (el.textContent.trim().length === 0) {

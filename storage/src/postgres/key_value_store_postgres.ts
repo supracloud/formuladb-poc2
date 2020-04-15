@@ -45,11 +45,11 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             port: parseInt(process.env.PGPORT || "5432"),
             user: process.env.PGUSER || "postgres",
             password: process.env.PGPASSWORD || "postgres",
-        
+
         };
         if (KeyValueStorePostgres.db == null) {
             console.info("Connecting to", config);
-            KeyValueStorePostgres.pgp = pgPromise({pgNative: false});
+            KeyValueStorePostgres.pgp = pgPromise({ pgNative: false });
             KeyValueStorePostgres.db = KeyValueStorePostgres.pgp(config);
         }
 
@@ -128,7 +128,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     protected rangeSQL(sign1: string, sign2: string) {
-        return 'SELECT _id, val FROM ' + this.table_id + 
+        return 'SELECT _id, val FROM ' + this.table_id +
             ' WHERE _id COLLATE "C" ' + sign1 + ' $1 COLLATE "C" AND _id COLLATE "C" ' + sign2 + ' $2 COLLATE "C" ' + ' ORDER BY _id COLLATE "C"';
     }
 
@@ -144,7 +144,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 let sign2: string = opts.inclusive_end ? "<=" : "<";
                 let start: string = this.pgSpecialChars(opts.startkey);
                 let end: string = this.pgSpecialChars(opts.endkey);
-                
+
 
                 let query: string = this.rangeSQL(sign1, sign2);
                 this.getDB().any<{ _id: string, val: VALUET }>(query, [start, end]).then((res) => {
@@ -161,17 +161,18 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             .then(res => res.map(({ _id, val }) => val));
     }
 
-    public set(_id: string, obj: VALUET): Promise<VALUET> {
-        return new Promise((resolve) => {
-            this.initialize().then(() => {
-                let escapedId = this.pgSpecialChars(_id);
-                let object_as_json = JSON.stringify(obj);
-                let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (_id) DO UPDATE SET _id=$1, val=$2';
-                this.getDB().none(query, [escapedId, object_as_json]).then(() => {
-                    resolve(obj);
-                })
-            })
-        })
+    public async set(_id: string, obj: VALUET): Promise<VALUET> {
+        await this.initialize();
+        try {
+            let escapedId = this.pgSpecialChars(_id);
+            let object_as_json = JSON.stringify(obj);
+            let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (_id) DO UPDATE SET _id=$1, val=$2';
+            await this.getDB().none(query, [escapedId, object_as_json]);
+            return obj;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
     }
 
     public async del(_id: string): Promise<VALUET> {
@@ -186,7 +187,6 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             console.log(err);
             throw err;
         }
-
     }
 
     public async clearDB() {
@@ -196,9 +196,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     public info(): Promise<string> {
-        return new Promise(async (resolve) => {
-            resolve("Postgres based KVS");
-        })
+        return Promise.resolve("Postgres based KVS");
     }
 
     public async clearAllForTestingPurposes() {
@@ -212,19 +210,11 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         return 'SELECT val FROM ' + this.table_id;
     }
 
-    all(): Promise<VALUET[]> {
-        return new Promise((resolve) => {
-            this.initialize().then(() => {
-                let query: string = this.allSQL();
-
-                this.getDB().any<VALUET>(query).then((res) => {
-                    resolve(res.map(o => o['val']));
-                }).catch((err) => {
-                    console.log(err);
-                })
-
-            })
-        });
+    async all(): Promise<VALUET[]> {
+        await this.initialize();
+        let query: string = this.allSQL();
+        let res = await this.getDB().any<VALUET>(query);
+        return res.map(o => o['val']);
     }
 }
 
@@ -266,7 +256,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     }
 
     protected rangeSQL(sign1: string, sign2: string) {
-        return 'SELECT t._id as _id, json_strip_nulls(row_to_json(t)) as val FROM (SELECT * FROM ' + this.table_id + 
+        return 'SELECT t._id as _id, json_strip_nulls(row_to_json(t)) as val FROM (SELECT * FROM ' + this.table_id +
             ' WHERE _id COLLATE "C" ' + sign1 + ' $1 COLLATE "C" AND _id COLLATE "C" ' + sign2 + ' $2 COLLATE "C" ' + ') t ORDER BY _id COLLATE "C"';
     }
 
@@ -274,29 +264,31 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         return Object.values(this.entity.props).filter(p => p.name !== '_id');
     }
 
-    public set(_id: string, obj: OBJT): Promise<OBJT> {
-        return new Promise((resolve) => {
-            this.initialize().then(() => {
-                let props = Object.values(this.entity.props);
-                let query: string = `INSERT INTO ${this.table_id} (
+    public async set(_id: string, obj: OBJT): Promise<OBJT> {
+        await this.initialize();
+        try {
+            let props = Object.values(this.entity.props);
+            let query: string = `
+                INSERT INTO ${this.table_id} (
                     ${props.map(p => p.name).join(", ")}
                 ) VALUES (
-                    ${props.map((p, i) => '$' + (1+i))}
+                    ${props.map((p, i) => '$' + (1 + i))}
                 ) ON CONFLICT (_id) DO  
                     ${this.propsNoId().length > 0 ?
-                        ' UPDATE SET ' + this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i)).join(", ")
-                        : ' NOTHING'
-                    }
+                            ' UPDATE SET ' + this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i)).join(", ")
+                            : ' NOTHING'
+                        }
                 `;
-                let values = Object.values(this.entity.props)
-                    .map(p => p.name === '_id' ? this.pgSpecialChars(obj[p.name]) : obj[p.name])
-                    .concat(this.propsNoId().map(p => obj[p.name]))
-                ;
-                this.getDB().none(query, values).then((res) => {
-                    resolve(obj);
-                })
-            })
-        })
+            let values = Object.values(this.entity.props)
+                .map(p => p.name === '_id' ? this.pgSpecialChars(obj[p.name]) : obj[p.name])
+                .concat(this.propsNoId().map(p => obj[p.name]))
+            ;
+            await this.getDB().none(query, values)
+            return obj;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
     }
 
     private prop2sqlCol(prop: EntityProperty): string {
@@ -316,7 +308,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                     type = "varchar";
                 }
                 break;
-            default: 
+            default:
                 type = "varchar";
         }
         if (prop.name === '_id') type = type + ' COLLATE "C" NOT NULL PRIMARY KEY';
@@ -332,8 +324,9 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         console.log(query);
         await this.getDB().any(query);
     }
-    
+
     async updateEntity(entity: Entity) {
+        await this.createTable();
         for (let prop of Object.values(entity.props)) {
             if (!this.entity.props[prop.name]) {
                 //FIXME: handle column type change not only new columns
@@ -385,7 +378,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryPostgres";
     metadataStore = new MetadataStore(process.env.FRMDB_ENV_NAME || 'env-not-known', this);
-    
+
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);
     }
@@ -402,7 +395,7 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
         let forCleanup: KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
         await forCleanup.clearAllForTestingPurposes();
     }
-    
+
     public async close() {
         let forCleanup: KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
         return forCleanup.close();

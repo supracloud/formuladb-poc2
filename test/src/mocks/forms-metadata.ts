@@ -25,7 +25,7 @@ export const Forms__ServiceForm = {
                 //     `'000000000'`)
 
         } as FormulaProperty,
-        product_form_id: { name: 'product_form_id', propType_: Pn.NUMBER, 'allowNull': false } as EntityProperty,
+        product_form_id: { name: 'product_form_id', propType_: Pn.NUMBER, required: true } as EntityProperty,
         client_name: {
             name: 'client_name',
             propType_: Pn.REFERENCE_TO,
@@ -48,7 +48,7 @@ export const Forms__ServiceForm = {
         technician_code: { name: 'technician_code', propType_: Pn.STRING } as EntityProperty,
         technician2_code: { name: 'technician2_code', propType_: Pn.STRING } as EntityProperty,
         client_person: { name: 'client_person', propType_: Pn.STRING } as EntityProperty,
-        state: { name: 'state', propType_: Pn.STRING, 'allowNull': false } as EntityProperty,
+        state: { name: 'state', propType_: Pn.STRING, required: true } as EntityProperty,
         nb_installments: { name: 'nb_installments', propType_: Pn.NUMBER } as EntityProperty,
         accommodation: { name: 'accommodation', propType_: Pn.NUMBER } as EntityProperty,
         service_form_units: {
@@ -73,7 +73,7 @@ export const Forms__ServiceForm = {
                 nb_piston_cycles: { name: 'nb_piston_cycles', propType_: Pn.STRING } as EntityProperty,
                 brita_counter: { name: 'brita_counter', propType_: Pn.STRING } as EntityProperty,
                 washing_cycles: { name: 'washing_cycles', propType_: Pn.STRING } as EntityProperty,
-                state: { name: 'state', propType_: Pn.STRING, 'allowNull': false } as EntityProperty,
+                state: { name: 'state', propType_: Pn.STRING, required: true } as EntityProperty,
                 equipment_group: { name: 'equipment_group', propType_: Pn.STRING, } as EntityProperty,
             }
         } as ChildTableProperty,

@@ -18,12 +18,17 @@ function isFrmdbPropertyChangeHandler(param): param is FrmdbPropertyChangeHandle
 export function dataBindStateToElement<STATE extends Object>(component: HTMLElement, state: STATE): STATE {
     let frmdbState: STATE = new Proxy(state, {
         set: (obj, propName: keyof STATE, propValue, receiver) => {
+            const debouncedUpdateDOM = debounce((component: HTMLElement, state) => {
+                let el = component.shadowRoot ? (component.shadowRoot as any as HTMLElement) : component;
+                updateDOM(state, el);
+            }, 150)
+    
             let ret = true;
             let oldValue = state[propName];
             // if (!_.isEqual(oldValue, propValue)) {
-            if (oldValue !== propValue) {   
+            if (oldValue !== propValue) {
                 ret = Reflect.set(obj, propName, propValue);
-                
+
                 if (isFrmdbPropertyChangeHandler(component)) {
                     component.frmdbPropertyChangedCallback(propName, oldValue, propValue);
                 }
@@ -33,13 +38,9 @@ export function dataBindStateToElement<STATE extends Object>(component: HTMLElem
                 else debouncedUpdateDOM(component, state);
             }
             return ret;
-        }
+        },
     });
 
     return frmdbState;
 }
 
-const debouncedUpdateDOM = debounce((component: HTMLElement, state) => {
-    let el = component.shadowRoot ? (component.shadowRoot as any as HTMLElement) : component;
-    updateDOM(state, el);
-}, 100);

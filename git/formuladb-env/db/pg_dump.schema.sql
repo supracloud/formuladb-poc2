@@ -392,6 +392,58 @@ CREATE TABLE public.treceiptitem (
 ALTER TABLE public.treceiptitem OWNER TO postgres;
 
 --
+-- Name: trestaurant_menu_item; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trestaurant_menu_item (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    _owner character varying,
+    _role character varying,
+    _rev character varying,
+    name character varying,
+    picture character varying,
+    description character varying,
+    price numeric(12,5)
+);
+
+
+ALTER TABLE public.trestaurant_menu_item OWNER TO postgres;
+
+--
+-- Name: trestaurant_order; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trestaurant_order (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    _owner character varying,
+    _role character varying,
+    _rev character varying,
+    email character varying,
+    phone character varying,
+    delivery_address character varying
+);
+
+
+ALTER TABLE public.trestaurant_order OWNER TO postgres;
+
+--
+-- Name: trestaurant_order_item; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trestaurant_order_item (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    _owner character varying,
+    _role character varying,
+    _rev character varying,
+    order_id character varying,
+    menu_item_id character varying,
+    quantity numeric(12,5)
+);
+
+
+ALTER TABLE public.trestaurant_order_item OWNER TO postgres;
+
+--
 -- Name: troom; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -475,6 +527,18 @@ CREATE TABLE public.tsampleapp (
 
 
 ALTER TABLE public.tsampleapp OWNER TO postgres;
+
+--
+-- Name: ttransaction; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ttransaction (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.ttransaction OWNER TO postgres;
 
 --
 -- Name: tvaggs_room_countif_room__room_type_______id___reduce; Type: TABLE; Schema: public; Owner: postgres
@@ -702,6 +766,30 @@ ALTER TABLE ONLY public.treceiptitem
 
 
 --
+-- Name: trestaurant_menu_item trestaurant_menu_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trestaurant_menu_item
+    ADD CONSTRAINT trestaurant_menu_item_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: trestaurant_order_item trestaurant_order_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trestaurant_order_item
+    ADD CONSTRAINT trestaurant_order_item_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: trestaurant_order trestaurant_order_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trestaurant_order
+    ADD CONSTRAINT trestaurant_order_pkey PRIMARY KEY (_id);
+
+
+--
 -- Name: troom_booking troom_booking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -731,6 +819,14 @@ ALTER TABLE ONLY public.troom_type
 
 ALTER TABLE ONLY public.tsampleapp
     ADD CONSTRAINT tsampleapp_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: ttransaction ttransaction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ttransaction
+    ADD CONSTRAINT ttransaction_pkey PRIMARY KEY (_id);
 
 
 --

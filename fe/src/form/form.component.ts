@@ -11,21 +11,21 @@ import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/f
 import { I18N } from '@fe/i18n.service';
 import { BACKEND_SERVICE } from '@fe/backend.service';
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { Entity, EntityProperty, Pn } from '@domain/metadata/entity';
+import { Entity, EntityProperty, Pn, ReferenceToProperty } from '@domain/metadata/entity';
 import { CssWidth } from '@domain/uimetadata/css-classes';
 import { elvis } from '@core/elvis';
 import { FORM_SERVICE } from '@fe/form.service';
 import { ImgEditorComponent } from '@fe/frmdb-editor/img-editor.component';
 import { isNewDataObjId, DataObj, entityNameFromDataObjId } from '@domain/metadata/data_obj';
+import { camelCaseProp2kebabCaseAttr, kebabCaseAttr2CamelCaseProp } from '@fe/frmdb-element-state';
 const LOG = new FrmdbLogger('frmdb-form');
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/form/form.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/form/form.component.scss').default;
 export interface FormComponentAttr {
-    table_name: string;
     fields: { [name: string]: { width: CssWidth } };
-    rowid: string;
+    rowId: string;
 };
 export interface FormComponentState extends FormComponentAttr {
     props: (EntityProperty & {
@@ -41,14 +41,25 @@ export interface FormComponentState extends FormComponentAttr {
     dataObj: DataObj,
 };
 
-@FrmdbElementDecorator({
-    tag: 'frmdb-form',
-    observedAttributes: ['table_name', 'fields', 'rowid'],
-    template: HTML,
-    style: CSS,
-    noShadow: true,
-})
-export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
+const defaultState = {
+    rowId: '$Dictionary~~$AUTO_GENERATE_ID_FOR_NEW_RECORD',
+};
+
+export class FormComponent extends HTMLElement {
+    state: Partial<FormComponentState> = defaultState;
+    static observedAttributes = Object.keys(defaultState).map(k => camelCaseProp2kebabCaseAttr(k));
+    attributeChangedCallback(name: string, oldVal: string, newVal: string) {
+        this.state[kebabCaseAttr2CamelCaseProp(name)] = newVal;
+        this.debouncedRender();
+    }
+
+    public setState(rowId: string) {
+        this.setAttribute('row-id', rowId);
+    }
+    set rowId(val: string) {
+        this.setAttribute('row-id', val);
+    }
+    get rowId() { return this.state.rowId || defaultState.rowId }
 
     async setProps(entityId: string) {
         this.entity = await BACKEND_SERVICE().getEntity(entityId);
@@ -68,48 +79,78 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
                 isImage: prop.propType_ == Pn.IMAGE, 
                 nameI18n: I18N.tt(prop.name),
                 disabled: this.getDisabled(this.entity, prop),
-                required: (prop as any).allowNull === false,
+                required: (prop as any).required === true,
                 inputType,
-                cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
+                cssWidth: elvis(elvis(this.state.fields)[prop.name]).width || "col-12",
             });
         }
         
-        this.frmdbState.props = props;
+        this.state.props = props;
     }
 
     entity: Entity;
-    async frmdbPropertyChangedCallback<T extends keyof FormComponentState>(attrName: T, oldVal: FormComponentState[T], newVal: FormComponentState[T]) {
-        if (attrName === "table_name") {
-            let entityId = this.frmdbState.table_name || 'n/a';
-            await this.setProps(entityId);
-        } else if (attrName === "rowid") {
-            let dataObj = await BACKEND_SERVICE().getDataObjAcceptNull(this.frmdbState.rowid!);
-            if (dataObj) {
-                this.frmdbState.dataObj = dataObj;
-            } else {
-                this.frmdbState.dataObj = {
-                    _id: this.frmdbState.rowid!,
-                }                
-            }
-            let entityId = entityNameFromDataObjId(this.frmdbState.rowid!);
-            await this.setProps(entityId);
-            this.querySelector('form')?.setAttribute('data-frmdb-record', this.frmdbState.rowid!);
-        } else if (attrName === "fields") {
-            if (this.frmdbState.props && this.frmdbState.props.length > 0) {
-                let props = [...this.frmdbState.props];
-                for (let prop of Object.values(props)) {
-                    prop.cssWidth = elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12";
-                }
-                this.frmdbState.props = props;
-            }
+    async render() {
+        let dataObj = await BACKEND_SERVICE().getDataObjAcceptNull(this.state.rowId!);
+        if (dataObj) {
+            this.state.dataObj = dataObj;
+        } else {
+            this.state.dataObj = {
+                _id: this.state.rowId!,
+            }                
         }
+        let entityId = entityNameFromDataObjId(this.state.rowId!);
+
+        if (this.state.fields && this.state.props && this.state.props.length > 0) {
+            let props = [...this.state.props];
+            for (let prop of Object.values(props)) {
+                prop.cssWidth = elvis(elvis(this.state.fields)[prop.name]).width || "col-12";
+            }
+            this.state.props = props;
+        }
+
+        await this.setProps(entityId);
+
+        let html: string[] = [];
+
+        html.push(`<form data-frmdb-record="${this.state.rowId}" data-frmdb-form-autosave>`);
+        for (let prop of this.state.props||[]) {
+            html.push(`<div class="form-group row ${prop.cssWidth}">`);
+            html.push(`    <label for="${prop.name}" class="col-form-label col-3">${prop.nameI18n}</label>`);
+            html.push(`    <div class="col-9">`);
+            html.push(`        <input class="form-control" `);
+            html.push(`            value="${this.state.dataObj[prop.name]||''}" `);
+            html.push(`            name="${prop.name}" `);
+            html.push(`            ${prop.disabled ? 'disabled' : ''}"`);
+            html.push(`            type="${prop.inputType}"`);
+            html.push(`            data-frmdb-value="${prop.name}"`);
+            html.push(`            />`);
+            if (prop.isAutocomplete) {
+                html.push(`    <frmdb-autocomplete `);
+                html.push(`        ref_entity_name="${(prop as ReferenceToProperty).referencedEntityName}"`);
+                html.push(`        ref_property_name="${(prop as ReferenceToProperty).referencedPropertyName}"`);
+                html.push(`        ></frmdb-autocomplete>`);
+            }
+            if (prop.isImage) {
+                html.push(`    <frmdb-form-image`);
+                html.push(`        img-src="${this.state.dataObj[prop.name]}"`);
+                html.push(`        ></frmdb-form-image>`);
+            }
+            html.push(`    </div>`);
+            html.push(`</div>`);
+        }
+        html.push(`</form>`);
+
+        this.innerHTML = html.join("\n");
     }
 
+    debouncedRender = _.debounce(() => this.render(), 150);
+
     private getDisabled(entity: Entity, prop: EntityProperty): boolean {
-        let haveId: boolean = (this.frmdbState?.dataObj != null && this.frmdbState?.dataObj?._id != null && !isNewDataObjId(this.frmdbState.dataObj._id));
+        let haveId: boolean = (this.state?.dataObj != null && this.state?.dataObj?._id != null && !isNewDataObjId(this.state.dataObj._id));
         return entity.isEditable != true || ('_id' == prop.name && haveId);
     }
 }
+customElements.define('frmdb-form', FormComponent);
 
 // document.createElement('frmdb-form').setAttribute('rowid', "test-rowid");
 // console.log((FormComponent as any).observedAttributes);
@@ -128,7 +169,7 @@ class FormImageComponent extends HTMLElement {
 
             this.innerHTML = /*html*/ `
                 <a href="javascript:void(0)">
-                    <img src="${inputEl.value}" style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
+                    <img src="${newVal}" style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
                 </a>
             `;
             let img: HTMLImageElement = this.querySelector('img') as HTMLImageElement;

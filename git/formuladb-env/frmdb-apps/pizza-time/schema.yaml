@@ -3,3 +3,6 @@ entityIds:
     - $User
     - $Dictionary
     - $Currency
+    - Restaurant_Menu_Item
+    - Restaurant_Order
+    - Restaurant_Order_Item

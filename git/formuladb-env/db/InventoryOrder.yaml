@@ -29,22 +29,22 @@ props:
     _id:
         name: _id
         propType_: STRING
-        allowNull: false
+        required: true
     sales_agent:
         name: sales_agent
         propType_: STRING
-        allowNull: false
+        required: true
     creation_date:
         name: creation_date
         propType_: DATETIME
-        allowNull: false
+        required: true
     order_item_table:
         name: order_item_table
         propType_: CHILD_TABLE
         referencedEntityName: OrderItem
         props: {}
         isLargeTable: true
-    _owner: { name: _owner, propType_: STRING, allowNull: false }
-    _role: { name: _role, propType_: STRING, allowNull: false }
-    _rev: { name: _rev, propType_: STRING, allowNull: false }
+    _owner: { name: _owner, propType_: STRING, required: true }
+    _role: { name: _role, propType_: STRING, required: true }
+    _rev: { name: _rev, propType_: STRING, required: true }
 isEditable: true

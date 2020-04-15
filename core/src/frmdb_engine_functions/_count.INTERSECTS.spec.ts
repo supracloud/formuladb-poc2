@@ -36,7 +36,7 @@ import { $s2e } from "@functions/s2e";
 //     _id:
 //         name: _id
 //         propType_: STRING
-//         allowNull: false
+//         required: true
 //     guest:
 //         name: guest
 //         propType_: REFERENCE_TO
@@ -50,19 +50,19 @@ import { $s2e } from "@functions/s2e";
 //     start_date:
 //         name: start_date
 //         propType_: DATETIME
-//         allowNull: false
+//         required: true
 //     end_date:
 //         name: end_date
 //         propType_: DATETIME
-//         allowNull: false
+//         required: true
 //     nb_adults:
 //         name: nb_adults
 //         propType_: NUMBER
-//         allowNull: false
+//         required: true
 //     nb_children:
 //         name: nb_children
 //         propType_: NUMBER
-//         allowNull: false
+//         required: true
 //     days:
 //         name: days
 //         propType_: FORMULA
