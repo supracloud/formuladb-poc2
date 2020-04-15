@@ -26,8 +26,9 @@ export const ScalarFunctionsImplementations = {
     MAX: function (x, y) { return Math.max(x, y) },
     ABS: function (x) { return Math.abs(x) },
     TEXT: function TEXT(expr, format) {
-        if (typeof expr == "number" ) {
-            return formulajs.TEXT(expr, format);
+        let num = Number.parseFloat(expr);
+        if (!isNaN(num)) {
+            return formulajs.TEXT(num, format);
         } else if (expr instanceof Date) {
             return moment(expr).format(format);
         }

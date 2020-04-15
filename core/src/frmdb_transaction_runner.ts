@@ -355,7 +355,7 @@ export class FrmdbTransactionRunner {
     public async preComputeOnly(event: events.ServerEventPreComputeFormData) {
         let isNewObj: boolean = false;
         if (isNewDataObjId(event.obj._id)) {
-            event.obj._id = event.obj._id.replace('$AUTO_GENERATE_ID_FOR_NEW_RECORD', '') + generateUUID();
+            event.obj._id = event.obj._id.replace('$AUTOID', '') + generateUUID();
             isNewObj = true;
         }
         let originalObj = _.cloneDeep(event.obj);
@@ -374,7 +374,7 @@ export class FrmdbTransactionRunner {
             let isNewObj: boolean = false;
             if (isNewDataObjId(event.obj._id)) {
                 if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
-                event.obj._id = event.obj._id.replace('$AUTO_GENERATE_ID_FOR_NEW_RECORD', '') + generateUUID();
+                event.obj._id = event.obj._id.replace('$AUTOID', '') + generateUUID();
                 isNewObj = true;
             }
             let originalObj = _.cloneDeep(event.obj);

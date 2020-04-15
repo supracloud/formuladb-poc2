@@ -10,6 +10,7 @@ import { cleanupDocumentDOM } from "../../core/src/page-utils";
 import { parseAllPageUrl } from "@domain/url-utils";
 import { isShadowRoot, isHTMLElement } from "@core/dom-utils";
 import { APP_AND_TENANT_ROOT } from "./app.service";
+import { getElemValue } from "./live-dom-template/dom-node";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -205,7 +206,6 @@ export function $_FRMDB_SCOPE(el: HTMLElement): any {
     }
     return null;
 }
-
 export function $LABEL(id: string) {
     if (id.indexOf('-') >= 0) {
         return id.replace(/-/g, ' ').replace(/(^|(?<= ))[a-z]/g, v => v.toUpperCase());

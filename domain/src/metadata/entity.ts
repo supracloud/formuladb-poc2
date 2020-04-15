@@ -180,6 +180,7 @@ export interface ReferenceToProperty {
     referencedPropertyName: string;
     referencedEntityAlias?: string;
     filter?: LogicalOpBinaryExpression | LogicalCallExpression;
+    required?: boolean;
 }
 export function isBelongsToProperty(param): param is ReferenceToProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;

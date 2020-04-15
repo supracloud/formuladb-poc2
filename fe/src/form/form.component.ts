@@ -42,7 +42,7 @@ export interface FormComponentState extends FormComponentAttr {
 };
 
 const defaultState = {
-    rowId: '$Dictionary~~$AUTO_GENERATE_ID_FOR_NEW_RECORD',
+    rowId: '$Dictionary~~$AUTOID',
 };
 
 export class FormComponent extends HTMLElement {

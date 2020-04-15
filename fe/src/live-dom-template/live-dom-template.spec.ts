@@ -3,7 +3,7 @@
 * License TBD
 */
 
-import { updateDOM, serializeElemToObj } from "./live-dom-template";
+import { updateDOM, serializeElemToObj, evaluateHardCodedForNowFunctions, computeElementRules } from "./live-dom-template";
 import { HTMLTools } from "@core/html-tools";
 
 const htmlTools = new HTMLTools(document, new DOMParser());
@@ -177,5 +177,34 @@ describe('[FE] FrmdbTemplate', () => {
     
         }, 500);
 
+    });
+    
+    fit('should compute rules: $CLOSEST, etc', async () => {
+        let el = wrapHTML(/*html*/`
+            <div data-frmdb-record="A~~1111">
+                <i data-frmdb-value="$FRMDB.A[].afield1">afield1Value</i>
+                <div>
+                    <div data-frmdb-record="B~~2222">
+                        <span data-frmdb-value="$FRMDB.B[].bfield1">bfield1Value</span>
+                        <form data-frmdb-rules="a = $CLOSEST(A.afield1);; b = CONCATENATE($CLOSEST(A._id), &quot;bla&quot;)">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `);
+        let formEl = el.querySelector('form')!;
+        let val = evaluateHardCodedForNowFunctions('$CLOSEST(B._id)', formEl);
+        expect(val).toEqual('"B~~2222"');
+
+        val = evaluateHardCodedForNowFunctions('$CLOSEST(B.bfield1)', formEl);
+        expect(val).toEqual('"bfield1Value"');
+
+        val = evaluateHardCodedForNowFunctions('$CLOSEST(A._id)', formEl);
+        expect(val).toEqual('"A~~1111"');
+
+        let obj: any = {_id: '1'};
+        computeElementRules(formEl, obj);
+        expect(obj.a).toEqual('afield1Value');
+        expect(obj.b).toEqual('A~~1111bla');
     });
 });

@@ -382,15 +382,9 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
                 let img = el.previousElementSibling as HTMLImageElement;
                 if (img && img.tagName.toLowerCase() === 'img') img.src = value + '';
             } else if ((el as HTMLElement).style.getPropertyValue('--frmdb-bg-img')) {
-                (el as HTMLElement).style.setProperty('--frmdb-bg-img', `url(${value})`);
-            } else if ((el as HTMLElement).tagName.toLowerCase() === 'i' && (value.indexOf('la-') === 0 || value.indexOf('icon-') === 0 || value.indexOf('fa-') === 0)) {
-                el.classList.forEach(className => {
-                    let prefix = value.substr(0, value.indexOf('-') + 1);
-                    if (className.startsWith(prefix)) {
-                        el.classList.remove(className);
-                    }
-                });
-                el.classList.add(value);
+                (el as HTMLElement).style.setProperty('--frmdb-bg-img', `url('${value}')`);
+            } else if ((el as HTMLElement).tagName.toLowerCase() === 'frmdb-icon') {
+                el.setAttribute('name', value);
             } else {
                 let textNodeFound: boolean = false;
                 el.childNodes.forEach(child => {
@@ -409,6 +403,26 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
     }
 
     return ret;
+}
+
+export function getElemValue(el: Element): string {
+    if ((el as HTMLElement).tagName.toLowerCase() === 'input' || (el as HTMLElement).tagName.toLowerCase() === 'textarea' || (el as HTMLElement).tagName.toLowerCase() === 'select') {
+        return (el as HTMLInputElement).value;
+    } else if ((el as HTMLElement).tagName.toLowerCase() === 'img') {
+        return (el as HTMLInputElement).src;
+    } else if ((el as HTMLElement).classList.contains('card-img-overlay')) {
+        let img = el.previousElementSibling as HTMLImageElement;
+        if (img && img.tagName.toLowerCase() === 'img') return img.src;
+        else return '';
+    } else if ((el as HTMLElement).style.getPropertyValue('--frmdb-bg-img')) {
+        return (el as HTMLElement).style.getPropertyValue('--frmdb-bg-img');
+    } else if ((el as HTMLElement).tagName.toLowerCase() === 'frmdb-icon') {
+        return el.getAttribute('name') || '';
+    } else if (el.childElementCount === 0) {
+        return el.innerHTML;
+    } else {
+        return el.textContent || '';
+    }
 }
 
 export function isList(el: Elem): boolean {

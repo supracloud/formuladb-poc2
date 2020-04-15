@@ -235,7 +235,7 @@ export class FormService {
         if (!parentEl) return null;
         let parentObj = serializeElemToObj(parentEl) as DataObj;
         let recordId = parentEl.getAttribute('data-frmdb-record') || '';
-        if (recordId != '' && recordId != '$AUTO_GENERATE_ID_FOR_NEW_RECORD' && !parentObj._id) {
+        if (recordId != '' && recordId != '$AUTOID' && !parentObj._id) {
             parentObj._id = recordId;
         }
         if (!parentObj._id) throw new Error("Cannot find obj id for " + control);
