@@ -33,7 +33,6 @@ export interface MapViewUpdateForObjDelete<VALUET> {
 export interface MapViewUpdateForObjModify<VALUET> {
     readonly type: "modify";
     objId: string;
-    keyToDelete: KVSArrayKeyType;
     oldMapKey: KVSArrayKeyType;
     oldMapValue: VALUET;
     keyToSet: KVSArrayKeyType;
@@ -200,7 +199,6 @@ export class MapReduceView {
             let newMapKey: KVSArrayKeyType | null = null;
             let newMapValue: T | null = null;
             let keyToSet: KVSArrayKeyType | null = null;
-            let objChange: MapViewUpdateObjChange<T>;
 
             if (newObj) {
                 newMapKey = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.keyExpr) : evalExpression(newObj, this.map.keyExpr);
@@ -236,19 +234,18 @@ export class MapReduceView {
                 }
             }
 
-            if (keyToDelete && oldMapKey && oldMapValue) {
+            if (oldMapKey && oldMapValue) {
                 if (keyToSet && newMapKey && newMapValue) {
                     ret.objChanges.push({
                         type: "modify",
                         objId,
-                        keyToDelete,
                         oldMapKey,
                         oldMapValue,
                         keyToSet,
                         newMapKey,
                         newMapValue
                     });
-                } else {
+                } else if (keyToDelete) {
                     ret.objChanges.push({
                         type: "delete",
                         objId,
@@ -256,13 +253,12 @@ export class MapReduceView {
                         oldMapKey,
                         oldMapValue,
                     });
-                }
-            } if (keyToSet && newMapKey && newMapValue) {
-                if (keyToDelete && oldMapKey && oldMapValue) {
+                } else throw new Error(`Expecting either modify or delete... ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}`);
+            } else if (keyToSet && newMapKey && newMapValue) {
+                if (oldMapKey && oldMapValue) {
                     ret.objChanges.push({
                         type: "modify",
                         objId,
-                        keyToDelete,
                         oldMapKey,
                         oldMapValue,
                         keyToSet,
@@ -317,7 +313,6 @@ export class MapReduceView {
             let mapUpdates = await this.preComputeMap(objs, ReduceFunDefaultValue[rFun.name]);
             let ret = initMapReduceViewUpdates(mapUpdates);
             let groupedMapUpdates = this.groupMapViewUpdatesForReduce(mapUpdates);
-            let reduceFunApply = getReduceFunApply(rFun);
 
             for (let [currentKeyStr, updates] of Object.entries(groupedMapUpdates)) {
                     
