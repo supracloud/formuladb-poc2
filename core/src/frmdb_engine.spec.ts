@@ -196,35 +196,35 @@ describe('FrmdbEngine', () => {
     });
 
     
-    fit("Should allow change of _id when using KEY", async () => {
-        let schema = _.cloneDeep(_stockReservationSchema);
-        schema.entities.A.props.idx = { name: "idx", propType_: Pn.NUMBER };
-        schema.entities.A.props._id = { name: "_id", propType_: Pn.KEY, scalarFormula: `CONCATENATE(ID(b), "--", idx)`};
-        frmdbTStore = await getFrmdbEngineStore(schema);
-        frmdbEngine = new FrmdbEngine(frmdbTStore);
-        await frmdbEngine.init();
+    // fit("Should allow change of _id when using KEY", async () => {
+    //     let schema = _.cloneDeep(_stockReservationSchema);
+    //     schema.entities.A.props.idx = { name: "idx", propType_: Pn.NUMBER };
+    //     schema.entities.A.props._id = { name: "_id", propType_: Pn.KEY, scalarFormula: `CONCATENATE(ID(b), "--", idx)`};
+    //     frmdbTStore = await getFrmdbEngineStore(schema);
+    //     frmdbEngine = new FrmdbEngine(frmdbTStore);
+    //     await frmdbEngine.init();
 
-        let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-        let a1 = { _id: "A~~1--1", b: 'B~~1', idx: 1, val: 1};
-        let a2 = { _id: "A~~1--2", b: 'B~~1', idx: 2, val: 2};
-        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
-        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
-        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+    //     let b1 = { _id: "B~~1", sum__: 1, x__: 7};
+    //     let a1 = { _id: "A~~1--1", b: 'B~~1', idx: 1, val: 1};
+    //     let a2 = { _id: "A~~1--2", b: 'B~~1', idx: 2, val: 2};
+    //     await frmdbEngine.putDataObjAndUpdateViews(null, b1);
+    //     await frmdbEngine.putDataObjAndUpdateViews(null, a1);
+    //     await frmdbEngine.putDataObjAndUpdateViews(null, a2);
     
-        let a3 = { _id: 'A~~', b: 'B~~1', idx: 3, val: 3 };
-        await putObj(a3 as DataObj);
-        let b1After: any = await frmdbTStore.getDataObj('B~~1');
-        expect(b1After).toEqual(jasmine.objectContaining({sum__: 6, x__: 94}));
-        let a3After: any = await frmdbTStore.getDataObj('A~~1--3');
-        expect(a3After).toEqual(jasmine.objectContaining({_id: 'A~~1--3', b: 'B~~1', idx: 3, val: 3}));
+    //     let a3 = { _id: 'A~~', b: 'B~~1', idx: 3, val: 3 };
+    //     await putObj(a3 as DataObj);
+    //     let b1After: any = await frmdbTStore.getDataObj('B~~1');
+    //     expect(b1After).toEqual(jasmine.objectContaining({sum__: 6, x__: 94}));
+    //     let a3After: any = await frmdbTStore.getDataObj('A~~1--3');
+    //     expect(a3After).toEqual(jasmine.objectContaining({_id: 'A~~1--3', b: 'B~~1', idx: 3, val: 3}));
 
-        a2.idx = 4;
-        await putObj(a2 as DataObj);
-        b1After = await frmdbTStore.getDataObj('B~~1');
-        expect(b1After).toEqual(jasmine.objectContaining({sum__: 6, x__: 94}));
-        let asAfter: any = await frmdbTStore.getDataObj('A~~1--4');
-        expect(a3After).toEqual(jasmine.objectContaining({_id: 'A~~1--4', b: 'B~~1', idx: 4, val: 2}));
-    });
+    //     a2.idx = 4;
+    //     await putObj(a2 as DataObj);
+    //     b1After = await frmdbTStore.getDataObj('B~~1');
+    //     expect(b1After).toEqual(jasmine.objectContaining({sum__: 6, x__: 94}));
+    //     let asAfter: any = await frmdbTStore.getDataObj('A~~1--4');
+    //     expect(a3After).toEqual(jasmine.objectContaining({_id: 'A~~1--4', b: 'B~~1', idx: 4, val: 2}));
+    // });
 
 
     it("Should allow preview formulas", async (done) => {
@@ -321,7 +321,7 @@ describe('FrmdbEngine', () => {
         done();
     });
     
-    it("Should update views and compute new values of Observer when Observer field change", async (done) => {
+    it("Should update views and compute new values of Observer when Observer field change", async () => {
         let schema = _.cloneDeep(stockReservationSchema);
         (schema.entities.B.props.sum__ as FormulaProperty).formula = 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])';
         frmdbTStore = await getFrmdbEngineStore(schema);
@@ -335,10 +335,9 @@ describe('FrmdbEngine', () => {
         let b1After: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        done();
     });
 
-    it("Should compute account balance correctly for transfer transactions", async (done) => {
+    it("Should compute account balance correctly for transfer transactions", async () => {
         frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
         frmdbEngine = new FrmdbEngine(frmdbTStore);
         await frmdbEngine.init();
@@ -354,6 +353,10 @@ describe('FrmdbEngine', () => {
         workers.push(putObj({_id: 'Tr~~', ac1: 'Ac~~3', ac2: 'Ac~~4', val: 25} as DataObj));
         await Promise.all(workers);
 
+        // await putObj({_id: 'Tr~~', ac1: 'Ac~~2', ac2: 'Ac~~3', val: 25} as DataObj)
+        // await putObj({_id: 'Tr~~', ac1: 'Ac~~1', ac2: 'Ac~~2', val: 25} as DataObj)
+        // await putObj({_id: 'Tr~~', ac1: 'Ac~~3', ac2: 'Ac~~4', val: 25} as DataObj)
+
         ac1 = await frmdbTStore.getDataObj('Ac~~1');
         ac2 = await frmdbTStore.getDataObj('Ac~~2');
         ac3 = await frmdbTStore.getDataObj('Ac~~3');
@@ -362,7 +365,6 @@ describe('FrmdbEngine', () => {
         expect(ac2).toEqual(jasmine.objectContaining({balance__: 50}));
         expect(ac3).toEqual(jasmine.objectContaining({balance__: 50}));
         expect(ac4).toEqual(jasmine.objectContaining({balance__: 75}));
-        done();
     });
 });
 

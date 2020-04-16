@@ -190,7 +190,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     }
     public async forceUpdateViewForObj(viewHashCode: string, oldObj: DataObj | null, newObj: DataObj) {
         let view = this.view(viewHashCode, newObj);
-        let updates = await view.preComputeViewUpdateForObjs(oldObj, newObj);
+        let updates = await view.preComputeViewUpdateForObj(oldObj, newObj);
         return view.updateViewForObj(updates);
     }
     public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
@@ -199,7 +199,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     }
     public async preComputeViewUpdateForObj(viewHashCode: string, oldObj: DataObj | null, newObj: DataObj | null): Promise<MapReduceViewUpdates<string | number>> {
         let view = this.view(viewHashCode, undefined);
-        return view.preComputeViewUpdateForObjs(oldObj, newObj);
+        return view.preComputeViewUpdateForObj(oldObj, newObj);
     }
 
     public async getObserversOfObservable(observableObj: DataObj, trigger: MapReduceTrigger): Promise<DataObj[]> {

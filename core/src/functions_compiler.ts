@@ -331,7 +331,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
                 obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
                 entityId: fc.context.targetEntityName,
                 ...inputRange.mapObserversImpactedByOneObservable,
-                valueExpr: $s2e(`_id`),
+                valueExpr: $s2e(`@[_id]`),
             }
         };
     } else {

@@ -1,17 +1,141 @@
-2020-04-16T10:11:32.676Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~1--2","b":"B~~1","idx":4,"val":2},"type_":"ServerEventModifiedFormData","_id":"1587031892676_jvwcqER5FLXpT4jzhJCfxw"}
-2020-04-16T10:11:32.685Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|addObj|0ms; level=0|A~~1--4/{"newObj":{"_id":"A~~1--4","b":"B~~1","idx":4,"val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
-2020-04-16T10:11:32.686Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|addObj|0ms; level=0|A~~1--2/{"newObj":null,"oldObj":{"_id":"A~~1--2","b":"B~~1","idx":2,"val":2},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
-2020-04-16T10:11:32.721Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|preComputeFormula|A~~1--4 --> B~~1[sum__] = 8 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":8}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
-2020-04-16T10:11:32.721Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 92
-2020-04-16T10:11:32.722Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":8,"x__":92},"oldObj":{"_id":"B~~1","sum__":6,"x__":94},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~1--4"],"value":2}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":8}],"reduceDelete":[]}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{},{}]
-2020-04-16T10:11:32.740Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|preComputeNextTransactionDAGLevel| obj B~~1already computed by this transaction
-2020-04-16T10:11:32.740Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw|0|objIds: ["A~~1--4","B~~1","MAP:B~~1\u0001A~~1--4","REDUCE:B~~1","MAP:B~~1\u0001B~~1"]|conflicts: []
-2020-04-16T10:11:32.741Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw|0|executing transaction
-2020-04-16T10:11:32.742Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|addObj|0ms; level=0|A~~1--4/{"newObj":{"_id":"A~~1--4","b":"B~~1","idx":4,"val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
-2020-04-16T10:11:32.743Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|addObj|0ms; level=0|A~~1--2/{"newObj":null,"oldObj":{"_id":"A~~1--2","b":"B~~1","idx":2,"val":2},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
-2020-04-16T10:11:32.784Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|preComputeFormula|A~~1--4 --> B~~1[sum__] = 8 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":8}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
-2020-04-16T10:11:32.784Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 92
-2020-04-16T10:11:32.784Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":8,"x__":92},"oldObj":{"_id":"B~~1","sum__":6,"x__":94},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~1--4"],"value":2}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":8}],"reduceDelete":[]}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{},{}]
-2020-04-16T10:11:32.804Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|preComputeNextTransactionDAGLevel| obj B~~1already computed by this transaction
-2020-04-16T10:11:32.804Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|computeFormulasAndSave|saveObjects: {"_id":"A~~1--4","b":"B~~1","idx":4,"val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"}, {"_id":"B~~1","sum__":8,"x__":92}
-2020-04-16T10:11:32.835Z|1587031892676_jvwcqER5FLXpT4jzhJCfxw||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~1--4","b":"B~~1","idx":4,"val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventModifiedFormData","_id":"1587031892676_jvwcqER5FLXpT4jzhJCfxw"}
+/usr/bin/node --trace-warnings --debug-brk --inspect=0.0.0.0:9232 jasmine.js core/src/frmdb_engine.spec.ts
+Debugger listening on ws://0.0.0.0:9232/cda141ca-41ec-42ab-a843-35f90a5e0d9d
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+null: Array(3) ["/usr/bin/node", "/mnt/d/code/metawiz/febe/jasmine.js", "core/src/frmdb_engine.spec.ts"]
+null: Running just one spec file
+null: Array(1) ["tsc-out/core/src/frmdb_engine.spec.js"]
+null: Running spec files
+null: Array(1) ["tsc-out/core/src/frmdb_engine.spec.js"]
+KvsImplementation=mem
+Jasmine started
+mkdir finished
+I18nStore
+frmdbEngine.frmdbEngineStore.mapReduceViews.size= 0
+stockReservationSchema.entities.B.props.sum__.formula= SUMIF(A.val, b == @[_id])
+stockReservationSchema.entities.B.props.sum__.compiledFormula_= undefined
+stockReservationSchema.entities.B.props.x__.formula= 100 - sum__
+init store...
+Starting FormulaDBEngine...
+2020-04-16T17:23:02.068Z|1587057782065_mc4MKCMg7M7xwYEcb5cRgk|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~c__","b":"B~~1","val":2},"type_":"ServerEventModifiedFormData","_id":"1587057782065_mc4MKCMg7M7xwYEcb5cRgk"}
+2020-04-16T17:23:02.076Z|1587057782065_mc4MKCMg7M7xwYEcb5cRgk||1|addObj|0ms; level=0|A~~c__qTvmNEzcrWmH6T83eYtp7V/{"newObj":{"_id":"A~~c__qTvmNEzcrWmH6T83eYtp7V","b":"B~~1","val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.105Z|1587057782065_mc4MKCMg7M7xwYEcb5cRgk||1|preComputeFormula|A~~c__qTvmNEzcrWmH6T83eYtp7V --> B~~1[sum__] = 5 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":5}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.106Z|1587057782065_mc4MKCMg7M7xwYEcb5cRgk||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 95
+2020-04-16T17:23:02.106Z|1587057782065_mc4MKCMg7M7xwYEcb5cRgk||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":5,"x__":95},"oldObj":{"_id":"B~~1","sum__":1,"x__":7},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"add","objId":"A~~c__qTvmNEzcrWmH6T83eYtp7V","keyToSet":["B~~1","A~~c__qTvmNEzcrWmH6T83eYtp7V"],"newMapKey":["B~~1"],"newMapValue":2}],"reduceChanges":{"B~~1":5}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.110Z|1587057782065_mc4MKCMg7M7xwYEcb5cRgk||1|computeFormulasAndSave|saveObjects: {"_id":"A~~c__qTvmNEzcrWmH6T83eYtp7V","b":"B~~1","val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"}, {"_id":"B~~1","sum__":5,"x__":95}
+2020-04-16T17:23:02.133Z|1587057782065_mc4MKCMg7M7xwYEcb5cRgk||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~c__qTvmNEzcrWmH6T83eYtp7V","b":"B~~1","val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventModifiedFormData","_id":"1587057782065_mc4MKCMg7M7xwYEcb5cRgk"}
+2020-04-16T17:23:02.140Z|1587057782140_5BoKRGGsuu5ZdVVqETNzXk|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~c__","b":"B~~1","val":3},"type_":"ServerEventModifiedFormData","_id":"1587057782140_5BoKRGGsuu5ZdVVqETNzXk"}
+2020-04-16T17:23:02.143Z|1587057782140_5BoKRGGsuu5ZdVVqETNzXk||1|addObj|0ms; level=0|A~~c__fHeJ4L2z9269q5YCNdxzBD/{"newObj":{"_id":"A~~c__fHeJ4L2z9269q5YCNdxzBD","b":"B~~1","val":3,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.171Z|1587057782140_5BoKRGGsuu5ZdVVqETNzXk||1|preComputeFormula|A~~c__fHeJ4L2z9269q5YCNdxzBD --> B~~1[sum__] = 8 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":8}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.172Z|1587057782140_5BoKRGGsuu5ZdVVqETNzXk||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 92
+2020-04-16T17:23:02.173Z|1587057782140_5BoKRGGsuu5ZdVVqETNzXk||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":8,"x__":92},"oldObj":{"_id":"B~~1","sum__":5,"x__":95},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"add","objId":"A~~c__fHeJ4L2z9269q5YCNdxzBD","keyToSet":["B~~1","A~~c__fHeJ4L2z9269q5YCNdxzBD"],"newMapKey":["B~~1"],"newMapValue":3}],"reduceChanges":{"B~~1":8}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.174Z|1587057782140_5BoKRGGsuu5ZdVVqETNzXk||1|computeFormulasAndSave|saveObjects: {"_id":"A~~c__fHeJ4L2z9269q5YCNdxzBD","b":"B~~1","val":3,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"}, {"_id":"B~~1","sum__":8,"x__":92}
+2020-04-16T17:23:02.194Z|1587057782140_5BoKRGGsuu5ZdVVqETNzXk||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~c__fHeJ4L2z9269q5YCNdxzBD","b":"B~~1","val":3,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventModifiedFormData","_id":"1587057782140_5BoKRGGsuu5ZdVVqETNzXk"}
+2020-04-16T17:23:02.200Z|1587057782200_59d7nCsS7sYDeN8CsGvn6P|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~2","b":"B~~1","val":4},"type_":"ServerEventModifiedFormData","_id":"1587057782200_59d7nCsS7sYDeN8CsGvn6P"}
+2020-04-16T17:23:02.207Z|1587057782200_59d7nCsS7sYDeN8CsGvn6P||1|addObj|0ms; level=0|A~~2/{"newObj":{"_id":"A~~2","b":"B~~1","val":4,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":{"_id":"A~~2","b":"B~~1","val":2},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.250Z|1587057782200_59d7nCsS7sYDeN8CsGvn6P||1|preComputeFormula|A~~2 --> B~~1[sum__] = 10 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":10}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.251Z|1587057782200_59d7nCsS7sYDeN8CsGvn6P||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 90
+2020-04-16T17:23:02.252Z|1587057782200_59d7nCsS7sYDeN8CsGvn6P||1|addObj|1ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":10,"x__":90},"oldObj":{"_id":"B~~1","sum__":8,"x__":92},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"A~~2","oldMapKey":["B~~1"],"oldMapValue":2,"keyToSet":["B~~1","A~~2"],"newMapKey":["B~~1"],"newMapValue":4}],"reduceChanges":{"B~~1":10}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.254Z|1587057782200_59d7nCsS7sYDeN8CsGvn6P||1|computeFormulasAndSave|saveObjects: {"_id":"A~~2","b":"B~~1","val":4,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"}, {"_id":"B~~1","sum__":10,"x__":90}
+2020-04-16T17:23:02.287Z|1587057782200_59d7nCsS7sYDeN8CsGvn6P||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~2","b":"B~~1","val":4,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventModifiedFormData","_id":"1587057782200_59d7nCsS7sYDeN8CsGvn6P"}
+2020-04-16T17:23:02.296Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~","b":"B~~1","val":95},"type_":"ServerEventModifiedFormData","_id":"1587057782296_eXbNRvEbLukL9hVNUMBp9Q"}
+2020-04-16T17:23:02.298Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q||1|addObj|0ms; level=0|A~~wiZHZqBE3QeAyadh6BxBMx/{"newObj":{"_id":"A~~wiZHZqBE3QeAyadh6BxBMx","b":"B~~1","val":95,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.324Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q||1|computeAutoCorrections: A~~wiZHZqBE3QeAyadh6BxBMx[val] = [MAX(0, val + $ROW$.x__)] = 90
+2020-04-16T17:23:02.326Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q||1|computeAutoCorrections: A~~wiZHZqBE3QeAyadh6BxBMx[err] = [ABS($OLD$.val - val)] = 5
+2020-04-16T17:23:02.327Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q||2|addObj|1ms; level=0|A~~wiZHZqBE3QeAyadh6BxBMx/{"newObj":{"_id":"A~~wiZHZqBE3QeAyadh6BxBMx","b":"B~~1","val":95,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.347Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q||2|computeAutoCorrections: A~~wiZHZqBE3QeAyadh6BxBMx[val] = [MAX(0, val + $ROW$.x__)] = 85
+2020-04-16T17:23:02.348Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q||2|computeAutoCorrections: A~~wiZHZqBE3QeAyadh6BxBMx[err] = [ABS($OLD$.val - val)] = 5
+2020-04-16T17:23:02.352Z|1587057782296_eXbNRvEbLukL9hVNUMBp9Q||2|FINISH|{"state_":"ABORT","obj":{"_id":"A~~wiZHZqBE3QeAyadh6BxBMx","b":"B~~1","val":85,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":5},"type_":"ServerEventModifiedFormData","_id":"1587057782296_eXbNRvEbLukL9hVNUMBp9Q","reason_":"ABORT_ON_ERROR","error_":"{\"message\":\"still haveFailedValidations after retries\"}. Stack:undefined"}
+2020-04-16T17:23:02.434Z|1587057782433_bzNcTw2C3NUfyqeuTG8MDN|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~wiZHZqBE3QeAyadh6BxBMx","b":"B~~1","val":85,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":5},"type_":"ServerEventDeletedFormData","_id":"1587057782433_bzNcTw2C3NUfyqeuTG8MDN"}
+2020-04-16T17:23:02.441Z|1587057782433_bzNcTw2C3NUfyqeuTG8MDN||1|addObj|0ms; level=0|A~~wiZHZqBE3QeAyadh6BxBMx/{"newObj":null,"oldObj":{"_id":"A~~wiZHZqBE3QeAyadh6BxBMx","b":"B~~1","val":85,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":5},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.479Z|1587057782433_bzNcTw2C3NUfyqeuTG8MDN||1|preComputeFormula|A~~wiZHZqBE3QeAyadh6BxBMx --> B~~1[sum__] = -75 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":-75}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.479Z|1587057782433_bzNcTw2C3NUfyqeuTG8MDN||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 175
+2020-04-16T17:23:02.480Z|1587057782433_bzNcTw2C3NUfyqeuTG8MDN||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":-75,"x__":175},"oldObj":{"_id":"B~~1","sum__":10,"x__":90},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"delete","objId":"A~~wiZHZqBE3QeAyadh6BxBMx","keyToDelete":["B~~1","A~~wiZHZqBE3QeAyadh6BxBMx"],"oldMapKey":["B~~1"],"oldMapValue":85}],"reduceChanges":{"B~~1":-75}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.481Z|1587057782433_bzNcTw2C3NUfyqeuTG8MDN||1|computeFormulasAndSave|saveObjects: {"_id":"B~~1","sum__":-75,"x__":175}
+2020-04-16T17:23:02.516Z|1587057782433_bzNcTw2C3NUfyqeuTG8MDN||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~wiZHZqBE3QeAyadh6BxBMx","b":"B~~1","val":85,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":5},"type_":"ServerEventDeletedFormData","_id":"1587057782433_bzNcTw2C3NUfyqeuTG8MDN"}
+2020-04-16T17:23:02.522Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~","b":"B~~1","val":295},"type_":"ServerEventModifiedFormData","_id":"1587057782522_mSNu9i5wtmEDpBx7DHL48h"}
+2020-04-16T17:23:02.524Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h||1|addObj|0ms; level=0|A~~A1qZBimuNzUYtm3zsEXgr/{"newObj":{"_id":"A~~A1qZBimuNzUYtm3zsEXgr","b":"B~~1","val":295,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.543Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h||1|computeAutoCorrections: A~~A1qZBimuNzUYtm3zsEXgr[val] = [MAX(0, val + $ROW$.x__)] = 175
+2020-04-16T17:23:02.544Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h||1|computeAutoCorrections: A~~A1qZBimuNzUYtm3zsEXgr[err] = [ABS($OLD$.val - val)] = 120
+2020-04-16T17:23:02.545Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h||2|addObj|0ms; level=0|A~~A1qZBimuNzUYtm3zsEXgr/{"newObj":{"_id":"A~~A1qZBimuNzUYtm3zsEXgr","b":"B~~1","val":295,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.576Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h||2|computeAutoCorrections: A~~A1qZBimuNzUYtm3zsEXgr[val] = [MAX(0, val + $ROW$.x__)] = 55
+2020-04-16T17:23:02.577Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h||2|computeAutoCorrections: A~~A1qZBimuNzUYtm3zsEXgr[err] = [ABS($OLD$.val - val)] = 120
+2020-04-16T17:23:02.579Z|1587057782522_mSNu9i5wtmEDpBx7DHL48h||2|FINISH|{"state_":"ABORT","obj":{"_id":"A~~A1qZBimuNzUYtm3zsEXgr","b":"B~~1","val":55,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":120},"type_":"ServerEventModifiedFormData","_id":"1587057782522_mSNu9i5wtmEDpBx7DHL48h","reason_":"ABORT_ON_ERROR","error_":"{\"message\":\"still haveFailedValidations after retries\"}. Stack:undefined"}
+2020-04-16T17:23:02.587Z|1587057782587_fi6VBmPKxzMaGpYXkXoutS|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~A1qZBimuNzUYtm3zsEXgr","b":"B~~1","val":55,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":120},"type_":"ServerEventDeletedFormData","_id":"1587057782587_fi6VBmPKxzMaGpYXkXoutS"}
+2020-04-16T17:23:02.589Z|1587057782587_fi6VBmPKxzMaGpYXkXoutS||1|addObj|0ms; level=0|A~~A1qZBimuNzUYtm3zsEXgr/{"newObj":null,"oldObj":{"_id":"A~~A1qZBimuNzUYtm3zsEXgr","b":"B~~1","val":55,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":120},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.622Z|1587057782587_fi6VBmPKxzMaGpYXkXoutS||1|preComputeFormula|A~~A1qZBimuNzUYtm3zsEXgr --> B~~1[sum__] = -130 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":-130}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.623Z|1587057782587_fi6VBmPKxzMaGpYXkXoutS||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 230
+2020-04-16T17:23:02.623Z|1587057782587_fi6VBmPKxzMaGpYXkXoutS||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":-130,"x__":230},"oldObj":{"_id":"B~~1","sum__":-75,"x__":175},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"delete","objId":"A~~A1qZBimuNzUYtm3zsEXgr","keyToDelete":["B~~1","A~~A1qZBimuNzUYtm3zsEXgr"],"oldMapKey":["B~~1"],"oldMapValue":55}],"reduceChanges":{"B~~1":-130}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.624Z|1587057782587_fi6VBmPKxzMaGpYXkXoutS||1|computeFormulasAndSave|saveObjects: {"_id":"B~~1","sum__":-130,"x__":230}
+2020-04-16T17:23:02.662Z|1587057782587_fi6VBmPKxzMaGpYXkXoutS||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~A1qZBimuNzUYtm3zsEXgr","b":"B~~1","val":55,"_role":"$ANONYMOUS","_owner":"AnounymousUserId","err":120},"type_":"ServerEventDeletedFormData","_id":"1587057782587_fi6VBmPKxzMaGpYXkXoutS"}
+2020-04-16T17:23:02.665Z|1587057782664_sfW6jApTdfHwETzvbkwyy9|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~2","b":"B~~1","val":4,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventDeletedFormData","_id":"1587057782664_sfW6jApTdfHwETzvbkwyy9"}
+2020-04-16T17:23:02.679Z|1587057782664_sfW6jApTdfHwETzvbkwyy9||1|addObj|0ms; level=0|A~~2/{"newObj":null,"oldObj":{"_id":"A~~2","b":"B~~1","val":4,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.700Z|1587057782664_sfW6jApTdfHwETzvbkwyy9||1|preComputeFormula|A~~2 --> B~~1[sum__] = -134 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":-134}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.701Z|1587057782664_sfW6jApTdfHwETzvbkwyy9||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 234
+2020-04-16T17:23:02.703Z|1587057782664_sfW6jApTdfHwETzvbkwyy9||1|addObj|1ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":-134,"x__":234},"oldObj":{"_id":"B~~1","sum__":-130,"x__":230},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"delete","objId":"A~~2","keyToDelete":["B~~1","A~~2"],"oldMapKey":["B~~1"],"oldMapValue":4}],"reduceChanges":{"B~~1":-134}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.704Z|1587057782664_sfW6jApTdfHwETzvbkwyy9||1|computeFormulasAndSave|saveObjects: {"_id":"B~~1","sum__":-134,"x__":234}
+2020-04-16T17:23:02.742Z|1587057782664_sfW6jApTdfHwETzvbkwyy9||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~2","b":"B~~1","val":4,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventDeletedFormData","_id":"1587057782664_sfW6jApTdfHwETzvbkwyy9"}
+2020-04-16T17:23:02.754Z|1587057782754_i5ePFFrJjyfTuzukstuRu4|BEGIN|{"state_":"BEGIN","obj":{"_id":"A~~1","b":"B~~1","val":1},"type_":"ServerEventDeletedFormData","_id":"1587057782754_i5ePFFrJjyfTuzukstuRu4"}
+2020-04-16T17:23:02.763Z|1587057782754_i5ePFFrJjyfTuzukstuRu4||1|addObj|0ms; level=0|A~~1/{"newObj":null,"oldObj":{"_id":"A~~1","b":"B~~1","val":1},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.777Z|1587057782754_i5ePFFrJjyfTuzukstuRu4||1|preComputeFormula|A~~1 --> B~~1[sum__] = -135 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":-135}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.778Z|1587057782754_i5ePFFrJjyfTuzukstuRu4||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 235
+2020-04-16T17:23:02.778Z|1587057782754_i5ePFFrJjyfTuzukstuRu4||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":-135,"x__":235},"oldObj":{"_id":"B~~1","sum__":-134,"x__":234},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"delete","objId":"A~~1","keyToDelete":["B~~1","A~~1"],"oldMapKey":["B~~1"],"oldMapValue":1}],"reduceChanges":{"B~~1":-135}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.779Z|1587057782754_i5ePFFrJjyfTuzukstuRu4||1|computeFormulasAndSave|saveObjects: {"_id":"B~~1","sum__":-135,"x__":235}
+2020-04-16T17:23:02.828Z|1587057782754_i5ePFFrJjyfTuzukstuRu4||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~1","b":"B~~1","val":1},"type_":"ServerEventDeletedFormData","_id":"1587057782754_i5ePFFrJjyfTuzukstuRu4"}
+2020-04-16T17:23:02.843Z|1587057782842_2qHNNyvNtwGJphmZfur27Q|BEGIN|{"state_":"BEGIN","obj":{"_id":"C~~c"},"type_":"ServerEventDeletedFormData","_id":"1587057782842_2qHNNyvNtwGJphmZfur27Q"}
+2020-04-16T17:23:02.870Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|addObj|0ms; level=0|A~~c__fHeJ4L2z9269q5YCNdxzBD/{"newObj":null,"oldObj":{"_id":"A~~c__fHeJ4L2z9269q5YCNdxzBD","b":"B~~1","val":3,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.897Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|preComputeFormula|A~~c__fHeJ4L2z9269q5YCNdxzBD --> B~~1[sum__] = -138 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":-138}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.898Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 238
+2020-04-16T17:23:02.898Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":-138,"x__":238},"oldObj":{"_id":"B~~1","sum__":-135,"x__":235},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"delete","objId":"A~~c__fHeJ4L2z9269q5YCNdxzBD","keyToDelete":["B~~1","A~~c__fHeJ4L2z9269q5YCNdxzBD"],"oldMapKey":["B~~1"],"oldMapValue":3}],"reduceChanges":{"B~~1":-138}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.899Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|computeFormulasAndSave|saveObjects: {"_id":"B~~1","sum__":-138,"x__":238}
+2020-04-16T17:23:02.950Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~c__fHeJ4L2z9269q5YCNdxzBD","b":"B~~1","val":3,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventDeletedFormData","_id":"1587057782842_2qHNNyvNtwGJphmZfur27Q__"}
+2020-04-16T17:23:02.957Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|addObj|0ms; level=0|A~~c__qTvmNEzcrWmH6T83eYtp7V/{"newObj":null,"oldObj":{"_id":"A~~c__qTvmNEzcrWmH6T83eYtp7V","b":"B~~1","val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:02.982Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|preComputeFormula|A~~c__qTvmNEzcrWmH6T83eYtp7V --> B~~1[sum__] = -140 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":-140}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])']]
+2020-04-16T17:23:02.982Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 240
+2020-04-16T17:23:02.982Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":-140,"x__":240},"oldObj":{"_id":"B~~1","sum__":-138,"x__":238},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"delete","objId":"A~~c__qTvmNEzcrWmH6T83eYtp7V","keyToDelete":["B~~1","A~~c__qTvmNEzcrWmH6T83eYtp7V"],"oldMapKey":["B~~1"],"oldMapValue":2}],"reduceChanges":{"B~~1":-140}}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","objChanges":[{"type":"modify","objId":"B~~1","oldMapKey":["B~~1"],"oldMapValue":"B~~1","keyToSet":["B~~1","B~~1"],"newMapKey":["B~~1"],"newMapValue":"B~~1"}],"reduceChanges":{}}]} in [{},{}]
+2020-04-16T17:23:02.983Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|computeFormulasAndSave|saveObjects: {"_id":"B~~1","sum__":-140,"x__":240}
+2020-04-16T17:23:03.023Z|1587057782842_2qHNNyvNtwGJphmZfur27Q__||1|FINISH|{"state_":"BEGIN","obj":{"_id":"A~~c__qTvmNEzcrWmH6T83eYtp7V","b":"B~~1","val":2,"_role":"$ANONYMOUS","_owner":"AnounymousUserId"},"type_":"ServerEventDeletedFormData","_id":"1587057782842_2qHNNyvNtwGJphmZfur27Q__"}
+2020-04-16T17:23:03.024Z|1587057782842_2qHNNyvNtwGJphmZfur27Q||1|addObj|0ms; level=0|C~~c/{"newObj":null,"oldObj":{"_id":"C~~c"},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2020-04-16T17:23:03.024Z|1587057782842_2qHNNyvNtwGJphmZfur27Q||1|computeFormulasAndSave|saveObjects:
+2020-04-16T17:23:03.038Z|1587057782842_2qHNNyvNtwGJphmZfur27Q||1|FINISH|{"state_":"BEGIN","obj":{"_id":"C~~c"},"type_":"ServerEventDeletedFormData","_id":"1587057782842_2qHNNyvNtwGJphmZfur27Q"}
+
+  FrmdbEngine
+    ✗ Should allow basic formulas computation when saving an object with auto-correct (2 secs)
+      - Expected Object({ _id: 'B~~1', sum__: 10, x__: 90 }) to equal <jasmine.objectContaining(Object({ sum__: 100, x__: 0 }))>.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:162:25)
+      - Expected 85 to equal 90.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:163:31)
+      - Expected Object({ _id: 'B~~1', sum__: -75, x__: 175 }) to equal <jasmine.objectContaining(Object({ sum__: 10, x__: 90 }))>.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:168:25)
+      - Expected Object({ _id: 'B~~1', sum__: -75, x__: 175 }) to equal <jasmine.objectContaining(Object({ sum__: 100, x__: 0 }))>.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:172:25)
+      - Expected 55 to equal 90.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:173:31)
+      - Expected 120 to equal 205.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:174:31)
+      - Expected Object({ _id: 'B~~1', sum__: -134, x__: 234 }) to equal <jasmine.objectContaining(Object({ sum__: 6, x__: 94 }))>.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:180:25)
+      - Expected Object({ _id: 'B~~1', sum__: -135, x__: 235 }) to equal <jasmine.objectContaining(Object({ sum__: 5, x__: 95 }))>.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:185:25)
+      - Expected 1 to equal 0.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:192:39)
+      - Expected Object({ _id: 'B~~1', sum__: -140, x__: 240 }) to equal <jasmine.objectContaining(Object({ sum__: 0, x__: 100 }))>.
+          at <Jasmine>
+          at UserContext.fit (/mnt/d/code/metawiz/febe/core/src/frmdb_engine.spec.ts:193:25)
+
+**************************************************
+*                    Failures                    *
+**************************************************
+
+1) FrmdbEngine Should allow basic formulas computation when saving an object with auto-correct
+
+Executed 1 of 5 specs (1 FAILED) (4 SKIPPED) in 2 secs.

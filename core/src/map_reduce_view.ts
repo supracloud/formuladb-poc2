@@ -53,7 +53,7 @@ export interface MapViewUpdates<VALUET> {
 export interface MapReduceViewUpdates<VALUET> extends MapViewUpdates<VALUET> {
     reduceChanges: { [keyStr: string]: VALUET };
 }
-function initMapReduceViewUpdates<VALUET>(mapViewUpdates: MapViewUpdates<VALUET>): MapReduceViewUpdates<VALUET> {
+export function initMapReduceViewUpdates<VALUET>(mapViewUpdates: MapViewUpdates<VALUET>): MapReduceViewUpdates<VALUET> {
     return {
         ...mapViewUpdates,
         reduceChanges: {},
@@ -305,10 +305,7 @@ export class MapReduceView {
         let rFun = this.reduceFunction;
         if (!rFun) {
             let ret = await this.preComputeMap(objs, null);
-            return {
-                ...ret,
-                reduceChanges: {},
-            };
+            return initMapReduceViewUpdates(ret);
         } else {
             let mapUpdates = await this.preComputeMap(objs, ReduceFunDefaultValue[rFun.name]);
             let ret = initMapReduceViewUpdates(mapUpdates);
@@ -397,18 +394,26 @@ export class MapReduceView {
         }
 
         if (this.reduceFunction) {
-            for (let [reduceKey, reduceValue] of Object.entries(updates.reduceChanges)) {
-                if ((SumReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
-                    || (CountReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
-                ) {
-                    await this.reduceFunction.kvs.set(kvsStr2Key(reduceKey), reduceValue);
-                } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof reduceValue === 'string') {
-                    await (this.reduceFunction.kvs as any /*wtf*/).set(reduceKey, reduceValue);
+            for (let [reduceKeyStr, reduceValue] of Object.entries(updates.reduceChanges)) {
+                let reduceKey = kvsStr2Key(reduceKeyStr);
+                let otherMapValuesWithOldKey = await this.mapKVS.rangeQueryWithKeys({
+                    startkey: reduceKey,
+                    endkey: reduceKey.concat('\ufff0')
+                });
+                if (otherMapValuesWithOldKey.length === 0 
+                    && reduceValue === ReduceFunDefaultValue[this.reduceFunction.name]) 
+                {
+                    await this.reduceFunction.kvs.del(reduceKey);
+                } else {
+                    if ((SumReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
+                        || (CountReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
+                    ) {
+                        await (this.reduceFunction.kvs as any).set(reduceKey, reduceValue);
+                    } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof reduceValue === 'string') {
+                        await (this.reduceFunction.kvs as any /*wtf*/).set(reduceKey, reduceValue);
+                    }
                 }
             }
-            // for (let key of updates.reduceDelete) {
-            //     await this.reduceFunction.kvs.del(key);
-            // }
         }
     }
 
