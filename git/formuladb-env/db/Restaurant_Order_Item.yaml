@@ -3,8 +3,8 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: STRING
-        required: true
+        propType_: KEY
+        scalarFormula: 'CONCATENATE(order_id, "--", menu_item_id)'
     _owner:
         name: _owner
         propType_: STRING

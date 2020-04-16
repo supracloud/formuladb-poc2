@@ -38,6 +38,7 @@ import {
     CompiledScalar,
     MapKeyQuery,
     includesMapFunctionAndQuery,
+    ScalarCallExpression,
 } from "@domain/metadata/execution_plan";
 import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError, isLogicalCallExpression, isLogicalOpBinaryExpression, extractKeysAndQueriesFromBinaryExpression, BooleanCallExpression, isBooleanCallExpression, LogicalOperator } from './formula_compiler';
 import { _throw, _throwEx } from "./throw";
@@ -395,6 +396,9 @@ function STRING(fc: FuncCommon, required: "true" | "false") {
 function IMAGE(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
+function KEY(fc: FuncCommon, scalarFormula: ScalarCallExpression | CompiledScalar) {
+    return propertyTypeFunction(fc);
+}
 function DATETIME(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
@@ -709,6 +713,7 @@ export const PropertyTypeFunctions = {
     [Pn.IMAGE]: IMAGE,
     [Pn.DATETIME]: DATETIME,
     [Pn.REFERENCE_TO]: REFERENCE_TO,
+    [Pn.KEY]: KEY,
 }
 
 export const FunctionsDict: { [x: string]: Function } = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
@@ -736,6 +741,7 @@ export const FunctionSignatures = {
     IMAGE: `function IMAGE(fc, required)`,
     BOOLEAN: `function BOOLEAN(fc, required)`,
     DATETIME: `function DATETIME(fc, required)`,
+    KEY: `function KEY(fc, scalarFormula)`,
     SUMIF: `function SUMIF(fc, tableRange, logicalExpression)`,
     COUNT: `function COUNT(fc, tableRange)`,
     COUNTIF: `function COUNTIF(fc, tableRange, logicalExpression)`,
@@ -743,7 +749,7 @@ export const FunctionSignatures = {
     RANK: `function RANK(fc, lookupExpr, tableRange)`,
     VLOOKUP: `function VLOOKUP(fc, entityRange, booleanExpr, resultExpr)`,
     TEXT: `function TEXT(fc, expr, format)`,
-    CONCATENATE: `function CONCATENATE(fc, expr, expr2)`,
+    CONCATENATE: `function CONCATENATE(fc, expr, expr2, expr3, expr4, expr5, expr6)`,
     REGEXREPLACE: `function REGEXREPLACE(fc, expr, regex, replacement)`,
     SUBSTITUTE: `function SUBSTITUTE(fc, expr, old_text, new_text)`,
     EOMONTH: `function EOMONTH(fc, expr, numMonths)`,

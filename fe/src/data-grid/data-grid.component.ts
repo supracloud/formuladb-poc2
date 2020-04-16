@@ -92,7 +92,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
     /** component internals *************************************************/
 
-    debouncedForceCellRefresh = _.debounce(() => this._forceCellRefresh(), 150);
+    debouncedForceCellRefresh = _.debounce(() => this._forceCellRefresh(), 200);
     gridIsRefreshing: boolean = false;
     public _forceCellRefresh() {
         if (this.gridIsRefreshing) {
@@ -101,9 +101,9 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         }
         this.gridIsRefreshing = true;
         this.gridApi && this.gridApi.refreshCells({force: true});
-        this.gridIsRefreshing = true;
+        this.gridIsRefreshing = false;
     }
-    public forceReloadData = _.debounce(() => this._forceReloadData(), 150);
+    public forceReloadData = _.debounce(() => this._forceReloadData(), 200);
     private _forceReloadData() {
         if (this.gridApi) {
             this.gridApi.purgeInfiniteCache();

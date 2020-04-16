@@ -30,6 +30,8 @@ export const ScalarFunctions = {
     OR: true,
     NOT: true,
     TEXT: true,
+    CONCATENATE: true,
+    PROPER: true,
     REGEXREPLACE: true,
     EOMONTH: true,
     SQRT: true,

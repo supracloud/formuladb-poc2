@@ -22,9 +22,9 @@ function currentTimestamp() {
 }
 
 export function getParentObjId(control: HTMLElement): string | null {
-    let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
+    let parentEl: HTMLElement = control.closest('[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement;
     if (!parentEl) {console.warn("Could not get parent of " + control.outerHTML); return null};
-    let ret = parentEl.getAttribute('data-frmdb-record');
+    let ret = parentEl.getAttribute('data-frmdb-record') || parentEl.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '');
     if (!ret) {console.warn("Could not get obj id of parent " + parentEl.outerHTML + " for " + control.outerHTML); return null};
     return ret;
 }

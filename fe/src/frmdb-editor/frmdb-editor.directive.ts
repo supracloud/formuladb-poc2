@@ -272,7 +272,11 @@ export class FrmdbEditorDirective {
 
     changeSelectedTableIdIfDifferent(tableName: string) {
         if (tableName === this.state.data.selectedTableId) return;
-        this.state.emitChange({ selectedTableId: tableName });
+        if (this.state.data.tables.map(t => t._id).includes(tableName)) {
+            this.state.emitChange({ selectedTableId: tableName });
+        } else {
+            console.warn(`attempt to select no existent table ${tableName}`);
+        }
     }
 
     selectElement(el: HTMLElement | null) {
@@ -657,6 +661,9 @@ export class FrmdbEditorDirective {
             let attrib = el.attributes[i];
             if (attrib.name === 'data-frmdb-table') {
                 let tableName = attrib.value.replace(/^\$FRMDB(\.\$REFERENCE_TO_OPTIONS)?\./, '').replace(/\[\]$/, '');
+                return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
+            } else if ('data-frmdb-bind-to-record' === attrib.name) {
+                let tableName = attrib.value.replace(/^\$FRMDB\./, '').replace(/~~.*/, '');
                 return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
             } else if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
                 let recordId = getParentObjId(el);
