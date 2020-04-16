@@ -172,12 +172,7 @@ export function $SAVE_DOC_PAGE(pagePath: string, doc: Document): Promise<boolean
         })
 }
 
-export function $ID(_id: string) {
-    return _id ? _id.replace(/^.*?~~/, '') : ''
-}
-
 export const FeFunctionsForDataBinding = {
-    '$ID': $ID,
     '$LABEL': $LABEL,
 };
 
@@ -217,7 +212,6 @@ export function $LABEL(id: string) {
 (window as any).$MODAL = $MODAL;
 (window as any).$TABLES = $TABLES;
 (window as any).$DATA_COLUMNS_FOR_ELEM = $DATA_COLUMNS_FOR_ELEM;
-(window as any).$ID = $ID;
 (window as any).$LABEL = $LABEL;
 (window as any).$SAVE_DOC_PAGE = $SAVE_DOC_PAGE;
 (window as any).$FCMP = $FCMP;

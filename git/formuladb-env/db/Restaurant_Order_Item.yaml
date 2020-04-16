@@ -4,7 +4,7 @@ props:
     _id:
         name: _id
         propType_: KEY
-        scalarFormula: 'CONCATENATE(order_id, "--", menu_item_id)'
+        scalarFormula: 'CONCATENATE(ID(order_id), "--", ID(menu_item_id))'
     _owner:
         name: _owner
         propType_: STRING

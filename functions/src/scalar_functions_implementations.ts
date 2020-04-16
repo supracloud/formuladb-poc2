@@ -33,6 +33,9 @@ export const ScalarFunctionsImplementations = {
             return moment(expr).format(format);
         }
     },
+    ID: function ID(_id: string) {
+        return _id ? _id.replace(/^.*?~~/, '') : ''
+    },
     FIND: function (find_text, within_text, position?) {
         position = (position === undefined) ? 0 : position;
         if (!within_text) return null;

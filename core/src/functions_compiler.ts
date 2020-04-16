@@ -647,6 +647,9 @@ function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): Co
 function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
+function ID(fc: FuncCommon, _id: Expression): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 function CONCATENATE(fc: FuncCommon, expr: Expression, expr2: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -692,6 +695,7 @@ export const ScalarFunctions = {
     OR: OR,
     NOT: NOT,
     TEXT: TEXT,
+    ID: ID,
     CONCATENATE: CONCATENATE,
     REGEXREPLACE: REGEXREPLACE,
     SUBSTITUTE: SUBSTITUTE,
@@ -749,6 +753,7 @@ export const FunctionSignatures = {
     RANK: `function RANK(fc, lookupExpr, tableRange)`,
     VLOOKUP: `function VLOOKUP(fc, entityRange, booleanExpr, resultExpr)`,
     TEXT: `function TEXT(fc, expr, format)`,
+    ID: `function ID(fc, _id)`,
     CONCATENATE: `function CONCATENATE(fc, expr, expr2, expr3, expr4, expr5, expr6)`,
     REGEXREPLACE: `function REGEXREPLACE(fc, expr, regex, replacement)`,
     SUBSTITUTE: `function SUBSTITUTE(fc, expr, old_text, new_text)`,

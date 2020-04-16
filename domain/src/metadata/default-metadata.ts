@@ -99,7 +99,8 @@ export const _$System_Param = {
     _id: "$System_Param",
     isEditable: true,
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.KEY, scalarFormula: "name" } as EntityProperty,
+        name: { name: "name", propType_: Pn.STRING, required: true } as EntityProperty,
         value: { name: "value", propType_: Pn.STRING, required: true } as EntityProperty,
     }
 };

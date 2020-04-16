@@ -1,6 +1,7 @@
 import { ThemeColors } from "@domain/uimetadata/theme";
 import { AlertComponent } from "./alert/alert.component";
 import { MwzEvents } from "@domain/event";
+import { waitUntil } from "@domain/ts-utils";
 
 class NotificationContainerComponent extends HTMLElement {
     connectedCallback() {
@@ -13,14 +14,24 @@ class NotificationContainerComponent extends HTMLElement {
 }
 customElements.define('frmdb-notification-container', NotificationContainerComponent);
 
-let NotificationContainer: HTMLElement = document.querySelector('frmdb-notification-container') as HTMLElement;
-if (!NotificationContainer) {
-    NotificationContainer = document.createElement('frmdb-notification-container');
-    document.body.appendChild(NotificationContainer);
-}
+let NotificationContainer: HTMLElement | null = null;
 
+document.addEventListener('DOMContentLoaded', function() {
+    NotificationContainer = document.querySelector('frmdb-notification-container') as HTMLElement;
+    if (!NotificationContainer) {
+        NotificationContainer = document.createElement('frmdb-notification-container');
+        document.body.appendChild(NotificationContainer);
+    }
+});
 
 export function raiseNotification(severity: ThemeColors, title: string, msg: string) {
+    if (!NotificationContainer) {
+        (async () => {
+            await waitUntil(() => Promise.resolve(NotificationContainer));
+            raiseNotification(severity, title, msg);
+        })();
+        return;
+    }
     let alertEl: AlertComponent = document.createElement('frmdb-alert') as AlertComponent;
     alertEl.change({
         eventTitle: title,

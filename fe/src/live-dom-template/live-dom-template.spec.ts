@@ -179,7 +179,7 @@ describe('[FE] FrmdbTemplate', () => {
 
     });
     
-    fit('should compute rules: $CLOSEST, etc', async () => {
+    it('should compute rules: $CLOSEST, etc', async () => {
         let el = wrapHTML(/*html*/`
             <div data-frmdb-record="A~~1111">
                 <i data-frmdb-value="$FRMDB.A[].afield1">afield1Value</i>

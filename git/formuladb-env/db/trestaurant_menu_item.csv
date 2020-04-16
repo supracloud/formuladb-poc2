@@ -1,2 +1,2 @@
 _id,_owner,_role,_rev,name,picture,description,price
-Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,AnounymousUserId,$ANONYMOUS,"",pizza 2,/formuladb-env/frmdb-apps/pizza-time/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg,best pizza in town,10.00000
+Restaurant_Menu_Item~~pizza,AnounymousUserId,$ANONYMOUS,"",pizza,/formuladb-env/frmdb-apps/pizza-time/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg,best pizza in town,10.00000

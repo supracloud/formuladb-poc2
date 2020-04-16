@@ -17,7 +17,7 @@ import '../directives/data-toggle-tab.directive';
 import '../directives/data-toggle-modal.directive';
 
 import { App } from "@domain/app";
-import { $SAVE_DOC_PAGE, $ID } from "@fe/fe-functions";
+import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
 
