@@ -5,9 +5,10 @@ import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI
 import { MapFunctionT } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { KeyValueObj } from '@domain/key_value_obj';
-import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
+import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, 
+    TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun, ReduceFunDefaultValue, 
+    getReduceFunApply, TextjoinReduceFunApply } from "@domain/metadata/reduce_functions";
 import { MINCHAR, MAXCHAR } from '@storage/collator';
-import { ValueTextInput } from '@fe/component-editor/inputs';
 
 export type MapReduceViewUpdateOldNew =
     | { oldObj: KeyValueObj | null, newObj: KeyValueObj }
@@ -16,18 +17,21 @@ export type MapReduceViewUpdateOldNew =
     ;
 
 export interface MapViewUpdateForObjAdd<VALUET> {
+    readonly type: "add";
     objId: string;
     keyToSet: KVSArrayKeyType;
     newMapKey: KVSArrayKeyType;
     newMapValue: VALUET;
 }
 export interface MapViewUpdateForObjDelete<VALUET> {
+    readonly type: "delete";
     objId: string;
     keyToDelete: KVSArrayKeyType;
     oldMapKey: KVSArrayKeyType;
     oldMapValue: VALUET;
 }
 export interface MapViewUpdateForObjModify<VALUET> {
+    readonly type: "modify";
     objId: string;
     keyToDelete: KVSArrayKeyType;
     oldMapKey: KVSArrayKeyType;
@@ -48,12 +52,16 @@ export interface MapViewUpdates<VALUET> {
     objChanges: MapViewUpdateObjChange<VALUET>[];
 }
 export interface MapReduceViewUpdates<VALUET> extends MapViewUpdates<VALUET> {
-    reduce: { key: KVSArrayKeyType, value: VALUET }[];
-    reduceDelete: KVSArrayKeyType[];
+    reduceChanges: { [keyStr: string]: VALUET };
 }
-
+function initMapReduceViewUpdates<VALUET>(mapViewUpdates: MapViewUpdates<VALUET>): MapReduceViewUpdates<VALUET> {
+    return {
+        ...mapViewUpdates,
+        reduceChanges: {},
+    };
+}
 export function isReduce<VALUET>(v: MapViewUpdates<VALUET> | MapReduceViewUpdates<VALUET>): v is MapReduceViewUpdates<VALUET> {
-    return 'reduce' in v;
+    return 'reduceChanges' in v;
 }
 
 type ReduceFunction =
@@ -204,7 +212,6 @@ export class MapReduceView {
                 keyToSet = MapReduceView.makeUniqueMapKeyByAddingId(newMapKey, newObj._id);
             }
 
-
             let oldMapKey: KVSArrayKeyType | null = null;
             let keyToDelete: KVSArrayKeyType | null = null;
             let oldMapValue: T | null = null;
@@ -228,15 +235,50 @@ export class MapReduceView {
                     keyToDelete = MapReduceView.makeUniqueMapKeyByAddingId(oldMapKey, oldObj._id);
                 }
             }
-            ret.objChanges.push({
-                objId,
-                keyToDelete,
-                oldMapKey,
-                oldMapValue,
-                keyToSet,
-                newMapKey,
-                newMapValue
-            });
+
+            if (keyToDelete && oldMapKey && oldMapValue) {
+                if (keyToSet && newMapKey && newMapValue) {
+                    ret.objChanges.push({
+                        type: "modify",
+                        objId,
+                        keyToDelete,
+                        oldMapKey,
+                        oldMapValue,
+                        keyToSet,
+                        newMapKey,
+                        newMapValue
+                    });
+                } else {
+                    ret.objChanges.push({
+                        type: "delete",
+                        objId,
+                        keyToDelete,
+                        oldMapKey,
+                        oldMapValue,
+                    });
+                }
+            } if (keyToSet && newMapKey && newMapValue) {
+                if (keyToDelete && oldMapKey && oldMapValue) {
+                    ret.objChanges.push({
+                        type: "modify",
+                        objId,
+                        keyToDelete,
+                        oldMapKey,
+                        oldMapValue,
+                        keyToSet,
+                        newMapKey,
+                        newMapValue
+                    });
+                } else {
+                    ret.objChanges.push({
+                        type: "add",
+                        objId,
+                        keyToSet,
+                        newMapKey,
+                        newMapValue
+                    });
+                }
+            } else throw new Error(`Cannot update view for both new and old objs null ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}`);
         }
 
         return ret;
@@ -245,24 +287,17 @@ export class MapReduceView {
     groupMapViewUpdatesForReduce<T>(updates: MapViewUpdates<T>): {[key: string]: MapViewUpdateObjChange<T>[]} {
         let ret: {[key: string]: MapViewUpdateObjChange<T>[]} = {};
         for (let objChg of updates.objChanges) {
-            let oldMapKeyStr: string | null = objChg.oldMapKey ? kvsKey2Str(objChg.oldMapKey) : null;
-            let newMapKeyStr: string | null = objChg.newMapKey ? kvsKey2Str(objChg.newMapKey) : null;
-            if (oldMapKeyStr) ret[oldMapKeyStr] = ret[oldMapKeyStr] || [];
-            if (newMapKeyStr) ret[newMapKeyStr] = ret[newMapKeyStr] || [];
-
-            if (oldMapKeyStr) {
-                ret[oldMapKeyStr].push(objChg);
-            } 
-            if (newMapKeyStr) {
-                if (oldMapKeyStr != null && newMapKeyStr === oldMapKeyStr) {
-                    //do nothing, already added
-                } else ret[newMapKeyStr].push(objChg)
-            }
+            let keyStr = kvsKey2Str(objChg.type === "add" ? objChg.newMapKey : objChg.oldMapKey);
+            ret[keyStr] = ret[keyStr] || [];
+            ret[keyStr].push(objChg);
         }
 
         return ret;
     }
 
+    public async preComputeViewUpdateForObj(oldObj: KeyValueObj | null, newObj: KeyValueObj | null): Promise<MapReduceViewUpdates<string | number>> {
+        return this.preComputeViewUpdateForObjs([{oldObj, newObj}]);
+    }
     /**
      * @returns List of keys updated
      */
@@ -276,122 +311,109 @@ export class MapReduceView {
             let ret = await this.preComputeMap(objs, null);
             return {
                 ...ret,
-                reduce: [],
-                reduceDelete: [],
+                reduceChanges: {},
             };
         } else {
+            let mapUpdates = await this.preComputeMap(objs, ReduceFunDefaultValue[rFun.name]);
+            let ret = initMapReduceViewUpdates(mapUpdates);
+            let groupedMapUpdates = this.groupMapViewUpdatesForReduce(mapUpdates);
+            let reduceFunApply = getReduceFunApply(rFun);
 
-            if (SumReduceFunN === rFun.name) {
-                let mapUpdates = await this.preComputeMap<number>(objs, ReduceFunDefaultValue[rFun.name]);
-                let ret: MapReduceViewUpdates<number> = {
-                    ...mapUpdates,
-                    reduce: [],
-                    reduceDelete: [],
-                }
-                let groupedMapUpdates = this.groupMapViewUpdatesForReduce(mapUpdates);
-                for (let [keyStr, updates] of Object.entries(groupedMapUpdates)) {
+            for (let [currentKeyStr, updates] of Object.entries(groupedMapUpdates)) {
                     
-                    let currentKey = kvsStr2Key(keyStr);
-                    let storedReduceValue = await rFun.kvs.get(currentKey);
+                let currentKey = kvsStr2Key(currentKeyStr);
+                let currentReduceValue = ret.reduceChanges[currentKeyStr];
+                if (!currentReduceValue) {
+                    currentReduceValue = await rFun.kvs.get(currentKey) || ReduceFunDefaultValue[rFun.name];
+                }
 
-                    for (let objChange of updates) {
-                        if (null != objChange.oldMapKey && null != objChange.oldMapValue) {
-                            let currentReduceValueForOldKey = await rFun.kvs.get(objChange.oldMapKey) || ReduceFunDefaultValue[rFun.name];
-                            if (_.isEqual(objChange.oldMapKey, objChange.newMapKey) && null != objChange.newMapKey && null != objChange.newMapValue) {
-                                TBD.reduce.push({ key: objChange.newMapKey, value: currentReduceValueForOldKey - objChange.oldMapValue + objChange.newMapValue });
-                            } else {
-                                // if (otherMapValueWithOldKeyExist) {
-                                // } else {
-                                // TBD.reduceDelete.push(objChange.oldMapKey);
-                                TBD.reduce.push({ key: objChange.oldMapKey, value: currentReduceValueForOldKey - objChange.oldMapValue });
-                        
-                                if (null != objChange.newMapKey && null != objChange.newMapValue && null != currentReduceValueForNewKey) {
-                                    TBD.reduce.push({ key: objChange.newMapKey, value: currentReduceValueForNewKey + objChange.newMapValue });
-                                }
-                            }
+                for (let objChange of updates) {
+                    if (rFun.name === "SumReduceFunN") {
+                        let currentVal: number = currentReduceValue as number; 
+                        if (objChange.type === "add") {
+                            let newVal = objChange.newMapValue as number;
+                            currentVal = currentVal + newVal;
+                        } else if (objChange.type === "delete") {
+                            let oldVal = objChange.oldMapValue as number;
+                            currentVal = currentVal - oldVal;
                         } else {
-                            if (null != objChange.newMapKey && null != objChange.newMapValue && null != currentReduceValueForNewKey) {
-                                TBD.reduce.push({ key: objChange.newMapKey, value: currentReduceValueForNewKey + objChange.newMapValue });
-                            }
+                            let newVal = objChange.newMapValue as number;
+                            let oldVal = objChange.oldMapValue as number;
+                            currentVal = currentVal - oldVal + newVal;
                         }
-                    }
-                }
-
-                return ret;
-            } else if (CountReduceFunN === rFun.name) {
-                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } =
-                    await this.preComputeMap<number>(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
-                let newReduceValue = null != newMapKey ? (await rFun.kvs.get(newMapKey) || ReduceFunDefaultValue[rFun.name]) : null;
-                if (null != oldMapKey && null != oldMapValue) {
-                    let oldReduceValue = await rFun.kvs.get(oldMapKey) || ReduceFunDefaultValue[rFun.name];
-                    if (_.isEqual(oldMapKey, newMapKey) && null != newMapKey && null != newMapValue) {
-                        ret.reduce.push({ key: newMapKey, value: oldReduceValue - 1 + 1 });
-                    } else {
-                        if (otherMapValueWithOldKeyExist) {
-                            ret.reduce.push({ key: oldMapKey, value: oldReduceValue - 1 });
+                        currentReduceValue = currentVal;
+                    } else if (rFun.name === "CountReduceFunN") {
+                        let currentVal: number = currentReduceValue as number; 
+                        if (objChange.type === "add") {
+                            currentVal = currentVal + 1;
+                        } else if (objChange.type === "delete") {
+                            currentVal = currentVal - 1;
                         } else {
-                            ret.reduceDelete.push(oldMapKey);
+                            currentVal = currentVal;
                         }
-                        if (null != newMapKey && null != newMapValue && null != newReduceValue) {
-                            ret.reduce.push({ key: newMapKey, value: newReduceValue + 1 });
+                        currentReduceValue = currentVal;
+                    } else if (rFun.name === "TextjoinReduceFunN") {
+                        let apply = new TextjoinReduceFunApply(rFun);
+                        let currentVal: string = currentReduceValue as string; 
+                        if (objChange.type === "add") {
+                            let newVal = objChange.newMapValue as string;
+                            currentVal = apply.add(currentVal, newVal);
+                        } else if (objChange.type === "delete") {
+                            let oldVal = objChange.oldMapValue as string;
+                            currentVal = apply.delete(currentVal, oldVal);
+                        } else {
+                            let newVal = objChange.newMapValue as string;
+                            let oldVal = objChange.oldMapValue as string;
+                            currentVal = apply.modify(currentVal, oldVal, newVal);
                         }
-                    }
-                } else {
-                    if (null != newMapKey && null != newMapValue && null != newReduceValue) {
-                        ret.reduce.push({ key: newMapKey, value: newReduceValue + 1 });
+                        currentReduceValue = currentVal;
                     }
                 }
-                return ret;
-            } else if (TextjoinReduceFunN === rFun.name) {
-                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } =
-                    await this.preComputeMap(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
-
-                //WARNING: this reduce pre-computation works only for unique keys
-                if (null != oldMapKey && null != oldMapValue && !_.isEqual(oldMapKey, newMapKey) && !otherMapValueWithOldKeyExist) {
-                    ret.reduceDelete.push(oldMapKey);
-                }
-                if (null != newMapKey && null != newMapValue) {
-                    ret.reduce.push({ key: newMapKey, value: newMapValue });
-                }
-
-                return ret;
-            } else {
-                throw new Error('Unknown reduce function ' + this.reduceFunction);
+                ret.reduceChanges[currentKeyStr] = currentReduceValue;
             }
+
+            return ret;
         }
     }
 
     public static strigifyViewUpdatesKeys(updates: MapReduceViewUpdates<string | number> | MapViewUpdates<string | number>): string[] {
-        return updates.objChanges.filter(upd => upd.keyToSet != null)
-            .map(upd => 'MAP:' + kvsKey2Str(upd.keyToSet!))
-            .concat(updates.objChanges.filter(upd => upd.keyToDelete != null)
-                .map(upd => 'MAPDELETE:' + kvsKey2Str(upd.keyToDelete!)))
-            .concat(isReduce(updates) ? updates.reduce.map(upd => 'REDUCE:' + kvsKey2Str(upd.key)) : [])
-            ;
+        return updates.objChanges
+            .map(upd => {
+                if (upd.type === "add") {
+                    return 'MAP:' + kvsKey2Str(upd.keyToSet);
+                } else if (upd.type === "delete") {
+                    return 'MAPDELETE:' + kvsKey2Str(upd.keyToDelete);
+                } else {
+                    return 'MAP:' + kvsKey2Str(upd.keyToSet);
+                }
+            })
+            .concat(isReduce(updates) ? Object.keys(updates.reduceChanges).map(k => 'REDUCE:' + k) : [])
+        ;
     }
     public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
         for (let upd of updates.objChanges) {
-            if (upd.keyToSet) {
+            if (upd.type === "add") {
                 await this.mapKVS.set(upd.keyToSet, upd.newMapValue);
-            }
-            if (upd.keyToDelete) {
+            } else if (upd.type === "delete") {
                 await this.mapKVS.del(upd.keyToDelete);
+            } else {
+                await this.mapKVS.set(upd.keyToSet, upd.newMapValue);
             }
         }
 
         if (this.reduceFunction) {
-            for (let upd of updates.reduce) {
-                if ((SumReduceFunN === this.reduceFunction.name && typeof upd.value === 'number')
-                    || (CountReduceFunN === this.reduceFunction.name && typeof upd.value === 'number')
+            for (let [reduceKey, reduceValue] of Object.entries(updates.reduceChanges)) {
+                if ((SumReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
+                    || (CountReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
                 ) {
-                    await this.reduceFunction.kvs.set(upd.key, upd.value);
-                } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof upd.value === 'string') {
-                    await (this.reduceFunction.kvs as any /*wtf*/).set(upd.key, upd.value);
+                    await this.reduceFunction.kvs.set(kvsStr2Key(reduceKey), reduceValue);
+                } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof reduceValue === 'string') {
+                    await (this.reduceFunction.kvs as any /*wtf*/).set(reduceKey, reduceValue);
                 }
             }
-            for (let key of updates.reduceDelete) {
-                await this.reduceFunction.kvs.del(key);
-            }
+            // for (let key of updates.reduceDelete) {
+            //     await this.reduceFunction.kvs.del(key);
+            // }
         }
     }
 

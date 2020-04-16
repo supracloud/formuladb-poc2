@@ -28,32 +28,32 @@ describe('MapReduceView', () => {
         }, false, {name: SumReduceFunN});
 
         let updates: MapReduceViewUpdates<number|string>;
-        let obj1 = { "_id": "R_A~~1", "num": 1, "a_y": "a1" }; updates = await mapReduceView.preComputeViewUpdateForObjs(null, obj1); await mapReduceView.updateViewForObj(updates);
+        let obj1 = { "_id": "R_A~~1", "num": 1, "a_y": "a1" }; updates = await mapReduceView.preComputeViewUpdateForObj(null, obj1); await mapReduceView.updateViewForObj(updates);
         expect(updates).toEqual(jasmine.objectContaining({
             map: [{key: ["a1", "R_A~~1"], value: obj1.num}],
             mapDelete: [],
             reduce: [{key: ["a1"], value: obj1.num}],
         }));
-        let obj2 = { "_id": "R_A~~2", "num": 5, "a_y": "a1" }; updates = await mapReduceView.preComputeViewUpdateForObjs(null, obj2); await mapReduceView.updateViewForObj(updates);
+        let obj2 = { "_id": "R_A~~2", "num": 5, "a_y": "a1" }; updates = await mapReduceView.preComputeViewUpdateForObj(null, obj2); await mapReduceView.updateViewForObj(updates);
         expect(updates).toEqual(jasmine.objectContaining({
             map: [{key: ["a1", "R_A~~2"], value: 5}],
             mapDelete: [],
             reduce: [{key: ["a1"], value: obj1.num + obj2.num}],
         }));
-        let obj3 = { "_id": "R_A~~3", "num": 2, "a_y": "a2" }; updates = await mapReduceView.preComputeViewUpdateForObjs(null, obj3); await mapReduceView.updateViewForObj(updates);
+        let obj3 = { "_id": "R_A~~3", "num": 2, "a_y": "a2" }; updates = await mapReduceView.preComputeViewUpdateForObj(null, obj3); await mapReduceView.updateViewForObj(updates);
         expect(updates).toEqual(jasmine.objectContaining({
             map: [{key: ["a2", "R_A~~3"], value: obj3.num}],
             mapDelete: [],
             reduce: [{key: ["a2"], value: obj3.num}],
         }));
-        let obj4 = { "_id": "R_A~~4", "num": 3, "a_y": "a2" }; updates = await mapReduceView.preComputeViewUpdateForObjs(null, obj4); await mapReduceView.updateViewForObj(updates);
+        let obj4 = { "_id": "R_A~~4", "num": 3, "a_y": "a2" }; updates = await mapReduceView.preComputeViewUpdateForObj(null, obj4); await mapReduceView.updateViewForObj(updates);
         expect(updates).toEqual(jasmine.objectContaining({
             map: [{key: ["a2", "R_A~~4"], value: obj4.num}],
             mapDelete: [],
             reduce: [{key: ["a2"], value: obj3.num + obj4.num}],
         }));
         //we need to check that a21 is not taken into account when we only want [a1, a2]
-        let obj5 = { "_id": "R_A~~5", "num": 123, "a_y": "a21" }; updates = await mapReduceView.preComputeViewUpdateForObjs(null, obj5); await mapReduceView.updateViewForObj(updates);
+        let obj5 = { "_id": "R_A~~5", "num": 123, "a_y": "a21" }; updates = await mapReduceView.preComputeViewUpdateForObj(null, obj5); await mapReduceView.updateViewForObj(updates);
         expect(updates).toEqual(jasmine.objectContaining({
             map: [{key: ["a21", "R_A~~5"], value: obj5.num}],
             mapDelete: [],
