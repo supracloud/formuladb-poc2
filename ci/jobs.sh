@@ -52,28 +52,11 @@ function build_images_and_deploy_dev {
 }
 
 function test_postgres {
-    # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
-    docker ps|grep "${FRMDB_ENV_NAME}-pg" |cut -d' ' -f1|xargs docker rm -f || true
-    while nc -z localhost 5434; do echo "port 5434 is busy, waiting..."; docker ps; sleep 2; done
-    docker run --name "${FRMDB_ENV_NAME}-pg" -p5434:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
-    while ! nc -z localhost 5434; do sleep 1; done
-    docker exec "${FRMDB_ENV_NAME}-pg" sh -c 'until pg_isready -t 1; do echo waiting for database; sleep 2; done;'
-    PGPORT=5434 FRMDB_STORAGE=postgres npm test
-    docker ps|grep "${FRMDB_ENV_NAME}-pg" |cut -d' ' -f1|xargs docker rm -f
+    PGPORT=5432 FRMDB_STORAGE=postgres npm test
 }
 
 function test_stress {
-    # npm test -- core/src/frmdb_engine.stress.spec.ts
-    # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
-    docker ps|grep "${FRMDB_ENV_NAME}-stress" |cut -d' ' -f1|xargs docker rm -f || true
-    while nc -z localhost 5435; do echo "port 5435 is busy, waiting..."; docker ps; sleep 2; done
-    docker run --name "${FRMDB_ENV_NAME}-stress" -p5435:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
-    while ! nc -z localhost 5435; do sleep 1; done
-    docker exec "${FRMDB_ENV_NAME}-stress" sh -c 'until pg_isready -t 1; do echo waiting for database; sleep 2; done;'
-    PGPORT=5435 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
-    docker ps|grep "${FRMDB_ENV_NAME}-stress" |cut -d' ' -f1|xargs docker rm -f
+    PGPORT=5432 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
 }
 
 function test_e2e {

@@ -90,6 +90,13 @@ test_fe:
 test_postgres:
   stage: test_and_bundle
   image: node:10.20.1
+  services: 
+    - name: postgres:11
+  variables:
+    # POSTGRES_DB: db
+    # POSTGRES_USER: user
+    POSTGRES_PASSWORD: postgres
+
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   cache:
@@ -103,6 +110,12 @@ test_stress:
   stage: test_and_bundle
   image: node:10.20.1
   retry: 2
+  services: 
+    - name: postgres:11
+  variables:
+    # POSTGRES_DB: db
+    # POSTGRES_USER: user
+    POSTGRES_PASSWORD: postgres
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   cache:
