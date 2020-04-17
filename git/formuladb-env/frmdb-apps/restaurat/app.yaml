@@ -1,4 +1,4 @@
-_id: $App~~pizza-time
+_id: $App~~restaurant
 description: themes
 pages:
     - _footer.html
