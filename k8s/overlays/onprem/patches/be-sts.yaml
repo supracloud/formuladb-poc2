@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: be
 spec:
@@ -16,9 +16,11 @@ spec:
           value: "false"
         - name: FRMDB_CAN_CREATE_ENV
           value: "true"
-      volumes:
-      - name: git-persistence
-        persistentVolumeClaim:
-        hostPath:
-          path: /home/soica/formuladb/febe/git #TDB_PWD_ENV_DIR
-          type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: git-persistence
+    spec:
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 5Gi

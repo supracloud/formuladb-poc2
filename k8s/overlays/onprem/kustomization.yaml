@@ -1,8 +1,7 @@
 bases:
 - ../../base
 patches:
-- patches/be-deployment.yaml
+- patches/be-sts.yaml
 - patches/db-service.yaml
 resources:
 # - resources/ingress.yaml
-- resources/git-persistence-persistentvolumeclaim.yaml
