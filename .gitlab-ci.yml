@@ -24,6 +24,7 @@ stages:
 
 build:
   stage: build
+  image: node:lts-alpine
   script:
     - npm install
     - npm run compile
@@ -35,6 +36,7 @@ build:
 
 bundle:
   stage: test_and_bundle
+  image: node:lts-alpine
   script:
     - ls tsc-out node_modules
     - npm run bundle
