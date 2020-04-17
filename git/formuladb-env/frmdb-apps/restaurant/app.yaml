@@ -7,7 +7,7 @@ pages:
     - _nav.html
     - _scripts.html
     - index.html
-name: pizza-time
+name: restaurant
 defaultLook: basic
 defaultPrimaryColor: 008cba
 defaultSecondaryColor: eeeeee
