@@ -2,4 +2,5 @@ bases:
 - ../../base
 resources:
 - resources/production-issuer.yaml
-- resources/git-persistence-persistentvolumeclaim.yaml 
+patches:
+- patches/be-sts.yaml

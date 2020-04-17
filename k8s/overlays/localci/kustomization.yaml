@@ -2,4 +2,4 @@ bases:
 - ../ci
 patches:
 - patches/ingress.yaml
-- patches/be-deployment.yaml
+- patches/be-sts.yaml
