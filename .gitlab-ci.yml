@@ -24,7 +24,7 @@ stages:
 
 build:
   stage: build
-  image: node:lts
+  image: node:10.20.1
   script:
     - npm install
     - npm run compile
@@ -36,7 +36,7 @@ build:
 
 bundle:
   stage: test_and_bundle
-  image: node:lts
+  image: node:10.20.1
   script:
     - ls tsc-out node_modules
     - npm run bundle
