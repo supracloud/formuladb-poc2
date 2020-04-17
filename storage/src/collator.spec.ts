@@ -5,15 +5,15 @@ describe('collator', () => {
     });
 
     it('pad numbers', () => {
-        expect(FormuladbCollate.toIndexableString([72])).toEqual("        72");
+        expect(FormuladbCollate.toIndexableString([72])).toEqual("00000000000000072");
     })
 
     it('collate number and string', () => {
-        expect(FormuladbCollate.toIndexableString([72, "73"])).toEqual("        72" + FormuladbCollate.SEP + "73");
+        expect(FormuladbCollate.toIndexableString([72, "73"])).toEqual("00000000000000072" + FormuladbCollate.SEP + "73");
     })
 
     it('collate number and string and boolean', () => {
-        expect(FormuladbCollate.toIndexableString([72, "73", false])).toEqual("        72" + FormuladbCollate.SEP + "73" + FormuladbCollate.SEP + false);
+        expect(FormuladbCollate.toIndexableString([72, "73", false])).toEqual("00000000000000072" + FormuladbCollate.SEP + "73" + FormuladbCollate.SEP + false);
     })
 
     it('should compare arrays correctly', () => {

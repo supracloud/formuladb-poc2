@@ -80,11 +80,16 @@ export class CountReduceFunApply {
 
 export class TextjoinReduceFunApply {
     constructor(public rFun: TextjoinReduceFun) {}
+    currentValues(currentVal: string): string[] {
+        let currentValues = currentVal.split(this.rFun.delimiter);
+        if (!currentValues[0]) currentValues = currentValues.slice(1);
+        return currentValues;
+    }
     add(currentVal: string, newVal: string): string {
-        return currentVal.split(this.rFun.delimiter).concat(newVal).join(this.rFun.delimiter);
+        return this.currentValues(currentVal).concat(newVal).join(this.rFun.delimiter);
     }
     delete(currentVal: string, oldVal: string): string {
-        return currentVal.split(this.rFun.delimiter).filter(x => x === oldVal).join(this.rFun.delimiter);
+        return this.currentValues(currentVal).filter(x => x !== oldVal).join(this.rFun.delimiter);
     }
     modify(currentVal: string, oldVal: string, newVal: string) {
         return this.add(this.delete(currentVal, oldVal), newVal);

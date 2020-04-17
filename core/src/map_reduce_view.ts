@@ -229,52 +229,26 @@ export class MapReduceView {
                 // });
                 // otherMapValueWithOldKeyExist = otherMapValuesWithOldKey.length > 1;
 
-                if (!_.isEqual(oldMapKey, newMapKey)) {
-                    keyToDelete = MapReduceView.makeUniqueMapKeyByAddingId(oldMapKey, oldObj._id);
-                }
+                keyToDelete = MapReduceView.makeUniqueMapKeyByAddingId(oldMapKey, oldObj._id);
             }
+
 
             if (oldMapKey && oldMapValue) {
                 if (keyToSet && newMapKey && newMapValue) {
-                    ret.objChanges.push({
-                        type: "modify",
-                        objId,
-                        oldMapKey,
-                        oldMapValue,
-                        keyToSet,
-                        newMapKey,
-                        newMapValue
-                    });
-                } else if (keyToDelete) {
-                    ret.objChanges.push({
-                        type: "delete",
-                        objId,
-                        keyToDelete,
-                        oldMapKey,
-                        oldMapValue,
-                    });
-                } else throw new Error(`Expecting either modify or delete... ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}`);
-            } else if (keyToSet && newMapKey && newMapValue) {
-                if (oldMapKey && oldMapValue) {
-                    ret.objChanges.push({
-                        type: "modify",
-                        objId,
-                        oldMapKey,
-                        oldMapValue,
-                        keyToSet,
-                        newMapKey,
-                        newMapValue
-                    });
+                    if (_.isEqual(oldMapKey, newMapKey)) {
+                        ret.objChanges.push({ type: "modify", objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue });
+                    } else {
+                        if (!keyToDelete) throw new Error(`cannot pre-compute view update, delete key not set ${JSON.stringify(oldObj)}////${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
+                        ret.objChanges.push({ type: "delete", objId, keyToDelete, oldMapKey, oldMapValue });
+                        ret.objChanges.push({ type: "add", objId, keyToSet, newMapKey, newMapValue });
+                    }
                 } else {
-                    ret.objChanges.push({
-                        type: "add",
-                        objId,
-                        keyToSet,
-                        newMapKey,
-                        newMapValue
-                    });
+                    if (!keyToDelete) throw new Error(`cannot pre-compute view update, delete key not set ${JSON.stringify(oldObj)}////${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
+                    ret.objChanges.push({ type: "delete", objId, keyToDelete, oldMapKey, oldMapValue });
                 }
-            } else throw new Error(`Cannot update view for both new and old objs null ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}`);
+            } else if (keyToSet && newMapKey && newMapValue) {
+                ret.objChanges.push({ type: "add", objId, keyToSet, newMapKey, newMapValue });                
+            } else throw new Error(`Cannot update view for both new and old objs null ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
         }
 
         return ret;

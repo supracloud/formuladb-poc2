@@ -168,7 +168,8 @@ describe('MetadataStore', () => {
             .replace('<span>some footer</span>', '<span data-i18n-key="some footer">fr:some footer</span>')
             .replace('<input placeholder="some placeholder"', '<input placeholder="fr:some placeholder" data-i18n-key="some placeholder"')
             .replace('<footer>', '<footer class="pt-4 bg-dark frmdb-section-dark" data-frmdb-theme-classes="pt-4 bg-dark frmdb-section-dark">')
-            ;
+            .replace('</body>', '<frmdb-notification-container></frmdb-notification-container>\n</body>')
+        ;
 
         let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithCleanThemeAndFrenchLang);
         expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
@@ -188,6 +189,7 @@ describe('MetadataStore', () => {
             )
             .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1>main content</h1>')
             .replace('<footer>', '<footer class="pt-4 bg-dark frmdb-section-dark" data-frmdb-theme-classes="pt-4 bg-dark frmdb-section-dark">')
+            .replace('</body>', '<frmdb-notification-container></frmdb-notification-container>\n</body>')
         ;
         let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithFramesTheme);
         expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
