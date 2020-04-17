@@ -3,8 +3,8 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: KEY
-        scalarFormula: name
+        propType_: STRING
+        required: true
     _owner:
         name: _owner
         propType_: STRING

@@ -32,16 +32,18 @@ function stringifyObj(obj: DataObj | DataObj[]): string {
     return arr.map(o => CircularJSON.stringify(_.omit(o, ['_revisions']))).join(", ");
 }
 
+interface TransactionDAGObj {
+    objId: string;
+    OLD: DataObj | null;
+    NEW: DataObj | null;
+    aggsViewsUpdates: MapReduceViewUpdates<string | number>[];
+    obsViewsUpdates: MapViewUpdates<string | number>[];
+}
+
 class TransactionDAG {
     levels: Set<string>[] = [];
     objs: {
-        [id: string]: {
-            objId: string,
-            OLD: DataObj | null,
-            NEW: DataObj | null,
-            aggsViewsUpdates: MapReduceViewUpdates<string | number>[],
-            obsViewsUpdates: MapViewUpdates<string | number>[],
-        },
+        [id: string]: TransactionDAGObj,
     } = {};
     currentLevel: number = 0;
     haveFailedValidations: boolean = false;
@@ -310,8 +312,7 @@ export class FrmdbTransactionRunner {
     }
 
     private async prepareModifyAddObj(transacDAG: TransactionDAG,
-        newObj: DataObj, oldObj: DataObj | null) 
-    {
+        newObj: DataObj, oldObj: DataObj | null) {
         let obsViewUpdates: MapViewUpdates<string | number>[] = [];
         for (let compiledFormula of this.schemaDAO.getFormulas(newObj._id)) {
             obsViewUpdates.push.apply(obsViewUpdates,
@@ -325,13 +326,12 @@ export class FrmdbTransactionRunner {
         if (failedValidations.length > 0) {
             throw new FailedValidationsError(failedValidations);
         }
-        
+
         transacDAG.addObj(newObj, oldObj, [], obsViewUpdates);
     }
 
     private async prepareObjWithIdChange(transacDAG: TransactionDAG,
-        newObj: DataObj, oldObj: DataObj) 
-    {
+        newObj: DataObj, oldObj: DataObj) {
         await this.prepareModifyAddObj(transacDAG, newObj, null);
         await this.prepareDeleteObj(transacDAG, oldObj, null);
     }

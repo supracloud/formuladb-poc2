@@ -203,6 +203,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         console.log("Droping all tables");
         let query: string = 'DROP SCHEMA public CASCADE;CREATE SCHEMA public;';
         await this.getDB().any(query);
+        TableMap.clear();
         console.log("Tables droped");
     }
 
