@@ -4,7 +4,7 @@
  */
 
 import { SchemaDAO, FormulaTriggeredByObj } from "@domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId, getChildrenPrefix } from "@domain/metadata/data_obj";
+import { DataObj, parseDataObjId, isNewDataObjId, getChildrenPrefix, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
@@ -17,11 +17,12 @@ import { generateUUID, generateTimestampUUID } from "@domain/uuid";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
-import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
+import { MapReduceViewUpdates, MapReduceView, MapViewUpdates, initMapReduceViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "@storage/key_value_store_i";
 import { Pn, FormulaProperty } from "@domain/metadata/entity";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
+import { scalarFormulaEvaluate } from "./scalar_formula_evaluate";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -123,7 +124,7 @@ class TransactionDAG {
     public getAllViewUpdates(): MapReduceViewUpdates<string | number>[] {
         let aggs = _.flatMap(_.values(this.objs), trObj => trObj.aggsViewsUpdates);
         let obs = _.flatMap(_.values(this.objs), trObj => trObj.obsViewsUpdates);
-        let ret = aggs.concat(obs.map((o: MapViewUpdates<string | number>) => ({ ...o, reduce: [], reduceDelete: [] })));
+        let ret = aggs.concat(obs.map((o: MapViewUpdates<string | number>) => initMapReduceViewUpdates(o)));
         return ret as MapReduceViewUpdates<string | number>[];
     }
     public getAllImpactedObjectIdsAndViewKeys(): string[] {
@@ -292,46 +293,66 @@ export class FrmdbTransactionRunner {
         return ret;
     }
 
+    private async prepareDeleteObj(transacDAG: TransactionDAG,
+        newObj: DataObj, oldObj: DataObj | null) {
+        let obsViewUpdates: MapViewUpdates<string | number>[] = [];
+        for (let compiledFormula of this.schemaDAO.getFormulas(newObj._id)) {
+            obsViewUpdates.push.apply(obsViewUpdates,
+                await this.preComputeNonSelfFormulaOfTransactionRootObj(newObj, null, compiledFormula));
+        }
+        //TODO: this is not transactional
+        for (let childObj of (await this.getChildObjects(newObj))) {
+            let childDelEvent = new events.ServerEventDeletedFormData(childObj);
+            childDelEvent._id = transacDAG.eventId + '__';
+            await this.computeFormulasAndSave(childDelEvent);
+        }
+        transacDAG.addObj(null, newObj, [], obsViewUpdates);
+    }
+
+    private async prepareModifyAddObj(transacDAG: TransactionDAG,
+        newObj: DataObj, oldObj: DataObj | null) 
+    {
+        let obsViewUpdates: MapViewUpdates<string | number>[] = [];
+        for (let compiledFormula of this.schemaDAO.getFormulas(newObj._id)) {
+            obsViewUpdates.push.apply(obsViewUpdates,
+                await this.preComputeNonSelfFormulaOfTransactionRootObj(oldObj, newObj, compiledFormula));
+        }
+        for (let selfFormula of this.schemaDAO.getSelfFormulas(newObj._id)) {
+            newObj[selfFormula.targetPropertyName] = evalExpression(newObj, selfFormula.finalExpression);
+            console.log(new Date().toISOString() + "|" + newObj + "||computeFormulasAndSave| - selfFormula: " + newObj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + newObj[selfFormula.targetPropertyName]);
+        }
+        let failedValidations = this.validateObj(newObj);
+        if (failedValidations.length > 0) {
+            throw new FailedValidationsError(failedValidations);
+        }
+        
+        transacDAG.addObj(newObj, oldObj, [], obsViewUpdates);
+    }
+
+    private async prepareObjWithIdChange(transacDAG: TransactionDAG,
+        newObj: DataObj, oldObj: DataObj) 
+    {
+        await this.prepareModifyAddObj(transacDAG, newObj, null);
+        await this.prepareDeleteObj(transacDAG, oldObj, null);
+    }
+
     private async prepareTransaction(event: events.ServerEventModifiedFormData
         | events.ServerEventDeletedFormData, transacDAG: TransactionDAG,
-        originalObj: DataObj, isNewObj: boolean) {
+        originalObj: DataObj, oldObj: DataObj | null) {
         Object.assign(event.obj, originalObj);
 
         for (let failedValidationRetry = 1; failedValidationRetry <= 2; failedValidationRetry++) {
             transacDAG.clear(event._id, '|' + failedValidationRetry);
 
-            let oldObj: DataObj | null = null;
-            if (!isNewObj) {
-                oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
-            }
             if (event.type_ === "ServerEventDeletedFormData") {
-                let obsViewUpdates: MapViewUpdates<string | number>[] = [];
-                for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
-                    obsViewUpdates.push.apply(obsViewUpdates,
-                        await this.preComputeNonSelfFormulaOfTransactionRootObj(event.obj, null, compiledFormula));
-                }
-                //TODO: this is not transactional
-                for (let childObj of (await this.getChildObjects(event.obj))) {
-                    let childDelEvent = new events.ServerEventDeletedFormData(childObj);
-                    childDelEvent._id = event._id + '__';
-                    await this.computeFormulasAndSave(childDelEvent);
-                }
-                transacDAG.addObj(null, event.obj, [], obsViewUpdates);
+                await this.prepareDeleteObj(transacDAG, event.obj, oldObj);
             } else {
-                let obsViewUpdates: MapViewUpdates<string | number>[] = [];
-                for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
-                    obsViewUpdates.push.apply(obsViewUpdates,
-                        await this.preComputeNonSelfFormulaOfTransactionRootObj(oldObj, event.obj, compiledFormula));
+
+                if (oldObj && event.obj._id != oldObj._id) {
+                    await this.prepareObjWithIdChange(transacDAG, event.obj, oldObj);
+                } else {
+                    await this.prepareModifyAddObj(transacDAG, event.obj, oldObj);
                 }
-                for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
-                    event.obj[selfFormula.targetPropertyName] = evalExpression(event.obj, selfFormula.finalExpression);
-                    console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
-                }
-                let failedValidations = this.validateObj(event.obj);
-                if (failedValidations.length > 0) {
-                    throw new FailedValidationsError(failedValidations);
-                }
-                transacDAG.addObj(event.obj, oldObj, [], obsViewUpdates);
             }
 
             try {
@@ -353,15 +374,31 @@ export class FrmdbTransactionRunner {
     }
 
     public async preComputeOnly(event: events.ServerEventPreComputeFormData) {
-        let isNewObj: boolean = false;
-        if (isNewDataObjId(event.obj._id)) {
-            event.obj._id = event.obj._id.replace('$AUTO_GENERATE_ID_FOR_NEW_RECORD', '') + generateUUID();
-            isNewObj = true;
-        }
+        let oldObj = await this.computeIds(event);
         let originalObj = _.cloneDeep(event.obj);
         let transacDAG = new TransactionDAG(event._id, '|0');
-        await this.prepareTransaction(events.ServerEventModifiedFormData.fromPreComputeEvent(event), 
-            transacDAG, originalObj, isNewObj);
+        await this.prepareTransaction(events.ServerEventModifiedFormData.fromPreComputeEvent(event),
+            transacDAG, originalObj, oldObj);
+    }
+
+    async computeIds(event: events.ServerEventModifiedFormData | events.ServerEventDeletedFormData | events.ServerEventPreComputeFormData): Promise<DataObj | null> {
+        let oldObj: DataObj | null = null;
+        let newComputedObjId: string | null = null;
+        let entity = await this.frmdbEngineStore.getEntity(entityNameFromDataObjId(event.obj._id))
+        if (entity?.props?._id.propType_ === Pn.KEY) {
+            newComputedObjId = entity._id + '~~' + scalarFormulaEvaluate(event.obj, entity.props._id.scalarFormula);
+        }
+
+        if (isNewDataObjId(event.obj._id)) {
+            if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
+            if (newComputedObjId) event.obj._id = newComputedObjId;
+            else event.obj._id = event.obj._id.replace('$AUTOID', '') + generateUUID();
+        } else {
+            oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
+            if (newComputedObjId && newComputedObjId != event.obj._id) event.obj._id = newComputedObjId;
+        }
+
+        return oldObj;
     }
 
     public async computeFormulasAndSave(
@@ -371,17 +408,12 @@ export class FrmdbTransactionRunner {
         try {
             event._id == event._id || generateTimestampUUID();
 
-            let isNewObj: boolean = false;
-            if (isNewDataObjId(event.obj._id)) {
-                if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
-                event.obj._id = event.obj._id.replace('$AUTO_GENERATE_ID_FOR_NEW_RECORD', '') + generateUUID();
-                isNewObj = true;
-            }
+            let oldObj = await this.computeIds(event);
             let originalObj = _.cloneDeep(event.obj);
 
             let getObjectIdsToSave = async () => {
                 transacDAG = new TransactionDAG(event._id, '|0');
-                return this.prepareTransaction(event, transacDAG, originalObj, isNewObj);
+                return this.prepareTransaction(event, transacDAG, originalObj, oldObj);
             }
 
             let saveObjects = async () => {

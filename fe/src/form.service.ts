@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { DataObj, isNewDataObjId, parseDataObjId } from '@domain/metadata/data_obj';
+import { DataObj, isNewDataObjId, parseDataObjId, entityNameFromDataObjId } from '@domain/metadata/data_obj';
 import { onEvent } from './delegated-events';
 import { BACKEND_SERVICE, postData } from './backend.service';
 import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem, getAllElemsWithDataBindingAttrs } from './live-dom-template/live-dom-template';
@@ -22,9 +22,9 @@ function currentTimestamp() {
 }
 
 export function getParentObjId(control: HTMLElement): string | null {
-    let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
+    let parentEl: HTMLElement = control.closest('[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement;
     if (!parentEl) {console.warn("Could not get parent of " + control.outerHTML); return null};
-    let ret = parentEl.getAttribute('data-frmdb-record');
+    let ret = parentEl.getAttribute('data-frmdb-record') || parentEl.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '');
     if (!ret) {console.warn("Could not get obj id of parent " + parentEl.outerHTML + " for " + control.outerHTML); return null};
     return ret;
 }
@@ -135,7 +135,7 @@ export class FormService {
                 }
                 return event;
             } else {
-                let entityId = parseDataObjId(parentObj._id).entityId;
+                let entityId = entityNameFromDataObjId(parentObj._id);
                 let entity = BACKEND_SERVICE().currentSchema?.entities?.[entityId];
                 if (!entity) {console.warn(entityId, "not found"); return}
                 let references: {[aliasName: string]: {refs: ReferenceToProperty[], entityName: string}} = {};
@@ -225,7 +225,7 @@ export class FormService {
     }
 
     private getParentEl(control: HTMLElement): HTMLElement | null {
-        let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
+        let parentEl: HTMLElement = control.closest('[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement;
         if (!parentEl) return null;
         return parentEl;
     }
@@ -234,8 +234,8 @@ export class FormService {
         let parentEl = this.getParentEl(control);
         if (!parentEl) return null;
         let parentObj = serializeElemToObj(parentEl) as DataObj;
-        let recordId = parentEl.getAttribute('data-frmdb-record') || '';
-        if (recordId != '' && recordId != '$AUTO_GENERATE_ID_FOR_NEW_RECORD' && !parentObj._id) {
+        let recordId = parentEl.getAttribute('data-frmdb-record') || parentEl.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '') || '';
+        if (recordId != '' && recordId != '$AUTOID' && !parentObj._id) {
             parentObj._id = recordId;
         }
         if (!parentObj._id) throw new Error("Cannot find obj id for " + control);

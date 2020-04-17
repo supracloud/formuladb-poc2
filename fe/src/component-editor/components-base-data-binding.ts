@@ -61,6 +61,34 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			}
 		},
 		{
+			name: "Bind To Single Record",
+			key: "data-frmdb-bind-to-record",
+			htmlAttr: "data-frmdb-bind-to-record",
+			tab: "left-panel-tab-data",
+			sort: propsSort++,
+			inline: true,
+			col: 12,
+			inputtype: "SelectInput",
+			validValues: [],
+			data: {
+				options: [],
+			},
+			beforeInit: function (node) {
+				let dataFrmdbTableProp = this;
+				if (dataFrmdbTableProp) {
+					let tables = $TABLES();
+					dataFrmdbTableProp.validValues = tables.map(t => t.name);
+					dataFrmdbTableProp.data.options = [{
+						value: '',
+						text: '-',
+					}].concat(tables.map(t => ({
+						value: '$FRMDB.' + t.name + '~~',
+						text: t.name,
+					})));
+				}
+			},
+		},		
+		{
 			name: "Parent Record",
 			key: "data-frmdb-record",
 			htmlAttr: "data-frmdb-record",
@@ -73,26 +101,19 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 				disabled: true,
 			},
 			beforeInit: function (node) {
-				if (node.tagName.toLowerCase() === "form") {
-					this.data.disabled = false;
-				} else if (!node.getAttribute('data-frmdb-record')) {
-					let parentRecordEl = node.closest('[data-frmdb-record]');
+				if (!node.getAttribute('data-frmdb-record')) {
+					let parentRecordEl = node.closest('[data-frmdb-record],[data-frmdb-bind-to-record]');
 					if (!parentRecordEl) return;
-					this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record');
+					this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record') || parentRecordEl.getAttribute('data-frmdb-bind-to-record');
 					this.name = "Parent Record";
 					this.data.disabled = true;
+				} else if (node.hasAttribute('data-frmdb-bind-to-record')) {
+					this.name = "Bind to Record Id";
+					this.data.disabled = false;
 				} else {
-					this.name = "Bound to Record";
-					let parentTableName = node.parentElement?.getAttribute('data-frmdb-table')?.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
 					let recordId = node.getAttribute('data-frmdb-record');
-					if (!recordId) return;
-					let recordTableName = entityNameFromDataObjId(recordId);
-					if (parentTableName && parentTableName == recordTableName)  {
-						this.data.placeholder = recordId;
-						this.data.disabled = true;
-					} else {
-						this.data.disabled = false;
-					}
+					this.data.placeholder = recordId;
+					this.data.disabled = true;
 				}
 			},
 		},
@@ -136,7 +157,7 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			inputtype: "TextInput",
 		},
 		{
-			name: "Formula Value",
+			name: "Formula Value From Record",
 			key: "data-frmdb-value",
 			htmlAttr: "data-frmdb-value",
 			tab: "left-panel-tab-data",
@@ -145,6 +166,16 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			col: 12,
 			inputtype: "TextInput",
 		},
+        {
+            name: "Rules",
+            key: "data-frmdb-rules",
+            htmlAttr: "data-frmdb-rules",
+            inline: true,
+            col: 12,
+            sort: propsSort++,
+            inputtype: "TextareaInput",
+            tab: "left-panel-tab-content",
+        },		
 		{
 			key: "attributes",
 			inputtype: "SectionInput",

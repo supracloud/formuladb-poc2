@@ -51,3 +51,51 @@ export const ReduceFunDefaultValue = {
     [CountReduceFunN]: 0,
     [TextjoinReduceFunN]: '',
 };
+
+export class SumReduceFunApply {
+    constructor(public rFun: SumReduceFun) {}
+    add(currentVal: number, newVal: number): number {
+        return currentVal + newVal;
+    }
+    delete(currentVal: number, oldVal: number): number {
+        return currentVal - oldVal;
+    }
+    modify(currentVal: number, oldVal: number, newVal: number) {
+        return currentVal - oldVal + newVal;
+    }
+}
+
+export class CountReduceFunApply {
+    constructor(public rFun: CountReduceFun) {}
+    add(currentVal: number, newVal: number): number {
+        return currentVal + 1;
+    }
+    delete(currentVal: number, oldVal: number): number {
+        return currentVal - 1;
+    }
+    modify(currentVal: number, oldVal: number, newVal: number) {
+        return currentVal;
+    }
+}
+
+export class TextjoinReduceFunApply {
+    constructor(public rFun: TextjoinReduceFun) {}
+    add(currentVal: string, newVal: string): string {
+        return currentVal.split(this.rFun.delimiter).concat(newVal).join(this.rFun.delimiter);
+    }
+    delete(currentVal: string, oldVal: string): string {
+        return currentVal.split(this.rFun.delimiter).filter(x => x === oldVal).join(this.rFun.delimiter);
+    }
+    modify(currentVal: string, oldVal: string, newVal: string) {
+        return this.add(this.delete(currentVal, oldVal), newVal);
+    }
+}
+
+export function getReduceFunApply(rFun: SumReduceFun | CountReduceFun | TextjoinReduceFun) {
+    switch(rFun.name) {
+        case "SumReduceFunN": return new SumReduceFunApply(rFun);
+        case "CountReduceFunN": return new CountReduceFunApply(rFun);
+        case "TextjoinReduceFunN": return new TextjoinReduceFunApply(rFun);
+        default: throw new Error(`Unknown reduce fun ${JSON.stringify(rFun)}`);
+    }
+}

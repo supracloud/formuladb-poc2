@@ -95,9 +95,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     frmdbPropertyChangedCallback<T extends keyof FormulaEditorState>(propName: T, oldVal: FormulaEditorState[T] | undefined, newVal: FormulaEditorState[T]): Partial<FormulaEditorState> | Promise<Partial<FormulaEditorState>> {
         if ("editedProperty" === propName || "editedEntity" === propName) {
             let prop = this.frmdbState.editedProperty;
-            this.textarea.value = prop ? (
-                prop.propType_ === Pn.FORMULA ? prop.formula : prop.propType_ + '()'
-            ) : 'empty type';
+            this.textarea.value = prop ? this.serializePropertyToFormulaStr(prop) : "no table column selected yet";
             this.debouncedOnEdit();
         }
         return this.frmdbState;
@@ -246,6 +244,36 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         }
     }
 
+    serializePropertyToFormulaStr(entityProperty: EntityProperty): string {
+        switch(entityProperty.propType_) {
+            case Pn.KEY:
+                return `KEY(${entityProperty.scalarFormula})`;
+            case Pn.NUMBER:
+                return `NUMBER(${entityProperty.required||''})`;
+            case Pn.STRING:
+                return `STRING(${entityProperty.required||''})`;
+            case Pn.BOOLEAN:
+                return `BOOLEAN(${entityProperty.required||''})`;
+            case Pn.DOCUMENT:
+                return `DOCUMENT`;
+            case Pn.DATETIME:
+                return `DATETIME(${entityProperty.required||''})`;
+            case Pn.ACTION:
+                return `ACTION`;
+            case Pn.IMAGE:
+                return `IMAGE(${entityProperty.required||''})`;
+            case Pn.ATTACHMENT:
+                return `ACTION`;
+            case Pn.CHILD_TABLE:
+                return `ACTION`;
+            case Pn.REFERENCE_TO:
+                return `REFERENCE_TO(${entityProperty.referencedEntityName}.${entityProperty.referencedPropertyName})`;
+            case Pn.EXTENDS_ENTITY:
+                return `ACTION`;
+            case Pn.FORMULA:
+                return entityProperty.formula;
+        }
+    }
     getEntityPropertyFromTokens(tokens: UiToken[]): EntityProperty | undefined {
         for (let token of tokens) {
             if (token.errors && token.errors.length > 0) {
@@ -329,6 +357,15 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 required,
             };
         } else if (editorExpr.indexOf(Pn.BOOLEAN) === 0) {
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[2];
+            if (requiredToken && requiredToken.value === "true") required = true;
+            return {
+                name: elvis(this.st.editedProperty).name!,
+                propType_: Pn.BOOLEAN,
+                required,
+            };
+        } else if (editorExpr.indexOf(Pn.KEY) === 0) {
             let required: boolean | undefined = undefined;
             let requiredToken = tokens[2];
             if (requiredToken && requiredToken.value === "true") required = true;

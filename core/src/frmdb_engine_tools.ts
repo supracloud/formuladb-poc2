@@ -9,6 +9,7 @@ import { DataObj, parseDataObjId, entityNameFromDataObjId } from "@domain/metada
 
 import * as _ from 'lodash';
 import { evalExpression } from "@functions/map_reduce_utils";
+import { BACKEND_SERVICE } from "@fe/backend.service";
 
 
 export interface FailedValidation {
@@ -92,6 +93,12 @@ export class FrmdbEngineTools {
             case Pn.CHILD_TABLE:
                 break;
             case Pn.REFERENCE_TO:
+                if (property.required === true && propertyValue == '') {
+                    return `Value is mandatory`;
+                } else if (propertyValue != '') {
+                    // BACKEND_SERVICE().getDataObj()
+                    //TODO check reference exists in DB!
+                }
                 break;
             case Pn.EXTENDS_ENTITY:
                 break;

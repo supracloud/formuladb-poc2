@@ -119,6 +119,8 @@ export class FrmdbFeComponent extends HTMLElement {
 }
 
 customElements.define('frmdb-fe', FrmdbFeComponent);
-if (document.querySelector('frmdb-fe') == null) {
-    document.body.appendChild(document.createElement('frmdb-fe'));
-}
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('frmdb-fe') == null) {
+        document.body.appendChild(document.createElement('frmdb-fe'));
+    }
+});

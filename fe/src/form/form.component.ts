@@ -42,7 +42,7 @@ export interface FormComponentState extends FormComponentAttr {
 };
 
 const defaultState = {
-    rowId: '$Dictionary~~$AUTO_GENERATE_ID_FOR_NEW_RECORD',
+    rowId: '$Dictionary~~$AUTOID',
 };
 
 export class FormComponent extends HTMLElement {
@@ -146,8 +146,7 @@ export class FormComponent extends HTMLElement {
     debouncedRender = _.debounce(() => this.render(), 150);
 
     private getDisabled(entity: Entity, prop: EntityProperty): boolean {
-        let haveId: boolean = (this.state?.dataObj != null && this.state?.dataObj?._id != null && !isNewDataObjId(this.state.dataObj._id));
-        return entity.isEditable != true || ('_id' == prop.name && haveId);
+        return entity.isEditable != true || ('_id' == prop.name);
     }
 }
 customElements.define('frmdb-form', FormComponent);

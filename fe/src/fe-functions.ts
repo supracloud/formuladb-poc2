@@ -10,6 +10,7 @@ import { cleanupDocumentDOM } from "../../core/src/page-utils";
 import { parseAllPageUrl } from "@domain/url-utils";
 import { isShadowRoot, isHTMLElement } from "@core/dom-utils";
 import { APP_AND_TENANT_ROOT } from "./app.service";
+import { getElemValue } from "./live-dom-template/dom-node";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -108,10 +109,10 @@ export function $REFERENCE_TO_OPTIONS(el: HTMLElement): {name: string, value: st
 }
 
 export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: string }[] {
-    let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
+    let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') || el.getAttribute('data-frmdb-bind-to-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement | null;
     if (!parentRecordEl) { return [] }
 
-    let tableDataBindingName = parentRecordEl.getAttribute('data-frmdb-table');
+    let tableDataBindingName = parentRecordEl.getAttribute('data-frmdb-table') || parentRecordEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '[]');
     let tableName: string, prefix: string;
     if (!tableDataBindingName) {
         tableName = entityNameFromDataObjId(parentRecordEl.getAttribute('data-frmdb-record') || '');
@@ -171,12 +172,7 @@ export function $SAVE_DOC_PAGE(pagePath: string, doc: Document): Promise<boolean
         })
 }
 
-export function $ID(_id: string) {
-    return _id ? _id.replace(/^.*?~~/, '') : ''
-}
-
 export const FeFunctionsForDataBinding = {
-    '$ID': $ID,
     '$LABEL': $LABEL,
 };
 
@@ -205,7 +201,6 @@ export function $_FRMDB_SCOPE(el: HTMLElement): any {
     }
     return null;
 }
-
 export function $LABEL(id: string) {
     if (id.indexOf('-') >= 0) {
         return id.replace(/-/g, ' ').replace(/(^|(?<= ))[a-z]/g, v => v.toUpperCase());
@@ -217,7 +212,6 @@ export function $LABEL(id: string) {
 (window as any).$MODAL = $MODAL;
 (window as any).$TABLES = $TABLES;
 (window as any).$DATA_COLUMNS_FOR_ELEM = $DATA_COLUMNS_FOR_ELEM;
-(window as any).$ID = $ID;
 (window as any).$LABEL = $LABEL;
 (window as any).$SAVE_DOC_PAGE = $SAVE_DOC_PAGE;
 (window as any).$FCMP = $FCMP;

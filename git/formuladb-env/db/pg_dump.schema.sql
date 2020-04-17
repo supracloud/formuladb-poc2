@@ -169,6 +169,18 @@ CREATE TABLE public.t_permission (
 ALTER TABLE public.t_permission OWNER TO postgres;
 
 --
+-- Name: t_system_param; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_system_param (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    value character varying
+);
+
+
+ALTER TABLE public.t_system_param OWNER TO postgres;
+
+--
 -- Name: t_user; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -529,18 +541,6 @@ CREATE TABLE public.tsampleapp (
 ALTER TABLE public.tsampleapp OWNER TO postgres;
 
 --
--- Name: ttransaction; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.ttransaction (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.ttransaction OWNER TO postgres;
-
---
 -- Name: tvaggs_room_countif_room__room_type_______id___reduce; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -667,6 +667,14 @@ ALTER TABLE ONLY public.t_dictionary
 
 ALTER TABLE ONLY public.t_permission
     ADD CONSTRAINT t_permission_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: t_system_param t_system_param_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_system_param
+    ADD CONSTRAINT t_system_param_pkey PRIMARY KEY (_id);
 
 
 --
@@ -819,14 +827,6 @@ ALTER TABLE ONLY public.troom_type
 
 ALTER TABLE ONLY public.tsampleapp
     ADD CONSTRAINT tsampleapp_pkey PRIMARY KEY (_id);
-
-
---
--- Name: ttransaction ttransaction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.ttransaction
-    ADD CONSTRAINT ttransaction_pkey PRIMARY KEY (_id);
 
 
 --

@@ -1,6 +1,9 @@
-import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs, elemHasDataBindingForKey } from "./dom-node";
+import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs, elemHasDataBindingForKey, getElemValue } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { emit } from "@fe/delegated-events";
+import { FeFunctionsForDataBinding } from "@fe/fe-functions";
+import { scalarFormulaEvaluate } from "@core/scalar_formula_evaluate";
+import { DataObj } from "@domain/metadata/data_obj";
 const LOG = new FrmdbLogger('live-dom-template');
 
 export function moveElem(el: Elem, $newParent: Elem, position: number) {
@@ -178,7 +181,7 @@ export { getAllElemsWithDataBindingAttrs } from './dom-node';
 
 export function serializeElemToObj(rootEl: HTMLElement): {} {
     let ret: any = {};
-    let prefix = rootEl.getAttribute('data-frmdb-table') || rootEl.getAttribute('data-frmdb-page-param');
+    let prefix = rootEl.getAttribute('data-frmdb-table') || rootEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '[]');
     for(let elem of getAllElemsWithDataBindingAttrs(rootEl)) {
         for (let i = 0; i < elem.attributes.length; i++) {
             let attr = elem.attributes[i];
@@ -206,6 +209,47 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
                 if (jsonKey.indexOf('[]') >= 0) continue;
                 ret[jsonKey] = value;
             }
+        }
+    }
+
+    computeElementRules(rootEl, ret);
+
+    return ret;
+}
+
+export function computeElementRules(el: HTMLElement, obj: DataObj) {
+
+    let rulesStr = el.getAttribute('data-frmdb-rules');
+    if (rulesStr) {
+        let rules: string[] = rulesStr.split(';;');
+        for (let ruleStr of rules) {
+            let [m, fieldName, formulaStr] = ruleStr.match(/(\w+)\s*=\s*(.*)$/) || [];
+            if (fieldName && formulaStr) {
+                let prepProcessedFormulaStr = evaluateHardCodedForNowFunctions(formulaStr, el);
+                obj[fieldName] = scalarFormulaEvaluate({
+                    ...obj,
+                    ...FeFunctionsForDataBinding,
+                }, prepProcessedFormulaStr);
+            } else { console.warn(`Unknown rule: ${ruleStr}`); }
+        }
+    }
+}
+
+export function evaluateHardCodedForNowFunctions(formulaStr: string, el: HTMLElement): string {
+    let ret = formulaStr;
+
+    let [closestFormula, tableName, columnName] = formulaStr.match(/\$CLOSEST\((\w+)\.(\w+)\)/) || [];
+    if (tableName && columnName) {
+        let referencedObjEl = el.closest(`[data-frmdb-record^="${tableName}~~"]`);
+        if (!referencedObjEl) return `Not Found _id: ${closestFormula}`;
+        if ('_id' === columnName) {
+            let val = referencedObjEl.getAttribute('data-frmdb-record')!;
+            ret = ret.replace(closestFormula, `"${val.replace(/"/g, '\\"')}"`);
+        } else {
+            let referencedFieldEl = referencedObjEl.querySelector(`[data-frmdb-value="$FRMDB.${tableName}[].${columnName}"]`);
+            if (!referencedFieldEl) return `Not Found: ${closestFormula}`;
+            let val = getElemValue(referencedFieldEl);
+            ret = ret.replace(closestFormula, `"${val.replace(/"/g, '\\"')}"`);
         }
     }
 

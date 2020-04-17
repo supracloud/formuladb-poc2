@@ -20,5 +20,5 @@ spec:
       - name: git-persistence
         persistentVolumeClaim:
         hostPath:
-          path: /home/soica/formuladb/febe/git #TDB_PWD_ENV_DIR
+          path: /d/code/metawiz/febe/git #TDB_PWD_ENV_DIR
           type: Directory

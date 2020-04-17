@@ -44,7 +44,7 @@ export class TableEditorComponent extends HTMLElement {
             if (!modalEl) { raiseNotification(ThemeColors.warning, "Cannot add row.", "internal problem, modal not found"); return }
             let formEl = modalEl?.querySelector('frmdb-form') as FormComponent;
             if (!formEl) { raiseNotification(ThemeColors.warning, "Cannot add row.", "internal problem, form not found"); return }
-            formEl.setState(`${this.tableName}~~$AUTO_GENERATE_ID_FOR_NEW_RECORD`);
+            formEl.setState(`${this.tableName}~~$AUTOID`);
             $FRMDB_MODAL(modalEl as HTMLElement);
         });
 

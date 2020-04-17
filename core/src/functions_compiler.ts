@@ -38,6 +38,7 @@ import {
     CompiledScalar,
     MapKeyQuery,
     includesMapFunctionAndQuery,
+    ScalarCallExpression,
 } from "@domain/metadata/execution_plan";
 import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError, isLogicalCallExpression, isLogicalOpBinaryExpression, extractKeysAndQueriesFromBinaryExpression, BooleanCallExpression, isBooleanCallExpression, LogicalOperator } from './formula_compiler';
 import { _throw, _throwEx } from "./throw";
@@ -330,7 +331,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
                 obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
                 entityId: fc.context.targetEntityName,
                 ...inputRange.mapObserversImpactedByOneObservable,
-                valueExpr: $s2e(`_id`),
+                valueExpr: $s2e(`@[_id]`),
             }
         };
     } else {
@@ -393,6 +394,9 @@ function STRING(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
 function IMAGE(fc: FuncCommon, required: "true" | "false") {
+    return propertyTypeFunction(fc);
+}
+function KEY(fc: FuncCommon, scalarFormula: ScalarCallExpression | CompiledScalar) {
     return propertyTypeFunction(fc);
 }
 function DATETIME(fc: FuncCommon, required: "true" | "false") {
@@ -643,6 +647,9 @@ function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): Co
 function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
+function ID(fc: FuncCommon, _id: Expression): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 function CONCATENATE(fc: FuncCommon, expr: Expression, expr2: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -688,6 +695,7 @@ export const ScalarFunctions = {
     OR: OR,
     NOT: NOT,
     TEXT: TEXT,
+    ID: ID,
     CONCATENATE: CONCATENATE,
     REGEXREPLACE: REGEXREPLACE,
     SUBSTITUTE: SUBSTITUTE,
@@ -709,6 +717,7 @@ export const PropertyTypeFunctions = {
     [Pn.IMAGE]: IMAGE,
     [Pn.DATETIME]: DATETIME,
     [Pn.REFERENCE_TO]: REFERENCE_TO,
+    [Pn.KEY]: KEY,
 }
 
 export const FunctionsDict: { [x: string]: Function } = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
@@ -736,6 +745,7 @@ export const FunctionSignatures = {
     IMAGE: `function IMAGE(fc, required)`,
     BOOLEAN: `function BOOLEAN(fc, required)`,
     DATETIME: `function DATETIME(fc, required)`,
+    KEY: `function KEY(fc, scalarFormula)`,
     SUMIF: `function SUMIF(fc, tableRange, logicalExpression)`,
     COUNT: `function COUNT(fc, tableRange)`,
     COUNTIF: `function COUNTIF(fc, tableRange, logicalExpression)`,
@@ -743,7 +753,8 @@ export const FunctionSignatures = {
     RANK: `function RANK(fc, lookupExpr, tableRange)`,
     VLOOKUP: `function VLOOKUP(fc, entityRange, booleanExpr, resultExpr)`,
     TEXT: `function TEXT(fc, expr, format)`,
-    CONCATENATE: `function CONCATENATE(fc, expr, expr2)`,
+    ID: `function ID(fc, _id)`,
+    CONCATENATE: `function CONCATENATE(fc, expr, expr2, expr3, expr4, expr5, expr6)`,
     REGEXREPLACE: `function REGEXREPLACE(fc, expr, regex, replacement)`,
     SUBSTITUTE: `function SUBSTITUTE(fc, expr, old_text, new_text)`,
     EOMONTH: `function EOMONTH(fc, expr, numMonths)`,
