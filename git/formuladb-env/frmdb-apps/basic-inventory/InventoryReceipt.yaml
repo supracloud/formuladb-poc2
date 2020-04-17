@@ -3,7 +3,7 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     receipt_item_table:
         name: receipt_item_table

@@ -3,26 +3,29 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     _owner:
         name: _owner
-        propType_: STRING
+        propType_: TEXT
         required: true
     _role:
         name: _role
-        propType_: STRING
+        propType_: TEXT
         required: true
     _rev:
         name: _rev
-        propType_: STRING
+        propType_: TEXT
         required: true
     email:
-        propType_: STRING
+        propType_: TEXT
         name: email
     phone:
-        propType_: STRING
+        propType_: TEXT
         name: phone
     delivery_address:
-        propType_: STRING
+        propType_: TEXT
         name: delivery_address
+    total:
+        propType_: TEXT
+        name: total

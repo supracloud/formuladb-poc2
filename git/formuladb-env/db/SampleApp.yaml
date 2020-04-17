@@ -3,7 +3,7 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     category:
         name: category
@@ -21,11 +21,11 @@ props:
         formula: 'CONCATENATE(category, category2)'
     app_url:
         name: app_url
-        propType_: STRING
+        propType_: TEXT
         required: true
     short_description:
         name: short_description
-        propType_: STRING
+        propType_: TEXT
         required: true
     wish_list_count:
         name: wish_list_count
@@ -33,11 +33,11 @@ props:
         formula: 'COUNTIF(WishListRequest._id, app == @[_id])'
     status:
         name: status
-        propType_: STRING
+        propType_: TEXT
         required: true
     call_to_action:
         name: call_to_action
-        propType_: STRING
+        propType_: TEXT
         required: true
     small_img:
         name: small_img
@@ -49,8 +49,8 @@ props:
         required: true
     guiorder:
         name: guiorder
-        propType_: STRING
+        propType_: TEXT
         required: true
-    _owner: { name: _owner, propType_: STRING, required: true }
-    _role: { name: _role, propType_: STRING, required: true }
-    _rev: { name: _rev, propType_: STRING, required: true }
+    _owner: { name: _owner, propType_: TEXT, required: true }
+    _role: { name: _role, propType_: TEXT, required: true }
+    _rev: { name: _rev, propType_: TEXT, required: true }

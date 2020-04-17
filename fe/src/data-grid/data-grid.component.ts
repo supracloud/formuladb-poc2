@@ -319,7 +319,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
     agFilter(ctype: string) {
         switch (ctype) {
-            case 'STRING':
+            case 'TEXT':
                 return 'agTextColumnFilter';
             case 'NUMBER':
                 return 'agNumberColumnFilter';
@@ -364,7 +364,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
                 headerName: I18N.tt(c.name),
                 field: c.name,
                 width: c.width ? c.width : 100,
-                filter: this.agFilter(c.type || Pn.STRING),
+                filter: this.agFilter(c.type || Pn.TEXT),
                 filterParams: {
                     newRowsAction: 'keep',
                 },

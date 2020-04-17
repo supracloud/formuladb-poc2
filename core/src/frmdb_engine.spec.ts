@@ -24,8 +24,8 @@ describe('FrmdbEngine', () => {
         entities: {
             A: {
                 _id: 'A', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
-                    b: { name: "b", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
+                    b: { name: "b", propType_: Pn.TEXT },
                     val: { name: "val", propType_: Pn.NUMBER },
                     err: { name: "err", propType_: Pn.NUMBER },
                 },
@@ -38,7 +38,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             B: {
                 _id: 'B', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
                     sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val, b == @[_id])' } as FormulaProperty,
                     x__: { name: "x__", propType_: Pn.FORMULA, formula: '100 - sum__' } as FormulaProperty,
                 },  
@@ -48,7 +48,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             C: {
                 _id: 'C', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
                     aaaa: {
                         name: 'aaaa',
                         propType_: Pn.CHILD_TABLE,
@@ -64,9 +64,9 @@ describe('FrmdbEngine', () => {
         entities: {
             Tr: {
                 _id: 'Tr', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
-                    ac1: { name: "ac1", propType_: Pn.STRING },
-                    ac2: { name: "ac2", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
+                    ac1: { name: "ac1", propType_: Pn.TEXT },
+                    ac2: { name: "ac2", propType_: Pn.TEXT },
                     val: { name: "val", propType_: Pn.NUMBER },
                 },
                 autoCorrectionsOnValidationFailed: {
@@ -76,7 +76,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             Ac: {
                 _id: 'Ac', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
                     balance__: { name: "balance__", propType_: Pn.FORMULA, formula: '50 + SUMIF(Tr.val, ac2 == @[_id]) - SUMIF(Tr.val, ac1 == @[_id])' } as FormulaProperty,
                 },
                 validations: {

@@ -1,2 +1,3 @@
 _id,_owner,_role,_rev,order_id,menu_item_id,quantity
-Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--vVsexqeTReF1iWoAUU4ten,,$ANONYMOUS,,Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,2.00000
+Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--qnrYmFumAtvT5YYQfZFMe9,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~qnrYmFumAtvT5YYQfZFMe9,3.00000
+Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--vVsexqeTReF1iWoAUU4ten,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,7.00000

@@ -3,7 +3,7 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     app:
         name: app
@@ -12,11 +12,11 @@ props:
         referencedPropertyName: _id
     email:
         name: email
-        propType_: STRING
+        propType_: TEXT
         required: true
     comments:
         name: comments
-        propType_: STRING
-    _owner: { name: _owner, propType_: STRING, required: true }
-    _role: { name: _role, propType_: STRING, required: true }
-    _rev: { name: _rev, propType_: STRING, required: true }
+        propType_: TEXT
+    _owner: { name: _owner, propType_: TEXT, required: true }
+    _role: { name: _role, propType_: TEXT, required: true }
+    _rev: { name: _rev, propType_: TEXT, required: true }

@@ -174,6 +174,7 @@ ALTER TABLE public.t_permission OWNER TO postgres;
 
 CREATE TABLE public.t_system_param (
     _id character varying NOT NULL COLLATE pg_catalog."C",
+    name character varying,
     value character varying
 );
 
@@ -432,7 +433,8 @@ CREATE TABLE public.trestaurant_order (
     _rev character varying,
     email character varying,
     phone character varying,
-    delivery_address character varying
+    delivery_address character varying,
+    total character varying
 );
 
 

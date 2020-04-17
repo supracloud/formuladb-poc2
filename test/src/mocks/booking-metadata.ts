@@ -21,10 +21,10 @@ export const BookingItem = {
     _id: "BookingItem",
     isEditable: true,
     props: {
-        name: { name: "name", propType_: Pn.STRING, required: true } as EntityProperty,
-        description: { name: "description", propType_: Pn.STRING, required: true } as EntityProperty,
+        name: { name: "name", propType_: Pn.TEXT, required: true } as EntityProperty,
+        description: { name: "description", propType_: Pn.TEXT, required: true } as EntityProperty,
         picture: { name: "picture", propType_: Pn.IMAGE } as EntityProperty,
-        long_description: { name: "long_description", propType_: Pn.STRING } as EntityProperty,
+        long_description: { name: "long_description", propType_: Pn.TEXT } as EntityProperty,
         price: { name: "price", propType_: Pn.NUMBER, required: true } as EntityProperty,
         wifi: { name: "wifi", propType_: Pn.BOOLEAN } as EntityProperty,
         parking: { name: "parking", propType_: Pn.BOOLEAN } as EntityProperty,

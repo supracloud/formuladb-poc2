@@ -3,12 +3,12 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     guiorder:
         name: guiorder
-        propType_: STRING
+        propType_: TEXT
         required: true
-    _owner: { name: _owner, propType_: STRING, required: true }
-    _role: { name: _role, propType_: STRING, required: true }
-    _rev: { name: _rev, propType_: STRING, required: true }
+    _owner: { name: _owner, propType_: TEXT, required: true }
+    _role: { name: _role, propType_: TEXT, required: true }
+    _rev: { name: _rev, propType_: TEXT, required: true }

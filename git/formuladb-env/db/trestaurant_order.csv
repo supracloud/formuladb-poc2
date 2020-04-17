@@ -1,2 +1,2 @@
-_id,_owner,_role,_rev,email,phone,delivery_address
-Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,AnounymousUserId,$ANONYMOUS,"","","",""
+_id,_owner,_role,_rev,email,phone,delivery_address,total
+Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,AnounymousUserId,$ANONYMOUS,"","","","",""

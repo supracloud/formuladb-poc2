@@ -15,14 +15,14 @@ describe('SchemaCompiler', () => {
             entities: {
                 A: {
                     _id: 'A', props: {
-                        _id: { name: "_id", propType_: Pn.STRING },
+                        _id: { name: "_id", propType_: Pn.TEXT },
                         bId: { name: "bId", propType_: Pn.REFERENCE_TO, referencedEntityName: 'B', referencedPropertyName: '_id' },
                         val: { name: "val", propType_: Pn.NUMBER },
                     }
                 } as Entity,
                 B: {
                     _id: 'B', props: {
-                        _id: { name: "_id", propType_: Pn.STRING },
+                        _id: { name: "_id", propType_: Pn.TEXT },
                         sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val, bId == @[_id])' } as FormulaProperty,
                         x__: { name: "x__", propType_: Pn.FORMULA, formula: '10 - sum__' } as FormulaProperty,
                     }

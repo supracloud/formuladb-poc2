@@ -11,7 +11,7 @@ import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 export const GEN__Settings: Entity = {
     _id: "GEN__Settings",
     props: {
-        name: { name: "name", propType_: Pn.STRING } as EntityProperty,
+        name: { name: "name", propType_: Pn.TEXT } as EntityProperty,
         valueNumber: { name: "valueNumber", propType_: Pn.NUMBER } as EntityProperty,
         valueText: { name: "valueText", propType_: Pn.DOCUMENT } as EntityProperty,
         valueDate: { name: "valueDate", propType_: Pn.DATETIME } as EntityProperty,
@@ -22,7 +22,7 @@ export const GEN__Currency: Entity = {
     _id: "GEN__Currency",
     props: {
 
-        code: { name: "code", propType_: Pn.STRING } as EntityProperty,
+        code: { name: "code", propType_: Pn.TEXT } as EntityProperty,
         rate1: { name: "rate1", propType_: Pn.NUMBER } as EntityProperty,
         rate2: { name: "rate2", propType_: Pn.NUMBER } as EntityProperty,
         rate3: { name: "rate3", propType_: Pn.NUMBER } as EntityProperty,
@@ -38,19 +38,19 @@ export const GEN__Person: Entity = {
     _id: "GEN__Person",
     props: {
 
-        code: { name: "code", propType_: Pn.STRING, required: true } as EntityProperty,
-        actor_code: { name: "actor_code", propType_: Pn.STRING, required: true } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING } as EntityProperty,
-        district: { name: "district", propType_: Pn.STRING } as EntityProperty,
-        city: { name: "city", propType_: Pn.STRING } as EntityProperty,
-        address: { name: "address", propType_: Pn.STRING } as EntityProperty,
-        supervisor: { name: "supervisor", propType_: Pn.STRING } as EntityProperty,
-        manager: { name: "manager", propType_: Pn.STRING } as EntityProperty,
-        phone: { name: "phone", propType_: Pn.STRING } as EntityProperty,
-        fax: { name: "fax", propType_: Pn.STRING } as EntityProperty,
-        tax_number: { name: "tax_number", propType_: Pn.STRING } as EntityProperty,
-        details: { name: "details", propType_: Pn.STRING } as EntityProperty,
-        state: { name: "state", propType_: Pn.STRING, required: true, } as EntityProperty,
+        code: { name: "code", propType_: Pn.TEXT, required: true } as EntityProperty,
+        actor_code: { name: "actor_code", propType_: Pn.TEXT, required: true } as EntityProperty,
+        name: { name: "name", propType_: Pn.TEXT } as EntityProperty,
+        district: { name: "district", propType_: Pn.TEXT } as EntityProperty,
+        city: { name: "city", propType_: Pn.TEXT } as EntityProperty,
+        address: { name: "address", propType_: Pn.TEXT } as EntityProperty,
+        supervisor: { name: "supervisor", propType_: Pn.TEXT } as EntityProperty,
+        manager: { name: "manager", propType_: Pn.TEXT } as EntityProperty,
+        phone: { name: "phone", propType_: Pn.TEXT } as EntityProperty,
+        fax: { name: "fax", propType_: Pn.TEXT } as EntityProperty,
+        tax_number: { name: "tax_number", propType_: Pn.TEXT } as EntityProperty,
+        details: { name: "details", propType_: Pn.TEXT } as EntityProperty,
+        state: { name: "state", propType_: Pn.TEXT, required: true, } as EntityProperty,
     }
 };
 
@@ -58,16 +58,16 @@ export const GEN__Client: Entity = {
     _id: "GEN__Client",
     props: {
 
-        code: { name: "code", propType_: Pn.STRING, required: true } as EntityProperty,
-        username: { name: "username", propType_: Pn.STRING } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING } as EntityProperty,
-        role: { name: "role", propType_: Pn.STRING } as EntityProperty,
-        password: { name: "password", propType_: Pn.STRING } as EntityProperty,
-        details: { name: "details", propType_: Pn.STRING } as EntityProperty,
-        type: { name: "type", propType_: Pn.STRING } as EntityProperty,
-        parent_code: { name: "parent_code", propType_: Pn.STRING } as EntityProperty,
-        param1: { name: "param1", propType_: Pn.STRING } as EntityProperty,
-        state: { name: "state", propType_: Pn.STRING, required: true, } as EntityProperty,
+        code: { name: "code", propType_: Pn.TEXT, required: true } as EntityProperty,
+        username: { name: "username", propType_: Pn.TEXT } as EntityProperty,
+        name: { name: "name", propType_: Pn.TEXT } as EntityProperty,
+        role: { name: "role", propType_: Pn.TEXT } as EntityProperty,
+        password: { name: "password", propType_: Pn.TEXT } as EntityProperty,
+        details: { name: "details", propType_: Pn.TEXT } as EntityProperty,
+        type: { name: "type", propType_: Pn.TEXT } as EntityProperty,
+        parent_code: { name: "parent_code", propType_: Pn.TEXT } as EntityProperty,
+        param1: { name: "param1", propType_: Pn.TEXT } as EntityProperty,
+        state: { name: "state", propType_: Pn.TEXT, required: true, } as EntityProperty,
     }
 };
 

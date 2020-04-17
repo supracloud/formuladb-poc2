@@ -1,10 +1,10 @@
 import * as _ from "lodash";
 
 import * as events from "@domain/event";
-import { BACKEND_SERVICE, postData } from "./backend.service";
-import { updateDOM } from "./live-dom-template/live-dom-template";
+import { BACKEND_SERVICE, postData, BackendService } from "./backend.service";
+import { updateDOM, serializeElemToObj } from "./live-dom-template/live-dom-template";
 import { DATA_FRMDB_ATTRS_Enum } from "./live-dom-template/dom-node";
-import { entityNameFromDataObjId, parseDataObjId, DataObj } from "@domain/metadata/data_obj";
+import { entityNameFromDataObjId, parseDataObjId, DataObj, isNewDataObjId } from "@domain/metadata/data_obj";
 import { FeFunctionsForDataBinding } from "./fe-functions";
 import { generateTimestampUUID } from "@domain/uuid";
 import { DataGridComponentI } from "./data-grid/data-grid.component.i";
@@ -15,6 +15,8 @@ import { registerChangesFeedHandler } from "./changes-feed-client";
 import { $ImageObjT, $AppObjT, $PageObjT, $Table, $App, $Page } from "@domain/metadata/default-metadata";
 import { isHTMLElement, getWindow } from "@core/dom-utils";
 import { FormService } from "./form.service";
+import { Pn, EntityProperty } from "@domain/metadata/entity";
+import { scalarFormulaEvaluate } from "@core/scalar_formula_evaluate";
 
 declare var $: any;
 
@@ -84,6 +86,16 @@ export class DataBindingsService {
             let tableEl = this.rootEl.querySelector(`[data-frmdb-table="${tableName}"]`);
             await this.updateDOMForTable(tableEl as HTMLElement);
         }
+
+        let recordBindings = forceTableName ? [`$FRMDB.${forceTableName}[]`] :
+            _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-bind-to-record^="$FRMDB."]'))
+                .map(el => el.getAttribute('data-frmdb-bind-to-record')));
+        let promises: Promise<any>[] = [];
+        for (let recordBinding of recordBindings) {
+            let el = this.rootEl.querySelector(`[data-frmdb-bind-to-record="${recordBinding}"]`);
+            promises.push(this.updateDOMForRecordBinding(el as HTMLElement));
+        }
+        await Promise.all(promises);
     }
 
     public updateDOMWithUrlParameters() {
@@ -92,7 +104,7 @@ export class DataBindingsService {
         console.log("updateDOMWithUrlParameters", wnd, searchStr);
         let urlParams = new URLSearchParams(searchStr);
         let paramValues: any = {}
-        urlParams.forEach((val, key) => paramValues = {...paramValues, [key]: val});
+        urlParams.forEach((val, key) => paramValues = { ...paramValues, [key]: val });
         updateDOM(paramValues, this.rootEl);
     }
 
@@ -123,6 +135,30 @@ export class DataBindingsService {
         }
     }
 
+    async updateDOMForRecordBinding(el: HTMLElement) {
+        let recordBinding = el.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '');
+        if (!recordBinding) { console.warn("Empty record binding " + el.outerHTML); return }
+        if (isNewDataObjId(recordBinding)) {
+            let entityId = entityNameFromDataObjId(recordBinding);
+            let entity = await BACKEND_SERVICE().getEntity(entityId);
+            let idProp: EntityProperty = entity?.props?._id;
+            if (idProp && idProp.propType_ === Pn.KEY) {
+                let obj = serializeElemToObj(el);
+                let objId = scalarFormulaEvaluate(obj, idProp.scalarFormula);
+                if (objId) {
+                    let dataObj = await BACKEND_SERVICE().getDataObjAcceptNull(`${entityId}~~${objId}`);
+                    if (dataObj) {
+                        updateDOM({
+                            $FRMDB: { [`${entityId}{}`]: dataObj },
+                        }, el, FeFunctionsForDataBinding);
+                        el.setAttribute('data-frmdb-record', dataObj._id);
+                    }
+                }
+            }
+        }
+
+    }
+
     async updateDOMForTable(el: HTMLElement) {
         try {
             let tableName = el.getAttribute('data-frmdb-table')!.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
@@ -144,7 +180,7 @@ export class DataBindingsService {
 
     getQueryForTable(tableName: string): SimpleAddHocQuery {
         let ret: SimpleAddHocQuery = _.cloneDeep(DefaultSimpleAddHocQuery);
-        
+
         let filterEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-filter^="$FRMDB.${tableName}[].filter."]`));
         for (let filterEl of filterEls) {
             let [x, fieldName, type] = regexExtract(filterEl.getAttribute('data-frmdb-filter')!.replace(`$FRMDB.${tableName}[].filter.`, ''),
@@ -211,7 +247,7 @@ export class DataBindingsService {
                     tableNames.add($Page._id);
                 }
             }
-    
+
             for (let tableName of tableNames.values()) {
                 for (let el of Array.from(this.rootEl.querySelectorAll(`[data-frmdb-table="$FRMDB.${tableName}[]"],[data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.${tableName}[]"]`))) {
                     this.debouncedUpdateDOMForTable(el);

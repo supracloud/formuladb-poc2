@@ -18,8 +18,8 @@ describe('KeyObjStorePostgres', () => {
             await kvsFactory.clearAllForTestingPurposes();
             let kvs = kvsFactory.createKeyTableS({
                 _id: 'A', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
-                    a: { name: "a", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
+                    a: { name: "a", propType_: Pn.TEXT },
                 },
             });
 

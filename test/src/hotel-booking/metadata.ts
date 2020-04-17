@@ -11,11 +11,11 @@ export const Room_Type = {
     _id: "Room_Type",
     isEditable: true,
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING, required: true } as EntityProperty,
-        description: { name: "description", propType_: Pn.STRING, required: true } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.TEXT, required: true } as EntityProperty,
+        name: { name: "name", propType_: Pn.TEXT, required: true } as EntityProperty,
+        description: { name: "description", propType_: Pn.TEXT, required: true } as EntityProperty,
         picture: { name: "picture", propType_: Pn.IMAGE } as EntityProperty,
-        long_description: { name: "long_description", propType_: Pn.STRING } as EntityProperty,
+        long_description: { name: "long_description", propType_: Pn.TEXT } as EntityProperty,
         price: { name: "price", propType_: Pn.NUMBER, required: true } as EntityProperty,
         wifi: { name: "wifi", propType_: Pn.BOOLEAN } as EntityProperty,
         parking: { name: "parking", propType_: Pn.BOOLEAN } as EntityProperty,
@@ -38,7 +38,7 @@ export const Room = {
     _id: "Room",
     isEditable: true,
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.TEXT, required: true } as EntityProperty,
         nb: { name: "nb", propType_: Pn.NUMBER, required: true } as EntityProperty,
         room_type: { name: "room_type", propType_: Pn.REFERENCE_TO, referencedEntityName: Room_Type._id, referencedPropertyName: '_id' } as EntityProperty,
     }
@@ -56,7 +56,7 @@ export const Booking = {
         ]
     } as EntityStateGraph,
     props: {
-        _id: { name: "_id", propType_: Pn.STRING, required: true } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.TEXT, required: true } as EntityProperty,
         guest: { name: "guest", propType_: Pn.REFERENCE_TO, referencedEntityName: $User._id, referencedPropertyName: '_id' } as EntityProperty,
         room: { name: "room", propType_: Pn.REFERENCE_TO, referencedEntityName: Room._id, referencedPropertyName: '_id' } as EntityProperty,
         start_date: { name: "start_date", propType_: Pn.DATETIME, required: true } as EntityProperty,

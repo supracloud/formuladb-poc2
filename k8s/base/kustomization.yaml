@@ -1,4 +1,4 @@
-namespace: frmdb-deployment-to-statefulset #TBD_ENV_NAME
+namespace: frmdb-master #TBD_ENV_NAME
 resources:
 - resources/be-sts.yaml
 - resources/be-service.yaml

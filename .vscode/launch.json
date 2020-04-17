@@ -81,7 +81,7 @@
             "request": "launch",
             "---url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/hotel-booking/booking.html?frmdbRender=editor&%24FRMDB.PageParameters.new_room_booking.start_date=2020-04-07&%24FRMDB.PageParameters.new_room_booking.end_date=2020-04-16&%24FRMDB.PageParameters.new_room_booking.nb_adults=1&%24FRMDB.PageParameters.new_room_booking.nb_children=0",
             "----url": "http://frmdb.localhost/en/users/register.html",
-            "url": "http://frmdb.localhost/en/pizza-time/order.html?frmdbRender=editor",
+            "url": "http://frmdb.localhost/en/restaurant/order.html?frmdbRender=editor",
             "-url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/hotel-booking/index.html?frmdbRender=editor",
             "--url": "http://frmdb.localhost/en-basic-cb8670-363636-Clean/base-app/overlays.html",
             "webRoot": "${workspaceFolder}",

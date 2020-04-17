@@ -19,16 +19,16 @@ const TestSchema: Schema = {
     entities: {
         A: {
             _id: 'A', props: {
-                _id: { name: "_id", propType_: Pn.STRING },
+                _id: { name: "_id", propType_: Pn.TEXT },
                 num: { name: "num", propType_: Pn.NUMBER },
-                a_y: { name: "a_y", propType_: Pn.STRING },
+                a_y: { name: "a_y", propType_: Pn.TEXT },
             },
         } as Entity,
         B: {
             _id: 'B', props: {
-                _id: { name: "_id", propType_: Pn.STRING },
+                _id: { name: "_id", propType_: Pn.TEXT },
                 num: { name: "sum__", propType_: Pn.NUMBER },
-                a_y: { name: "b_y", propType_: Pn.STRING },
+                a_y: { name: "b_y", propType_: Pn.TEXT },
             },
         } as Entity,
     }

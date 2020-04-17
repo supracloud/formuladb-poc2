@@ -19,9 +19,9 @@ export interface KeyValueStoreSpecObjType {
 export const KeyValueStoreSpecEntity: Entity = {
     _id: "KeyValueStoreSpecEntity",
     props: {
-        _id: { name: "_id", propType_: Pn.STRING } as EntityProperty,
-        categ: { name: "categ", propType_: Pn.STRING } as EntityProperty,
-        subcateg: { name: "subcateg", propType_: Pn.STRING } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.TEXT } as EntityProperty,
+        categ: { name: "categ", propType_: Pn.TEXT } as EntityProperty,
+        subcateg: { name: "subcateg", propType_: Pn.TEXT } as EntityProperty,
         val: { name: "val", propType_: Pn.NUMBER } as EntityProperty,
     }
 };

@@ -43,8 +43,8 @@ describe('DataBindingsMonitor', () => {
                 A: {
                     _id: 'A',
                     props: {
-                        _id: { name: "_id", propType_: Pn.STRING },
-                        f1: { name: "f1", propType_: Pn.STRING },
+                        _id: { name: "_id", propType_: Pn.TEXT },
+                        f1: { name: "f1", propType_: Pn.TEXT },
                         f2: { name: "f2", propType_: Pn.NUMBER },
                     },
                 } as Entity,

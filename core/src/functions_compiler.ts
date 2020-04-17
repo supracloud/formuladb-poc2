@@ -390,7 +390,7 @@ function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression, required: "t
 function NUMBER(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
-function STRING(fc: FuncCommon, required: "true" | "false") {
+function TEXT(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
 function IMAGE(fc: FuncCommon, required: "true" | "false") {
@@ -713,7 +713,7 @@ export const ScalarFunctions = {
 
 export const PropertyTypeFunctions = {
     [Pn.NUMBER]: NUMBER,
-    [Pn.STRING]: STRING,
+    [Pn.TEXT]: TEXT,
     [Pn.IMAGE]: IMAGE,
     [Pn.DATETIME]: DATETIME,
     [Pn.REFERENCE_TO]: REFERENCE_TO,
@@ -741,7 +741,7 @@ export const FunctionSignatures = {
     SUM: `function SUM(fc, tableRange)`,
     REFERENCE_TO: `function REFERENCE_TO(fc, tableRange, required, alias)`,
     NUMBER: `function NUMBER(fc, required)`,
-    STRING: `function STRING(fc, required)`,
+    TEXT: `function TEXT(fc, required)`,
     IMAGE: `function IMAGE(fc, required)`,
     BOOLEAN: `function BOOLEAN(fc, required)`,
     DATETIME: `function DATETIME(fc, required)`,

@@ -2,11 +2,11 @@ _id: LargeSalesReport
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     client:
         name: client
-        propType_: STRING
+        propType_: TEXT
         required: true
     month:
         name: month

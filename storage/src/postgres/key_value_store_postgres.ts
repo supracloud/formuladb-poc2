@@ -295,7 +295,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     private prop2sqlCol(prop: EntityProperty): string {
         let type: string;
         switch (prop.propType_) {
-            case Pn.STRING:
+            case Pn.TEXT:
                 type = "varchar";
                 break;
             case Pn.NUMBER:

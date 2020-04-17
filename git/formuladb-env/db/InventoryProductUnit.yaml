@@ -2,11 +2,11 @@ _id: InventoryProductUnit
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     code:
         name: code
-        propType_: STRING
+        propType_: TEXT
         required: true
     productCode:
         propType_: REFERENCE_TO
@@ -20,46 +20,46 @@ props:
         referencedPropertyName: name
     inventory_location:
         name: inventory_location
-        propType_: STRING
+        propType_: TEXT
         required: true
     serial1:
         name: serial1
-        propType_: STRING
+        propType_: TEXT
     serial2:
         name: serial2
-        propType_: STRING
+        propType_: TEXT
     serial3:
         name: serial3
-        propType_: STRING
+        propType_: TEXT
     serial4:
         name: serial4
-        propType_: STRING
+        propType_: TEXT
     serial5:
         name: serial5
-        propType_: STRING
+        propType_: TEXT
     serial6:
         name: serial6
-        propType_: STRING
+        propType_: TEXT
     serial7:
         name: serial7
-        propType_: STRING
+        propType_: TEXT
     install_date:
         name: install_date
         propType_: DATETIME
     state:
         name: state
-        propType_: STRING
+        propType_: TEXT
         required: true
     nb_piston_cycles:
         name: nb_piston_cycles
-        propType_: STRING
+        propType_: TEXT
     brita_counter:
         name: brita_counter
-        propType_: STRING
+        propType_: TEXT
     washing_cycles:
         name: washing_cycles
-        propType_: STRING
-    _owner: { name: _owner, propType_: STRING, required: true }
-    _role: { name: _role, propType_: STRING, required: true }
-    _rev: { name: _rev, propType_: STRING, required: true }
+        propType_: TEXT
+    _owner: { name: _owner, propType_: TEXT, required: true }
+    _role: { name: _role, propType_: TEXT, required: true }
+    _rev: { name: _rev, propType_: TEXT, required: true }
 isEditable: true
