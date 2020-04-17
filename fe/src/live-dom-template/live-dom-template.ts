@@ -181,7 +181,7 @@ export { getAllElemsWithDataBindingAttrs } from './dom-node';
 
 export function serializeElemToObj(rootEl: HTMLElement): {} {
     let ret: any = {};
-    let prefix = rootEl.getAttribute('data-frmdb-table') || rootEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '[]');
+    let prefix = rootEl.getAttribute('data-frmdb-table') || rootEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '{}');
     for(let elem of getAllElemsWithDataBindingAttrs(rootEl)) {
         for (let i = 0; i < elem.attributes.length; i++) {
             let attr = elem.attributes[i];
@@ -203,7 +203,8 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
                 if (alternateJsonKey) jsonKey = alternateJsonKey;
 
                 if (jsonKey.indexOf(prefix ? prefix + '.' : '') != 0) {
-                    throw new Error(`prefix ${prefix} not correct for key ${jsonKey} attr ${attr.name}=${attr.value}`);
+                    console.trace(`prefix ${prefix} not matching key ${jsonKey} attr ${attr.name}=${attr.value}`);
+                    continue;
                 }
                 if (prefix && jsonKey.indexOf(prefix) === 0) jsonKey = jsonKey.slice(prefix.length + 1);
                 if (jsonKey.indexOf('[]') >= 0) continue;
@@ -241,13 +242,13 @@ export function evaluateHardCodedForNowFunctions(formulaStr: string, el: HTMLEle
     let [closestFormula, tableName, columnName] = formulaStr.match(/\$CLOSEST\((\w+)\.(\w+)\)/) || [];
     if (tableName && columnName) {
         let referencedObjEl = el.closest(`[data-frmdb-record^="${tableName}~~"]`);
-        if (!referencedObjEl) return `Not Found _id: ${closestFormula}`;
+        if (!referencedObjEl) {console.trace(`Not Found _id: ${closestFormula}`); return '""'};
         if ('_id' === columnName) {
             let val = referencedObjEl.getAttribute('data-frmdb-record')!;
             ret = ret.replace(closestFormula, `"${val.replace(/"/g, '\\"')}"`);
         } else {
-            let referencedFieldEl = referencedObjEl.querySelector(`[data-frmdb-value="$FRMDB.${tableName}[].${columnName}"]`);
-            if (!referencedFieldEl) return `Not Found: ${closestFormula}`;
+            let referencedFieldEl = referencedObjEl.querySelector(`[data-frmdb-value="$FRMDB.${tableName}[].${columnName}"],[data-frmdb-value="$FRMDB.${tableName}{}.${columnName}"]`);
+            if (!referencedFieldEl) { console.trace(`Not Found: ${closestFormula}`); return '""'}
             let val = getElemValue(referencedFieldEl);
             ret = ret.replace(closestFormula, `"${val.replace(/"/g, '\\"')}"`);
         }

@@ -35,7 +35,7 @@ import { $s2e } from "@functions/s2e";
 // props:
 //     _id:
 //         name: _id
-//         propType_: STRING
+//         propType_: TEXT
 //         required: true
 //     guest:
 //         name: guest
@@ -92,8 +92,8 @@ import { $s2e } from "@functions/s2e";
 
 const ATable = {
     _id: 'A', props: {
-        _id: { name: "_id", propType_: Pn.STRING },
-        type: { name: "type", propType_: Pn.STRING },
+        _id: { name: "_id", propType_: Pn.TEXT },
+        type: { name: "type", propType_: Pn.TEXT },
         start_num: { name: "start_num", propType_: Pn.NUMBER },
         end_num: { name: "end_num", propType_: Pn.NUMBER },
         nb_overlap: { name: "nb_overlap", propType_: Pn.FORMULA, formula: `COUNTIF(A, AND(type == @[type], INTERSECTS(NUMRANGE(start_num, end_num),NUMRANGE(@[start_num], @[end_num]))))` }

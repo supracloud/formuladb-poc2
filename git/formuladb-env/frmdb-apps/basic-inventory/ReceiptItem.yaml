@@ -2,7 +2,7 @@ _id: ReceiptItem
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     product_id:
         name: product_id

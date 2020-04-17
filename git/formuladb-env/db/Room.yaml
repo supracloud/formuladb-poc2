@@ -3,7 +3,7 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     nb:
         name: nb
@@ -14,6 +14,6 @@ props:
         propType_: REFERENCE_TO
         referencedEntityName: Room_Type
         referencedPropertyName: _id
-    _owner: { name: _owner, propType_: STRING, required: true }
-    _role: { name: _role, propType_: STRING, required: true }
-    _rev: { name: _rev, propType_: STRING, required: true }
+    _owner: { name: _owner, propType_: TEXT, required: true }
+    _role: { name: _role, propType_: TEXT, required: true }
+    _rev: { name: _rev, propType_: TEXT, required: true }

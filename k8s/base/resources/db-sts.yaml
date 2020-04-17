@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: db
+  serviceName: db
+  template:
+    metadata:
+      labels:
+        service: db
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        image: postgres:11
+        name: db
+        ports:
+        - containerPort: 5432
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: pg-persistence
+          subPath: postgres
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: pg-persistence
+    spec:
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 10Gi

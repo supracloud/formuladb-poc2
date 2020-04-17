@@ -18,13 +18,13 @@ const TestSchema: Schema = {
     entities: {
         A: {
             _id: 'A', props: {
-                _id: { name: "_id", propType_: Pn.STRING },
+                _id: { name: "_id", propType_: Pn.TEXT },
                 x: { name: "x", propType_: Pn.NUMBER },
             },
         } as Entity,
         B: {
             _id: 'B', props: {
-                _id: { name: "_id", propType_: Pn.STRING },
+                _id: { name: "_id", propType_: Pn.TEXT },
                 idx: { name: "idx", propType_: Pn.NUMBER },
             },
         } as Entity,
@@ -60,7 +60,7 @@ describe('FrmdbEngineStore _textjoin', () => {
     });
 
     const textjoin1 = 'TEXTJOIN(IF(A._id, FLOOR(x/4) == @[idx]),";;")';
-    it("B.list= " + textjoin1, async (done) => {
+    it("B.list= " + textjoin1, async () => {
 
         let formula = textjoin1;
         compiledFormula = compileFormula('B', 'list', formula);
@@ -137,8 +137,6 @@ describe('FrmdbEngineStore _textjoin', () => {
         expect(txt).toEqual('A~~1');
         txt = await frmdbTStore.getAggValueForObserver(b2, compiledFormula.triggers![0]);
         expect(txt).toEqual('A~~2;;A~~3;;A~~4;;A~~5');
-
-        done();
     });
     
 });

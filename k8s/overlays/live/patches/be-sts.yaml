@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: be
+spec:
+  volumeClaimTemplates:
+    - metadata:
+        name: git-persistence
+      spec:
+        accessModes: [ ReadWriteOnce ]
+        resources:
+          requests:
+            storage: 5Gi

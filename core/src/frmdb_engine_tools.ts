@@ -58,7 +58,7 @@ export class FrmdbEngineTools {
                     return `Value is mandatory`;
                 } 
                 break;
-            case Pn.STRING:
+            case Pn.TEXT:
                 if (property.required === true && propertyValue == '') {
                     return `Value is mandatory`;
                 }                

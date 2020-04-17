@@ -112,7 +112,7 @@ export class FormComponent extends HTMLElement {
 
         let html: string[] = [];
 
-        html.push(`<form data-frmdb-record="${this.state.rowId}" data-frmdb-form-autosave>`);
+        html.push(`<form data-frmdb-record="${this.state.rowId}" data-frmdb-form-auto-save>`);
         for (let prop of this.state.props||[]) {
             html.push(`<div class="form-group row ${prop.cssWidth}">`);
             html.push(`    <label for="${prop.name}" class="col-form-label col-3">${prop.nameI18n}</label>`);

@@ -22,11 +22,11 @@ export function makeSchema(...entities: Entity[]): Schema {
 export const SUM_absolute_path = {
     schema: makeSchema(
         makeEntity('/R/A', {
-            aType: { name: "aType", propType_: Pn.STRING },
+            aType: { name: "aType", propType_: Pn.TEXT },
             num: { name: "num", propType_: Pn.NUMBER },
         }),
         makeEntity('/R/B', {
-            bType: { name: "bType", propType_: Pn.STRING },
+            bType: { name: "bType", propType_: Pn.TEXT },
             sum: { name: "sum", propType_: Pn.FORMULA, formula: `Fn.SUM('/R/A[aType = {{bType}}]/num')` }
         }),
     ),

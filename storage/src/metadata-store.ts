@@ -386,9 +386,14 @@ export class MetadataStore {
             }
         }
 
-        //cleanup record bindings
-        for (let recordBindingEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-bind-to-record]'))) {
-            recordBindingEl.removeAttribute('data-frmdb-record');
+        //cleanup runtime-only attributes and classes
+        {
+            for (let recordBindingEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-bind-to-record]'))) {
+                recordBindingEl.removeAttribute('data-frmdb-record');
+            }
+            for (let el of Array.from(cleanedUpDOM.querySelectorAll('form.was-validated'))) {
+                el.classList.remove('was-validated');
+            }
         }
 
         //<head> is managed like a special type of fragment

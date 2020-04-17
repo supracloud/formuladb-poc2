@@ -2,7 +2,7 @@ _id: ReceiptItem
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     product_id:
         name: product_id
@@ -22,7 +22,7 @@ props:
         name: units
         propType_: CHILD_TABLE
         referencedEntityName: InventoryProductUnit
-    _owner: { name: _owner, propType_: STRING, required: true }
-    _role: { name: _role, propType_: STRING, required: true }
-    _rev: { name: _rev, propType_: STRING, required: true }
+    _owner: { name: _owner, propType_: TEXT, required: true }
+    _role: { name: _role, propType_: TEXT, required: true }
+    _rev: { name: _rev, propType_: TEXT, required: true }
 isEditable: true

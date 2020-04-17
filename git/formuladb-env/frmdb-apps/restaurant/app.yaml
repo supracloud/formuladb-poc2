@@ -1,0 +1,14 @@
+_id: $App~~restaurant
+description: themes
+pages:
+    - _footer.html
+    - _form.html
+    - _head.html
+    - _nav.html
+    - _scripts.html
+    - index.html
+name: restaurant
+defaultLook: basic
+defaultPrimaryColor: 008cba
+defaultSecondaryColor: eeeeee
+defaultTheme: Clean

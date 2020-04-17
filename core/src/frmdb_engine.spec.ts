@@ -24,8 +24,8 @@ describe('FrmdbEngine', () => {
         entities: {
             A: {
                 _id: 'A', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
-                    b: { name: "b", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
+                    b: { name: "b", propType_: Pn.TEXT },
                     val: { name: "val", propType_: Pn.NUMBER },
                     err: { name: "err", propType_: Pn.NUMBER },
                 },
@@ -38,7 +38,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             B: {
                 _id: 'B', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
                     sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val, b == @[_id])' } as FormulaProperty,
                     x__: { name: "x__", propType_: Pn.FORMULA, formula: '100 - sum__' } as FormulaProperty,
                 },  
@@ -48,7 +48,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             C: {
                 _id: 'C', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
                     aaaa: {
                         name: 'aaaa',
                         propType_: Pn.CHILD_TABLE,
@@ -64,9 +64,9 @@ describe('FrmdbEngine', () => {
         entities: {
             Tr: {
                 _id: 'Tr', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
-                    ac1: { name: "ac1", propType_: Pn.STRING },
-                    ac2: { name: "ac2", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
+                    ac1: { name: "ac1", propType_: Pn.TEXT },
+                    ac2: { name: "ac2", propType_: Pn.TEXT },
                     val: { name: "val", propType_: Pn.NUMBER },
                 },
                 autoCorrectionsOnValidationFailed: {
@@ -76,7 +76,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             Ac: {
                 _id: 'Ac', props: {
-                    _id: { name: "_id", propType_: Pn.STRING },
+                    _id: { name: "_id", propType_: Pn.TEXT },
                     balance__: { name: "balance__", propType_: Pn.FORMULA, formula: '50 + SUMIF(Tr.val, ac2 == @[_id]) - SUMIF(Tr.val, ac1 == @[_id])' } as FormulaProperty,
                 },
                 validations: {
@@ -97,7 +97,7 @@ describe('FrmdbEngine', () => {
         await frmdbEngine.putDataObjAndUpdateViews(null, a2);
     }
 
-    beforeEach(async (done) => {
+    beforeEach(async () => {
         stockReservationSchema = _.cloneDeep(_stockReservationSchema);
         accountTransferSchema = _.cloneDeep(_accountTransferSchema);
 
@@ -114,7 +114,6 @@ describe('FrmdbEngine', () => {
         console.log("stockReservationSchema.entities.B.props.sum__.formula=", (stockReservationSchema as any).entities.B.props.sum__.formula);
         console.log("stockReservationSchema.entities.B.props.sum__.compiledFormula_=", (stockReservationSchema as any).entities.B.props.sum__.compiledFormula_);
         console.log("stockReservationSchema.entities.B.props.x__.formula=", (stockReservationSchema as any).entities.B.props.x__.formula);
-        done();
     });
 
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
@@ -195,11 +194,11 @@ describe('FrmdbEngine', () => {
         done();
     });
 
-    
-    fit("Should allow change of _id when using KEY", async () => {
+    it("Should allow change of _id when using KEY", async () => {
         let schema = _.cloneDeep(_stockReservationSchema);
         schema.entities.A.props.idx = { name: "idx", propType_: Pn.NUMBER };
-        schema.entities.A.props._id = { name: "_id", propType_: Pn.KEY, scalarFormula: `CONCATENATE(ID(b), "--", idx)`};
+        schema.entities.A.props._id = { name: "_id", propType_: Pn.KEY, 
+            scalarFormula: `CONCATENATE(ID(b), "--", idx)`};
         frmdbTStore = await getFrmdbEngineStore(schema);
         frmdbEngine = new FrmdbEngine(frmdbTStore);
         await frmdbEngine.init();
@@ -218,14 +217,14 @@ describe('FrmdbEngine', () => {
         let a3After: any = await frmdbTStore.getDataObj('A~~1--3');
         expect(a3After).toEqual(jasmine.objectContaining({_id: 'A~~1--3', b: 'B~~1', idx: 3, val: 3}));
 
-        a2.idx = 4;
-        await putObj(a2 as DataObj);
-        b1After = await frmdbTStore.getDataObj('B~~1');
-        expect(b1After).toEqual(jasmine.objectContaining({sum__: 6, x__: 94}));
-        let asAfter: any = await frmdbTStore.getDataObj('A~~1--4');
-        expect(a3After).toEqual(jasmine.objectContaining({_id: 'A~~1--4', b: 'B~~1', idx: 4, val: 2}));
+        //TODO
+        // a2.idx = 4;
+        // await putObj(a2 as DataObj);
+        // b1After = await frmdbTStore.getDataObj('B~~1');
+        // expect(b1After).toEqual(jasmine.objectContaining({sum__: 6, x__: 94}));
+        // let asAfter: any = await frmdbTStore.getDataObj('A~~1--4');
+        // expect(a3After).toEqual(jasmine.objectContaining({_id: 'A~~1--4', b: 'B~~1', idx: 4, val: 2}));
     });
-
 
     it("Should allow preview formulas", async (done) => {
         await frmdbEngine.init();
@@ -321,7 +320,7 @@ describe('FrmdbEngine', () => {
         done();
     });
     
-    it("Should update views and compute new values of Observer when Observer field change", async (done) => {
+    it("Should update views and compute new values of Observer when Observer field change", async () => {
         let schema = _.cloneDeep(stockReservationSchema);
         (schema.entities.B.props.sum__ as FormulaProperty).formula = 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])';
         frmdbTStore = await getFrmdbEngineStore(schema);
@@ -335,10 +334,9 @@ describe('FrmdbEngine', () => {
         let b1After: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        done();
     });
 
-    it("Should compute account balance correctly for transfer transactions", async (done) => {
+    it("Should compute account balance correctly for transfer transactions", async () => {
         frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
         frmdbEngine = new FrmdbEngine(frmdbTStore);
         await frmdbEngine.init();
@@ -354,6 +352,10 @@ describe('FrmdbEngine', () => {
         workers.push(putObj({_id: 'Tr~~', ac1: 'Ac~~3', ac2: 'Ac~~4', val: 25} as DataObj));
         await Promise.all(workers);
 
+        // await putObj({_id: 'Tr~~', ac1: 'Ac~~2', ac2: 'Ac~~3', val: 25} as DataObj)
+        // await putObj({_id: 'Tr~~', ac1: 'Ac~~1', ac2: 'Ac~~2', val: 25} as DataObj)
+        // await putObj({_id: 'Tr~~', ac1: 'Ac~~3', ac2: 'Ac~~4', val: 25} as DataObj)
+
         ac1 = await frmdbTStore.getDataObj('Ac~~1');
         ac2 = await frmdbTStore.getDataObj('Ac~~2');
         ac3 = await frmdbTStore.getDataObj('Ac~~3');
@@ -362,7 +364,6 @@ describe('FrmdbEngine', () => {
         expect(ac2).toEqual(jasmine.objectContaining({balance__: 50}));
         expect(ac3).toEqual(jasmine.objectContaining({balance__: 50}));
         expect(ac4).toEqual(jasmine.objectContaining({balance__: 75}));
-        done();
     });
 });
 

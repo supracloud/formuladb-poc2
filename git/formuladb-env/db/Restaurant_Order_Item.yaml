@@ -7,15 +7,15 @@ props:
         scalarFormula: 'CONCATENATE(ID(order_id), "--", ID(menu_item_id))'
     _owner:
         name: _owner
-        propType_: STRING
+        propType_: TEXT
         required: true
     _role:
         name: _role
-        propType_: STRING
+        propType_: TEXT
         required: true
     _rev:
         name: _rev
-        propType_: STRING
+        propType_: TEXT
         required: true
     order_id:
         name: order_id
@@ -33,3 +33,8 @@ props:
         name: quantity
         propType_: NUMBER
         required: true
+    menu_item_price:
+        name: menu_item_price
+        propType_: REFERENCE_TO
+        referencedEntityName: Restaurant_Menu_Item
+        referencedPropertyName: price

@@ -28,11 +28,11 @@ stateGraph:
 props:
     _id:
         name: _id
-        propType_: STRING
+        propType_: TEXT
         required: true
     sales_agent:
         name: sales_agent
-        propType_: STRING
+        propType_: TEXT
         required: true
     creation_date:
         name: creation_date

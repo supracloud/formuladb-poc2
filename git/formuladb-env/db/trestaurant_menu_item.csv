@@ -1,2 +1,5 @@
 _id,_owner,_role,_rev,name,picture,description,price
-Restaurant_Menu_Item~~pizza,AnounymousUserId,$ANONYMOUS,"",pizza,/formuladb-env/frmdb-apps/pizza-time/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg,best pizza in town,10.00000
+Restaurant_Menu_Item~~3MMN4uaCkpvKH4i8kmbDXu,AnounymousUserId,$ANONYMOUS,"",Burger,/formuladb-env/frmdb-apps/restaurant/static/51e3d441435ab108f5d08460c6293e76143ddfe44e507441732d7dd59f4ac4_1280.jpg,Best burger you ever tasted,11.00000
+Restaurant_Menu_Item~~7nkPVYR52KGLn7ahGGk4CL,AnounymousUserId,$ANONYMOUS,"",Salad,/formuladb-env/frmdb-apps/restaurant/static/57e5dd47435ba514f6da8c7dda2936771d3edce4524c704c7d297ad3954ec359_1280.jpg,Fresh and delicious,9.00000
+Restaurant_Menu_Item~~qnrYmFumAtvT5YYQfZFMe9,AnounymousUserId,$ANONYMOUS,"",Grill,/formuladb-env/frmdb-apps/restaurant/static/57e2d6454c5ab10ff3d8997cc6213f7f173edff85254794f74267ed09648_640.jpg,Juicy grill for big appetites,12.00000
+Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,AnounymousUserId,$ANONYMOUS,"",Pizza,/formuladb-env/frmdb-apps/restaurant/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg,best pizza in town,10.00000

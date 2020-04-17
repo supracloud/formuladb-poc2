@@ -45,50 +45,50 @@ export class AuthRoutes {
             }
         ));
 
-        passport.use(new FacebookStrategy({
-                // TODO - these 2 require dynamic update
-                clientID: facebookClientID?.value,
-                clientSecret: FacebookAppClientSecret?.value,
-                callbackURL: `https://formuladb.io/auth/facebook/callback`,
-                profileFields: ['email', 'displayName', 'name', 'gender', 'profileUrl']
-            },
-            async (accessToken, refreshToken, profile, done) => {
-                console.log("facebook strategy");
-                try {
-                    let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
-                    console.log("profile", profile);
+        // passport.use(new FacebookStrategy({
+        //         // TODO - these 2 require dynamic update
+        //         clientID: facebookClientID?.value,
+        //         clientSecret: FacebookAppClientSecret?.value,
+        //         callbackURL: `https://formuladb.io/auth/facebook/callback`,
+        //         profileFields: ['email', 'displayName', 'name', 'gender', 'profileUrl']
+        //     },
+        //     async (accessToken, refreshToken, profile, done) => {
+        //         console.log("facebook strategy");
+        //         try {
+        //             let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
+        //             console.log("profile", profile);
         
-                    if (!user) {
-                        user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
-                    }
-                    console.log("returning done with user ", user);
-                    return done(null, user);
-                } catch (err) {
-                    return done(err);
-                }
-            }
-        ));
+        //             if (!user) {
+        //                 user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+        //             }
+        //             console.log("returning done with user ", user);
+        //             return done(null, user);
+        //         } catch (err) {
+        //             return done(err);
+        //         }
+        //     }
+        // ));
     
-        passport.use(new GoogleStrategy({
-                // TODO - these 2 require dynamic update
-                clientID: googleAppClientID?.value,
-                clientSecret: googleAppClientSecret?.value,
-                callbackURL: `https://formuladb.io/auth/google/callback`
-            },
-            async (accessToken, refreshToken, profile, done) => {
-                try {
-                    let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
-                    console.log("profile", profile);
+        // passport.use(new GoogleStrategy({
+        //         // TODO - these 2 require dynamic update
+        //         clientID: googleAppClientID?.value,
+        //         clientSecret: googleAppClientSecret?.value,
+        //         callbackURL: `https://formuladb.io/auth/google/callback`
+        //     },
+        //     async (accessToken, refreshToken, profile, done) => {
+        //         try {
+        //             let user = await this.auth.getUser('$User~~' + profile.emails[0].value);
+        //             console.log("profile", profile);
 
-                    if (!user) {
-                        user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
-                    }
-                    return done(null, user);
-                } catch (err) {
-                    return done(err);
-                }
-            }
-        ));
+        //             if (!user) {
+        //                 user = await this.auth.createUser(profile.emails[0].value, "", profile.displayName);
+        //             }
+        //             return done(null, user);
+        //         } catch (err) {
+        //             return done(err);
+        //         }
+        //     }
+        // ));
     
         passport.serializeUser(function (user: $UserObjT, cb) {
             cb(null, user._id);

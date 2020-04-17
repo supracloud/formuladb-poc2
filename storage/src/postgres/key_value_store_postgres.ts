@@ -203,6 +203,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         console.log("Droping all tables");
         let query: string = 'DROP SCHEMA public CASCADE;CREATE SCHEMA public;';
         await this.getDB().any(query);
+        TableMap.clear();
         console.log("Tables droped");
     }
 
@@ -294,7 +295,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     private prop2sqlCol(prop: EntityProperty): string {
         let type: string;
         switch (prop.propType_) {
-            case Pn.STRING:
+            case Pn.TEXT:
                 type = "varchar";
                 break;
             case Pn.NUMBER:

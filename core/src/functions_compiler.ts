@@ -331,7 +331,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
                 obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
                 entityId: fc.context.targetEntityName,
                 ...inputRange.mapObserversImpactedByOneObservable,
-                valueExpr: $s2e(`_id`),
+                valueExpr: $s2e(`@[_id]`),
             }
         };
     } else {
@@ -356,8 +356,8 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
             mapObserversImpactedByOneObservable: {
                 obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
                 entityId: fc.context.targetEntityName,
-                keyExpr: [$s2e(`_id`)],
-                valueExpr: $s2e(`_id`),
+                keyExpr: [$s2e(`@[_id]`)],
+                valueExpr: $s2e(`@[_id]`),
                 query: {
                     startkeyExpr: [$s2e(`''`)],
                     endkeyExpr: [$s2e(`'\ufff0'`)],
@@ -390,7 +390,7 @@ function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression, required: "t
 function NUMBER(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
-function STRING(fc: FuncCommon, required: "true" | "false") {
+function TEXT(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
 function IMAGE(fc: FuncCommon, required: "true" | "false") {
@@ -443,7 +443,7 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
         mapObserversImpactedByOneObservable: {
             ...inputRange.mapObserversImpactedByOneObservable,
             obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
-            valueExpr: $s2e(`_id`),
+            valueExpr: $s2e(`@[_id]`),
             entityId: fc.context.targetEntityName,
         },
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
@@ -500,7 +500,7 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
             obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
             entityId: fc.context.targetEntityName,
             keyExpr: isArrayExpression(lookupExpr) ? lookupExpr.elements : [lookupExpr],
-            valueExpr: $s2e(`_id`),
+            valueExpr: $s2e(`@[_id]`),
             query: {
                 startkeyExpr: inputRange.keyExpr.slice(0, -1),
                 endkeyExpr: inputRange.keyExpr.slice(0, -1).concat($s2e(`"\ufff0"`)),
@@ -644,9 +644,9 @@ function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): Co
         return compileScalarFunction.apply(null, arguments);
     } else throw new FormulaCompilerError(fc.funcExpr, "Expected Logical BinaryExpression");
 }
-function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
+// function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
+//     return compileScalarFunction.apply(null, arguments);
+// }
 function ID(fc: FuncCommon, _id: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -713,7 +713,7 @@ export const ScalarFunctions = {
 
 export const PropertyTypeFunctions = {
     [Pn.NUMBER]: NUMBER,
-    [Pn.STRING]: STRING,
+    [Pn.TEXT]: TEXT,
     [Pn.IMAGE]: IMAGE,
     [Pn.DATETIME]: DATETIME,
     [Pn.REFERENCE_TO]: REFERENCE_TO,
@@ -741,7 +741,6 @@ export const FunctionSignatures = {
     SUM: `function SUM(fc, tableRange)`,
     REFERENCE_TO: `function REFERENCE_TO(fc, tableRange, required, alias)`,
     NUMBER: `function NUMBER(fc, required)`,
-    STRING: `function STRING(fc, required)`,
     IMAGE: `function IMAGE(fc, required)`,
     BOOLEAN: `function BOOLEAN(fc, required)`,
     DATETIME: `function DATETIME(fc, required)`,

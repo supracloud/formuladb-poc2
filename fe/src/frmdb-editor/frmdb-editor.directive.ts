@@ -478,6 +478,7 @@ export class FrmdbEditorDirective {
             isNewPage,
             isExisingPage: !isNewPage,
             buttonText: isNewPage ? 'Create Page' : 'Save Page Properties',
+            modalTitle: isNewPage ? 'New Page' : 'Edit Page Properties',
         };
         if (!isNewPage) setPageModalState = {...setPageModalState, ...getPageProperties(this.frameDoc), name: this.state.data.selectedPageName}
         updateDOM(setPageModalState, newPageModal);
@@ -564,7 +565,7 @@ export class FrmdbEditorDirective {
                 event.preventDefault();
 
                 BACKEND_SERVICE().putEvent(new ServerEventSetProperty(entity, {
-                    propType_: Pn.STRING,
+                    propType_: Pn.TEXT,
                     name,
                 }))
                     .then(async (ev: ServerEventSetProperty) => {
@@ -669,7 +670,10 @@ export class FrmdbEditorDirective {
                 let recordId = getParentObjId(el);
                 if (!recordId) return null;
                 let tableName = entityNameFromDataObjId(recordId);
-                let columnId = attrib.value.replace(/^\$FRMDB\./, '').replace(/.*:/, '').replace(`${tableName}[].`, '');
+                let columnId = attrib.value.replace(/^\$FRMDB\./, '')
+                    .replace(/.*:/, '')
+                    .replace(`${tableName}[].`, '')
+                    .replace(`${tableName}{}.`, '');
                 return { recordId, columnId };
             }
         }

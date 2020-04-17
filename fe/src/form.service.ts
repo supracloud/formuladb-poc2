@@ -33,6 +33,9 @@ export class FormService {
     
     constructor(private appRootEl: HTMLElement) {
         onEvent(appRootEl, ["change", "input"], "*", async (event) => {
+            if (event.handled === true) return;
+            else event.handled = true;
+
             if (!appRootEl.contains(event.target)) return;
             let inputEl = event.target;
             if (!isFormEl(inputEl)) return;
@@ -117,7 +120,7 @@ export class FormService {
                 control.dataset.frmdbPending = "";//TODO: set this only on dirty controls
             }
 
-            if (inputEl.closest('[data-frmdb-form-autosave]') || isSubmit) {
+            if (inputEl.closest('[data-frmdb-form-auto-save]') || isSubmit) {
                 let event: ServerEventModifiedFormData = await BACKEND_SERVICE().putEvent(
                     new ServerEventModifiedFormData(parentObj)) as ServerEventModifiedFormData;
                 for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {

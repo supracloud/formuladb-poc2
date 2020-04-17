@@ -162,14 +162,14 @@ export interface FormInput extends BaseNodeElement {
     nodeType: NodeType.form_input;
     noLabel?: boolean;
     propertyName: string;
-    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING | Pn.BOOLEAN;
+    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.TEXT | Pn.BOOLEAN;
 }
 export interface FormText extends BaseNodeElement {
     nodeType: NodeType.form_text;
     _id: string;
     noLabel?: boolean;
     propertyName: string;
-    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING | Pn.BOOLEAN;
+    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.TEXT | Pn.BOOLEAN;
     uppercase?: boolean;
 }
 

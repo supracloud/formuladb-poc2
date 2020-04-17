@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: be
+  serviceName: be
+  template:
+    metadata:
+      labels:
+        service: be
+    spec:
+      initContainers:
+      - name: check-db-ready
+        image: postgres:11
+        command: ['sh', '-c', 'until pg_isready -h db -p 5432 -t 1; do echo waiting for database; sleep 2; done;']
+      containers:
+      - env:
+        # - name: DEBUG
+        #   value: express:*
+        - name: DEFAULT_USER
+        - name: DEV_MODE
+        - name: FRMDB_STORAGE
+          value: postgres
+        - name: PGHOST
+          value: db
+        - name: GITHOST
+          value: git
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/gcp/sa_credentials.json
+        - name: FRMDB_AUTH_ENABLED
+          value: "true"
+        - name: FRMDB_ENV_NAME
+          value: $(NAMESPACE_NAME)
+        image: registry.gitlab.com/metawiz/febe/formuladb-be
+        name: be
+        ports:
+        - containerPort: 3000
+        - containerPort: 9231
+        resources: {}
+        volumeMounts:
+        - name: service-account-credentials
+          mountPath: /etc/gcp
+          readOnly: true
+        - mountPath: /wwwroot/git
+          name: git-persistence
+      volumes:
+      - name: service-account-credentials
+        secret:
+          secretName: service-account-credentials
+          items:
+          - key: sa_json
+            path: sa_credentials.json
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred

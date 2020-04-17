@@ -1,0 +1,31 @@
+<form class="p-3 was-validated" data-frmdb-fragment="_form.html" method="GET" action="order.html">
+<div class="row">
+    <div class="col-md-4 d-flex flex-column justify-content-center">
+        <div class="form-group">
+            <div class="input-group date">
+                <input type="tel" class="form-control" placeholder="phone" name="$FRMDB.Restaurant_Order{}.phone" data-frmdb-value="$FRMDB.Restaurant_Order{}.phone" required="" title="">
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <frmdb-icon name="fontawesome-solid-phone-call-earphone-number-support-telephone-voice" class="text-white sz-1"></frmdb-icon>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="form-group">
+            <div class="input-group date">
+                <input type="email" name="$FRMDB.Restaurant_Order{}.email" class="form-control" placeholder="email@domain.com" data-frmdb-value="$FRMDB.Restaurant_Order{}.email" required="" title="">
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <frmdb-icon name="fontawesome-solid-at-address-author-e-mail-email-handle" class="text-white sz-1"></frmdb-icon>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <button type="submit" class="btn btn-primary w-100" href="javascript:void(0)">Order</button>
+    </div>
+</div>
+</form>

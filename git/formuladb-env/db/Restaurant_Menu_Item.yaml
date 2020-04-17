@@ -3,23 +3,23 @@ isEditable: true
 props:
     _id:
         name: _id
-        propType_: KEY
-        scalarFormula: name
+        propType_: TEXT
+        required: true
     _owner:
         name: _owner
-        propType_: STRING
+        propType_: TEXT
         required: true
     _role:
         name: _role
-        propType_: STRING
+        propType_: TEXT
         required: true
     _rev:
         name: _rev
-        propType_: STRING
+        propType_: TEXT
         required: true
     name:
         name: name
-        propType_: STRING
+        propType_: TEXT
         required: true
     picture:
         name: picture
@@ -27,7 +27,7 @@ props:
         required: true
     description:
         name: description
-        propType_: STRING
+        propType_: TEXT
         required: true
     price:
         name: price

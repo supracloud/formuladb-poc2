@@ -33,7 +33,6 @@ export interface MapViewUpdateForObjDelete<VALUET> {
 export interface MapViewUpdateForObjModify<VALUET> {
     readonly type: "modify";
     objId: string;
-    keyToDelete: KVSArrayKeyType;
     oldMapKey: KVSArrayKeyType;
     oldMapValue: VALUET;
     keyToSet: KVSArrayKeyType;
@@ -54,7 +53,7 @@ export interface MapViewUpdates<VALUET> {
 export interface MapReduceViewUpdates<VALUET> extends MapViewUpdates<VALUET> {
     reduceChanges: { [keyStr: string]: VALUET };
 }
-function initMapReduceViewUpdates<VALUET>(mapViewUpdates: MapViewUpdates<VALUET>): MapReduceViewUpdates<VALUET> {
+export function initMapReduceViewUpdates<VALUET>(mapViewUpdates: MapViewUpdates<VALUET>): MapReduceViewUpdates<VALUET> {
     return {
         ...mapViewUpdates,
         reduceChanges: {},
@@ -200,7 +199,6 @@ export class MapReduceView {
             let newMapKey: KVSArrayKeyType | null = null;
             let newMapValue: T | null = null;
             let keyToSet: KVSArrayKeyType | null = null;
-            let objChange: MapViewUpdateObjChange<T>;
 
             if (newObj) {
                 newMapKey = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.keyExpr) : evalExpression(newObj, this.map.keyExpr);
@@ -231,54 +229,26 @@ export class MapReduceView {
                 // });
                 // otherMapValueWithOldKeyExist = otherMapValuesWithOldKey.length > 1;
 
-                if (!_.isEqual(oldMapKey, newMapKey)) {
-                    keyToDelete = MapReduceView.makeUniqueMapKeyByAddingId(oldMapKey, oldObj._id);
-                }
+                keyToDelete = MapReduceView.makeUniqueMapKeyByAddingId(oldMapKey, oldObj._id);
             }
 
-            if (keyToDelete && oldMapKey && oldMapValue) {
+
+            if (oldMapKey && oldMapValue) {
                 if (keyToSet && newMapKey && newMapValue) {
-                    ret.objChanges.push({
-                        type: "modify",
-                        objId,
-                        keyToDelete,
-                        oldMapKey,
-                        oldMapValue,
-                        keyToSet,
-                        newMapKey,
-                        newMapValue
-                    });
+                    if (_.isEqual(oldMapKey, newMapKey)) {
+                        ret.objChanges.push({ type: "modify", objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue });
+                    } else {
+                        if (!keyToDelete) throw new Error(`cannot pre-compute view update, delete key not set ${JSON.stringify(oldObj)}////${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
+                        ret.objChanges.push({ type: "delete", objId, keyToDelete, oldMapKey, oldMapValue });
+                        ret.objChanges.push({ type: "add", objId, keyToSet, newMapKey, newMapValue });
+                    }
                 } else {
-                    ret.objChanges.push({
-                        type: "delete",
-                        objId,
-                        keyToDelete,
-                        oldMapKey,
-                        oldMapValue,
-                    });
+                    if (!keyToDelete) throw new Error(`cannot pre-compute view update, delete key not set ${JSON.stringify(oldObj)}////${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
+                    ret.objChanges.push({ type: "delete", objId, keyToDelete, oldMapKey, oldMapValue });
                 }
-            } if (keyToSet && newMapKey && newMapValue) {
-                if (keyToDelete && oldMapKey && oldMapValue) {
-                    ret.objChanges.push({
-                        type: "modify",
-                        objId,
-                        keyToDelete,
-                        oldMapKey,
-                        oldMapValue,
-                        keyToSet,
-                        newMapKey,
-                        newMapValue
-                    });
-                } else {
-                    ret.objChanges.push({
-                        type: "add",
-                        objId,
-                        keyToSet,
-                        newMapKey,
-                        newMapValue
-                    });
-                }
-            } else throw new Error(`Cannot update view for both new and old objs null ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}`);
+            } else if (keyToSet && newMapKey && newMapValue) {
+                ret.objChanges.push({ type: "add", objId, keyToSet, newMapKey, newMapValue });                
+            } else throw new Error(`Cannot update view for both new and old objs null ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
         }
 
         return ret;
@@ -309,15 +279,11 @@ export class MapReduceView {
         let rFun = this.reduceFunction;
         if (!rFun) {
             let ret = await this.preComputeMap(objs, null);
-            return {
-                ...ret,
-                reduceChanges: {},
-            };
+            return initMapReduceViewUpdates(ret);
         } else {
             let mapUpdates = await this.preComputeMap(objs, ReduceFunDefaultValue[rFun.name]);
             let ret = initMapReduceViewUpdates(mapUpdates);
             let groupedMapUpdates = this.groupMapViewUpdatesForReduce(mapUpdates);
-            let reduceFunApply = getReduceFunApply(rFun);
 
             for (let [currentKeyStr, updates] of Object.entries(groupedMapUpdates)) {
                     
@@ -402,18 +368,26 @@ export class MapReduceView {
         }
 
         if (this.reduceFunction) {
-            for (let [reduceKey, reduceValue] of Object.entries(updates.reduceChanges)) {
-                if ((SumReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
-                    || (CountReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
-                ) {
-                    await this.reduceFunction.kvs.set(kvsStr2Key(reduceKey), reduceValue);
-                } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof reduceValue === 'string') {
-                    await (this.reduceFunction.kvs as any /*wtf*/).set(reduceKey, reduceValue);
+            for (let [reduceKeyStr, reduceValue] of Object.entries(updates.reduceChanges)) {
+                let reduceKey = kvsStr2Key(reduceKeyStr);
+                let otherMapValuesWithOldKey = await this.mapKVS.rangeQueryWithKeys({
+                    startkey: reduceKey,
+                    endkey: reduceKey.concat('\ufff0')
+                });
+                if (otherMapValuesWithOldKey.length === 0 
+                    && reduceValue === ReduceFunDefaultValue[this.reduceFunction.name]) 
+                {
+                    await this.reduceFunction.kvs.del(reduceKey);
+                } else {
+                    if ((SumReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
+                        || (CountReduceFunN === this.reduceFunction.name && typeof reduceValue === 'number')
+                    ) {
+                        await (this.reduceFunction.kvs as any).set(reduceKey, reduceValue);
+                    } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof reduceValue === 'string') {
+                        await (this.reduceFunction.kvs as any /*wtf*/).set(reduceKey, reduceValue);
+                    }
                 }
             }
-            // for (let key of updates.reduceDelete) {
-            //     await this.reduceFunction.kvs.del(key);
-            // }
         }
     }
 

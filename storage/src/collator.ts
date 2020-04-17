@@ -13,11 +13,11 @@ function toIndexableStringInHouse(key: Array<any>) {
         }
         switch (typeof element) {
             case 'number': {
-                result += String(element).padStart(10)
+                result += /*'N' + */String(element).padStart(17, '0');//Number.MAX_SAFE_INTEGER=9007199254740991
                 break;
             }
             case 'boolean': {
-                result += String(element).padStart(5)
+                result += /*'B' + */String(element).padStart(5);
                 break;
             }
             case 'string': {
@@ -30,7 +30,14 @@ function toIndexableStringInHouse(key: Array<any>) {
 };
 
 function parseIndexableStringInHouse(str: String) {
-    return str.split(SEP);
+    let keySegments = str.split(SEP);
+    return keySegments;
+    // let ret: any[] = [];
+    // for (let k of keySegments) {
+    //     if (k.match(/^N[0-9]{19}$/)) {
+    //         ret.push(Number.par)
+    //     }
+    // }
 };
 
 const usePouchdbCollate = false;

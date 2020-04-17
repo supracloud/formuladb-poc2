@@ -9,7 +9,7 @@ interface LogEvent {
 let events: LogEvent[] = [];
 
 export function centralizedLog(...args) {
-    // console.debug(...args);
+    console.log(...args);
     events.push({time: new Date().toISOString(), msg: JSON.stringify(args)});
     debounced_postLogEvents();
 }

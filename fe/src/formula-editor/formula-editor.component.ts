@@ -250,8 +250,8 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 return `KEY(${entityProperty.scalarFormula})`;
             case Pn.NUMBER:
                 return `NUMBER(${entityProperty.required||''})`;
-            case Pn.STRING:
-                return `STRING(${entityProperty.required||''})`;
+            case Pn.TEXT:
+                return `TEXT(${entityProperty.required||''})`;
             case Pn.BOOLEAN:
                 return `BOOLEAN(${entityProperty.required||''})`;
             case Pn.DOCUMENT:
@@ -311,22 +311,22 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 referencedEntityName: entityNameToken.value,
                 referencedPropertyName: propertyNameToken.value,
             };
-            if (entityNameToken) {
-                if (entityNameToken.type !== TokenType.TABLE_NAME) {
-                    tokens[0].errors.push("Expected table name but found " + entityNameToken.value + " at " + entityNameToken.pstart);
+            if (entityAliasToken) {
+                if (entityAliasToken.type !== TokenType.TABLE_NAME) {
+                    tokens[0].errors.push("Expected table name but found " + entityAliasToken.value + " at " + entityAliasToken.pstart);
                     return undefined;
                 } else {
                     prop.referencedEntityAlias = entityAliasToken.value;
                 }
             }
             return prop;
-        } else if (editorExpr.indexOf(Pn.STRING) === 0) {
+        } else if (editorExpr.indexOf(Pn.TEXT) === 0) {
             let required: boolean | undefined = undefined;
             let requiredToken = tokens[2];
             if (requiredToken && requiredToken.value === "true") required = true;
             return {
                 name: elvis(this.st.editedProperty).name!,
-                propType_: Pn.STRING,
+                propType_: Pn.TEXT,
                 required,
             };
         } else if (editorExpr.indexOf(Pn.NUMBER) === 0) {

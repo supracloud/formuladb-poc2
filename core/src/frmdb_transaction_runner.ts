@@ -17,7 +17,7 @@ import { generateUUID, generateTimestampUUID } from "@domain/uuid";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
-import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
+import { MapReduceViewUpdates, MapReduceView, MapViewUpdates, initMapReduceViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "@storage/key_value_store_i";
 import { Pn, FormulaProperty } from "@domain/metadata/entity";
@@ -32,16 +32,18 @@ function stringifyObj(obj: DataObj | DataObj[]): string {
     return arr.map(o => CircularJSON.stringify(_.omit(o, ['_revisions']))).join(", ");
 }
 
+interface TransactionDAGObj {
+    objId: string;
+    OLD: DataObj | null;
+    NEW: DataObj | null;
+    aggsViewsUpdates: MapReduceViewUpdates<string | number>[];
+    obsViewsUpdates: MapViewUpdates<string | number>[];
+}
+
 class TransactionDAG {
     levels: Set<string>[] = [];
     objs: {
-        [id: string]: {
-            objId: string,
-            OLD: DataObj | null,
-            NEW: DataObj | null,
-            aggsViewsUpdates: MapReduceViewUpdates<string | number>[],
-            obsViewsUpdates: MapViewUpdates<string | number>[],
-        },
+        [id: string]: TransactionDAGObj,
     } = {};
     currentLevel: number = 0;
     haveFailedValidations: boolean = false;
@@ -124,7 +126,7 @@ class TransactionDAG {
     public getAllViewUpdates(): MapReduceViewUpdates<string | number>[] {
         let aggs = _.flatMap(_.values(this.objs), trObj => trObj.aggsViewsUpdates);
         let obs = _.flatMap(_.values(this.objs), trObj => trObj.obsViewsUpdates);
-        let ret = aggs.concat(obs.map((o: MapViewUpdates<string | number>) => ({ ...o, reduce: [], reduceDelete: [] })));
+        let ret = aggs.concat(obs.map((o: MapViewUpdates<string | number>) => initMapReduceViewUpdates(o)));
         return ret as MapReduceViewUpdates<string | number>[];
     }
     public getAllImpactedObjectIdsAndViewKeys(): string[] {
@@ -310,8 +312,7 @@ export class FrmdbTransactionRunner {
     }
 
     private async prepareModifyAddObj(transacDAG: TransactionDAG,
-        newObj: DataObj, oldObj: DataObj | null) 
-    {
+        newObj: DataObj, oldObj: DataObj | null) {
         let obsViewUpdates: MapViewUpdates<string | number>[] = [];
         for (let compiledFormula of this.schemaDAO.getFormulas(newObj._id)) {
             obsViewUpdates.push.apply(obsViewUpdates,
@@ -325,14 +326,13 @@ export class FrmdbTransactionRunner {
         if (failedValidations.length > 0) {
             throw new FailedValidationsError(failedValidations);
         }
-        
+
         transacDAG.addObj(newObj, oldObj, [], obsViewUpdates);
     }
 
     private async prepareObjWithIdChange(transacDAG: TransactionDAG,
-        originalObj: DataObj, oldObj: DataObj) 
-    {
-        await this.prepareModifyAddObj(transacDAG, originalObj, null);
+        newObj: DataObj, oldObj: DataObj) {
+        await this.prepareModifyAddObj(transacDAG, newObj, null);
         await this.prepareDeleteObj(transacDAG, oldObj, null);
     }
 
@@ -345,13 +345,13 @@ export class FrmdbTransactionRunner {
             transacDAG.clear(event._id, '|' + failedValidationRetry);
 
             if (event.type_ === "ServerEventDeletedFormData") {
-                await this.prepareDeleteObj(transacDAG, originalObj, oldObj);
+                await this.prepareDeleteObj(transacDAG, event.obj, oldObj);
             } else {
 
                 if (oldObj && event.obj._id != oldObj._id) {
-                    await this.prepareObjWithIdChange(transacDAG, originalObj, oldObj);
+                    await this.prepareObjWithIdChange(transacDAG, event.obj, oldObj);
                 } else {
-                    await this.prepareModifyAddObj(transacDAG, originalObj, oldObj);
+                    await this.prepareModifyAddObj(transacDAG, event.obj, oldObj);
                 }
             }
 

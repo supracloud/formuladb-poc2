@@ -72,7 +72,7 @@ export function queryEntityWithDeepPath(entity: Entity, referencedEntityName: En
     let relativePath = referencedEntityName.replace(entity._id, '').replace(/^\//, '').replace(/\/@/g, '');
     if (null != relativePath && '' !== relativePath) {
         let pathInsideEntity = relativePath.replace(/\//, '.');
-        return _(eval(`entity.${pathInsideEntity}`) as {}).omit(RESERVED_PROP_NAMES).extend({ _id: { name: "_id", propType_: Pn.STRING } }).value() as EntityProperties;
+        return _(eval(`entity.${pathInsideEntity}`) as {}).omit(RESERVED_PROP_NAMES).extend({ _id: { name: "_id", propType_: Pn.TEXT } }).value() as EntityProperties;
     }
     return entity.props;
 }
@@ -81,7 +81,7 @@ export function queryEntityWithDeepPath(entity: Entity, referencedEntityName: En
 export const enum Pn {
     KEY = "KEY",
     NUMBER = "NUMBER",
-    STRING = "STRING",
+    TEXT = "TEXT",
     BOOLEAN = "BOOLEAN",
     DOCUMENT = "DOCUMENT",
     DATETIME = "DATETIME",
@@ -102,7 +102,7 @@ export interface NumberProperty {
     required?: boolean;
 }
 export interface StringProperty {
-    propType_: Pn.STRING;
+    propType_: Pn.TEXT;
     name: string;
     defaultValue?: string;
     required?: boolean;

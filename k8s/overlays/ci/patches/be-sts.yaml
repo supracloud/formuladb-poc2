@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: be
+spec:
+  template:
+    spec:
+      containers:
+      - name: be
+        env:
+        - name: FRMDB_ENV_NAME
+          value: $(NAMESPACE_NAME)
+        - name: FRMDB_IS_DEV_ENV
+          value: "true"
+        - name: FRMDB_AUTH_ENABLED
+          value: "false"
+        - name: FRMDB_IS_PROD_ENV
+          value: "true"
+  volumeClaimTemplates:
+  - metadata:
+      name: git-persistence
+    spec:
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 5Gi
