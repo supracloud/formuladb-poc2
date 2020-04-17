@@ -644,9 +644,9 @@ function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): Co
         return compileScalarFunction.apply(null, arguments);
     } else throw new FormulaCompilerError(fc.funcExpr, "Expected Logical BinaryExpression");
 }
-function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
+// function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
+//     return compileScalarFunction.apply(null, arguments);
+// }
 function ID(fc: FuncCommon, _id: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -741,7 +741,6 @@ export const FunctionSignatures = {
     SUM: `function SUM(fc, tableRange)`,
     REFERENCE_TO: `function REFERENCE_TO(fc, tableRange, required, alias)`,
     NUMBER: `function NUMBER(fc, required)`,
-    TEXT: `function TEXT(fc, required)`,
     IMAGE: `function IMAGE(fc, required)`,
     BOOLEAN: `function BOOLEAN(fc, required)`,
     DATETIME: `function DATETIME(fc, required)`,

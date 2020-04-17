@@ -89,13 +89,13 @@ export function $TABLES(): { name: string }[] {
     }));
 }
 
-export function $REFERENCE_TO_OPTIONS(el: HTMLElement): {name: string, value: string}[] {
+export function $REFERENCE_TO_OPTIONS(el: HTMLElement): { name: string, value: string }[] {
     let recordEl = el.parentElement?.closest('[data-frmdb-record]');
     if (!recordEl) return [];
-    if (!BACKEND_SERVICE().currentSchema) {console.warn(`currentSchema not initialized yet`); return []}
+    if (!BACKEND_SERVICE().currentSchema) { console.warn(`currentSchema not initialized yet`); return [] }
     let entityId = recordEl.getAttribute('data-frmdb-record')!.replace(/~~.*/, '');
     let entity = BACKEND_SERVICE().currentSchema?.entities[entityId];
-    if (!entity) {console.warn(`entity ${entityId} not known`, BACKEND_SERVICE().currentSchema?.entities); return []}
+    if (!entity) { console.warn(`entity ${entityId} not known`, BACKEND_SERVICE().currentSchema?.entities); return [] }
     let references: Set<string> = new Set();
     for (let prop of Object.values(entity.props)) {
         if (prop.propType_ === Pn.REFERENCE_TO) {
@@ -109,10 +109,14 @@ export function $REFERENCE_TO_OPTIONS(el: HTMLElement): {name: string, value: st
 }
 
 export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: string }[] {
-    let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') || el.getAttribute('data-frmdb-bind-to-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement | null;
+    let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table')
+        || el.getAttribute('data-frmdb-record')
+        || el.getAttribute('data-frmdb-bind-to-record') ? el :
+        el.closest('[data-frmdb-table],[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement | null;
     if (!parentRecordEl) { return [] }
 
-    let tableDataBindingName = parentRecordEl.getAttribute('data-frmdb-table') || parentRecordEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '[]');
+    let isDirectRecordBinding = parentRecordEl.hasAttribute('data-frmdb-bind-to-record');
+    let tableDataBindingName = parentRecordEl.getAttribute('data-frmdb-table') || parentRecordEl.getAttribute('data-frmdb-bind-to-record')?.replace(/~~.*/, '');
     let tableName: string, prefix: string;
     if (!tableDataBindingName) {
         tableName = entityNameFromDataObjId(parentRecordEl.getAttribute('data-frmdb-record') || '');
@@ -125,9 +129,10 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     let appBackend = BACKEND_SERVICE();
     let entity = appBackend.currentSchema?.entities?.[tableName];
     if (!entity) { console.warn("entity not found", tableName, el.outerHTML); return [] }
+    let suf = isDirectRecordBinding ? '{}' : '[]';
     return Object.values(entity.props).map(p => ({
         text: `${prefix}.${p.name}`,
-        value: `$FRMDB.${tableName}[].${p.name}`,
+        value: `$FRMDB.${tableName}${suf}.${p.name}`,
     }));
 }
 
@@ -158,7 +163,7 @@ export function $SAVE_DOC_PAGE(pagePath: string, doc: Document): Promise<boolean
     let htmlTools = new HTMLTools(doc, new DOMParser());
     let cleanedUpDOM = cleanupDocumentDOM(doc);
     let html = htmlTools.document2html(cleanedUpDOM);
-    
+
     let pageOpts = parseAllPageUrl(pagePath);
     return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pageOpts, html))
         .then(async (ev: ServerEventPutPageHtml) => {
@@ -176,7 +181,7 @@ export const FeFunctionsForDataBinding = {
     '$LABEL': $LABEL,
 };
 
-function $FCMP (el: HTMLElement): HTMLElement | null {
+function $FCMP(el: HTMLElement): HTMLElement | null {
     let parent: Node | null = el;
     while (parent) {
         if (isHTMLElement(parent) && parent.tagName.toLowerCase().indexOf('frmdb-') === 0) return parent;

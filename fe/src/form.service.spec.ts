@@ -18,7 +18,7 @@ const fetchMock = require('fetch-mock');
 fetchMock.config.overwriteRoutes = true;
 
 const HTML = /*html*/`
-    <div data-frmdb-record="A~~" data-frmdb-form-autosave>
+    <div data-frmdb-record="A~~" data-frmdb-form-auto-save>
         <input type="text" data-frmdb-value="::f1" />
         <input type="number" data-frmdb-value="::f2" max="123" />
     </div>

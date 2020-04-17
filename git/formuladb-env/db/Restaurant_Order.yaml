@@ -27,5 +27,6 @@ props:
         propType_: TEXT
         name: delivery_address
     total:
-        propType_: TEXT
         name: total
+        propType_: FORMULA
+        formula: 'SUMIF(Restaurant_Order_Item.quantity, order_id == @[_id])'

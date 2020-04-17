@@ -87,15 +87,13 @@ export class DataBindingsService {
             await this.updateDOMForTable(tableEl as HTMLElement);
         }
 
-        let recordBindings = forceTableName ? [`$FRMDB.${forceTableName}[]`] :
-            _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-bind-to-record^="$FRMDB."]'))
-                .map(el => el.getAttribute('data-frmdb-bind-to-record')));
-        let promises: Promise<any>[] = [];
-        for (let recordBinding of recordBindings) {
-            let el = this.rootEl.querySelector(`[data-frmdb-bind-to-record="${recordBinding}"]`);
-            promises.push(this.updateDOMForRecordBinding(el as HTMLElement));
+        let recordBindingElems: HTMLElement[] = []
+        if (this.rootEl.matches(`[data-frmdb-bind-to-record^="$FRMDB."]`)) recordBindingElems.push(this.rootEl);
+        recordBindingElems = recordBindingElems.concat(Array.from(this.rootEl.querySelectorAll(`[data-frmdb-bind-to-record^="$FRMDB."]`)));
+        for (let el of recordBindingElems) {
+            //TODO: make sure parents are updated first
+            await this.updateDOMForRecordBinding(el as HTMLElement);
         }
-        await Promise.all(promises);
     }
 
     public updateDOMWithUrlParameters() {

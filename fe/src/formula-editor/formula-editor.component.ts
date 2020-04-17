@@ -311,9 +311,9 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 referencedEntityName: entityNameToken.value,
                 referencedPropertyName: propertyNameToken.value,
             };
-            if (entityNameToken) {
-                if (entityNameToken.type !== TokenType.TABLE_NAME) {
-                    tokens[0].errors.push("Expected table name but found " + entityNameToken.value + " at " + entityNameToken.pstart);
+            if (entityAliasToken) {
+                if (entityAliasToken.type !== TokenType.TABLE_NAME) {
+                    tokens[0].errors.push("Expected table name but found " + entityAliasToken.value + " at " + entityAliasToken.pstart);
                     return undefined;
                 } else {
                     prop.referencedEntityAlias = entityAliasToken.value;

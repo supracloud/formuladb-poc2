@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
-<body class="frmdb-editor-normal" data-frmdb-record="Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd">
+<body class="frmdb-editor-normal" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order~~">
     <frmdb-t-main-nav class="">
         <div data-frmdb-fragment="_nav.html"></div>
     </frmdb-t-main-nav>
@@ -18,7 +18,7 @@
             </div>
         </frmdb-t-main>
         <frmdb-t-aside class="">
-            <form class="p-3 was-validated">
+            <form class="p-3" data-frmdb-form-auto-save="">
                 <div class="row">
                     <div class="col-md-4 d-flex flex-column justify-content-center">
                         <div class="form-group">
@@ -88,9 +88,9 @@
             <frmdb-t-card-media-main class="" data-frmdb-table="$FRMDB.Restaurant_Menu_Item[]" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-table-limit="4">
                 <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending=""></frmdb-t-img>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">pizza</h5>
+                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Pizza</h5>
                     <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">best pizza in town</p>
-                    <form class="was-validated" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-autosave="">
+                    <form class="" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
@@ -111,8 +111,8 @@
                 <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e2d6454c5ab10ff3d8997cc6213f7f173edff85254794f74267ed09648_640.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending=""></frmdb-t-img>
                 <div class="card-body">
                     <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Grill</h5>
-                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">Juicy grilled steak</p>
-                    <form class="was-validated" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-autosave="">
+                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">Juicy grill for big appetites</p>
+                    <form class="" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
@@ -134,7 +134,7 @@
                 <div class="card-body">
                     <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Salad</h5>
                     <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">Fresh and delicious</p>
-                    <form class="was-validated" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-autosave="">
+                    <form class="" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
@@ -156,7 +156,7 @@
                 <div class="card-body">
                     <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Burger</h5>
                     <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">Best burger you ever tasted</p>
-                    <form class="was-validated" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-autosave="">
+                    <form class="" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="menu_item_id = $CLOSEST(Restaurant_Menu_Item._id);;order_id = $CLOSEST(Restaurant_Order._id)" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
@@ -261,41 +261,6 @@
     <div data-frmdb-fragment="_scripts.html"></div>
     <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
     <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
 </body>
 </html>
 </html>

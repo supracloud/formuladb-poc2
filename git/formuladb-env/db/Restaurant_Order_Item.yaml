@@ -33,3 +33,8 @@ props:
         name: quantity
         propType_: NUMBER
         required: true
+    menu_item_price:
+        name: menu_item_price
+        propType_: REFERENCE_TO
+        referencedEntityName: Restaurant_Menu_Item
+        referencedPropertyName: price
