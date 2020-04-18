@@ -31,9 +31,6 @@ function build_images_and_deploy {
 
     bash $BASEDIR/prepare-env.sh "$NAMESPACE"
     bash $BASEDIR/../scripts/prepare-env.sh "$NAMESPACE"
-    if ! kubectl get secrets | grep "\bregcred\b"; then 
-        kubectl create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
-    fi
     skaffold -n $NAMESPACE run -p $SKAFFOLD_PROFILE
 
     # while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
