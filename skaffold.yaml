@@ -2,6 +2,7 @@ apiVersion: skaffold/v2alpha3
 kind: Config
 build:
   cluster:
+    pullSecretName: regcred
     dockerConfig:
       path: ci/docker-config.json
   artifacts:
