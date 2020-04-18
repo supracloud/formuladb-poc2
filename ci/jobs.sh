@@ -27,7 +27,7 @@ function build_images_and_deploy {
     mv kubectl /usr/local/bin/kubectl
 
     wget -O skaffold https://storage.googleapis.com/skaffold/releases/v1.5.0/skaffold-linux-amd64
-    RUN chmod +x skaffold
+    chmod +x skaffold
     mv skaffold /usr/local/bin/skaffold
     
     NAMESPACE=$1
