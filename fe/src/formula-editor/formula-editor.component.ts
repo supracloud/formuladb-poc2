@@ -85,6 +85,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         this.toggleEditorBtn = this.elem.querySelector('#toggle-formula-editor') as HTMLButtonElement;
         this.applyChangesBtn = this.elem.querySelector('#apply-formula-changes') as HTMLButtonElement;
 
+        this.textarea.addEventListener('click', e => this.click());
         this.textarea.addEventListener('keydown', e => this.keydown(e));
         this.textarea.addEventListener('keyup', e => this.keyup(e));
         onEvent(this.shadowRoot!, 'click', '.editor *', e => this.click());
@@ -157,7 +158,17 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     
     cursorMove(cursorPos: number) {
         if (!this.currentTokens) return;
-        let tokenAtCursor = this.currentTokens.find(x => x.pstart <= cursorPos && cursorPos <= x.pend)
+        let tokenAtCursor, tokenIndexAtCursor;
+        for (let [i, x] of this.currentTokens.entries()) {
+            if (x.pstart <= cursorPos && cursorPos <= x.pend) {
+                tokenAtCursor = x;
+                tokenIndexAtCursor = i;
+            }
+        }
+        if (tokenAtCursor && tokenIndexAtCursor != null) {
+            this.shadowRoot!.querySelector(`.editor-formatted-overlay .at-caret`)?.classList.remove('at-caret');
+            this.shadowRoot!.querySelector(`.editor-formatted-overlay span:nth-of-type(${tokenIndexAtCursor+1})`)?.classList.add('at-caret');
+        }
         if (tokenAtCursor && tokenAtCursor.tableName && tokenAtCursor.errors.length === 0) {
             this.st.tableNameAtCaret = tokenAtCursor.tableName;
         }
@@ -223,6 +234,10 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 errors = this.validation(editorExpr);
             }
             let tokens: UiToken[] = this.tokenize(editorExpr, this.textarea.selectionStart);
+            let tstEntityProperty = this.getEntityPropertyFromTokens(tokens);
+            if (!tstEntityProperty && tokens[0]?.errors?.length == 0) {
+                tokens[0].errors.push(`Error: could not extract the type of column from the formula`);
+            }
             let hasErrors: boolean = false;
             for (let i: number = 0; i < tokens.length; i++) {
                 switch (tokens[i].type) {
@@ -247,27 +262,27 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     serializePropertyToFormulaStr(entityProperty: EntityProperty): string {
         switch(entityProperty.propType_) {
             case Pn.KEY:
-                return `KEY(${entityProperty.scalarFormula})`;
+                return `KEY_COLUMN(${entityProperty.scalarFormula})`;
             case Pn.NUMBER:
-                return `NUMBER(${entityProperty.required||''})`;
+                return `NUMBER_COLUMN(${entityProperty.required||''})`;
             case Pn.TEXT:
-                return `TEXT(${entityProperty.required||''})`;
+                return `TEXT_COLUMN(${entityProperty.required||''})`;
             case Pn.BOOLEAN:
-                return `BOOLEAN(${entityProperty.required||''})`;
+                return `BOOLEAN_COLUMN(${entityProperty.required||''})`;
             case Pn.DOCUMENT:
-                return `DOCUMENT`;
+                return `DOCUMENT_COLUMN`;
             case Pn.DATETIME:
-                return `DATETIME(${entityProperty.required||''})`;
+                return `DATETIME_COLUMN(${entityProperty.required||''})`;
             case Pn.ACTION:
-                return `ACTION`;
+                return `ACTION_COLUMN`;
             case Pn.IMAGE:
-                return `IMAGE(${entityProperty.required||''})`;
+                return `IMAGE_COLUMN(${entityProperty.required||''})`;
             case Pn.ATTACHMENT:
                 return `ACTION`;
             case Pn.CHILD_TABLE:
                 return `ACTION`;
             case Pn.REFERENCE_TO:
-                return `REFERENCE_TO(${entityProperty.referencedEntityName}.${entityProperty.referencedPropertyName})`;
+                return `REFERENCE_TO_COLUMN(${entityProperty.referencedEntityName}.${entityProperty.referencedPropertyName})`;
             case Pn.EXTENDS_ENTITY:
                 return `ACTION`;
             case Pn.FORMULA:
@@ -287,7 +302,11 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         if (editorExpr.indexOf(Pn.REFERENCE_TO) === 0) {
             let entityNameToken = tokens[2];
             let propertyNameToken = tokens[4];
-            let entityAliasToken = tokens[6];
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[6];
+            if (requiredToken && requiredToken.value === "true") required = true;
+            let entityAliasToken = tokens[8];
+
             if (!entityNameToken) {
                 tokens[0].errors.push("missing referenced table name");
                 return undefined;
@@ -310,10 +329,11 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 propType_: Pn.REFERENCE_TO,
                 referencedEntityName: entityNameToken.value,
                 referencedPropertyName: propertyNameToken.value,
+                required,
             };
             if (entityAliasToken) {
                 if (entityAliasToken.type !== TokenType.TABLE_NAME) {
-                    tokens[0].errors.push("Expected table name but found " + entityAliasToken.value + " at " + entityAliasToken.pstart);
+                    tokens[0].errors.push("Expected table name as the third argument, but found " + entityAliasToken.value + " at " + entityAliasToken.pstart);
                     return undefined;
                 } else {
                     prop.referencedEntityAlias = entityAliasToken.value;
@@ -441,7 +461,11 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         this.checkTokenForErrors(token);
         let hasErrors = token.errors && token.errors.length > 0;
 
-        ret.push("<span class='rounded-pill " + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
+        ret.push(`<span class="rounded-pill ${cls||''} ${hasErrors ? 'editor-error' : ''}" title="${hasErrors ? token.errors.join(';') : ''}">${token.value}</span>`);
+
+        if (hasErrors) {
+            ret.push(this.buildErrorBox(token.errors));
+        }
 
         if (token.caret) {
             this.currentSuggestions = this.getSuggestionsForToken(token);
@@ -449,10 +473,6 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             if (this.currentSuggestions && this.currentSuggestions.length > 0) {
                 ret.push(this.buildSuggestionBox());
             }
-        }
-
-        if (hasErrors && token.caret) {
-            ret.push(this.buildErrorBox(token.errors));
         }
 
         return ret.join('');

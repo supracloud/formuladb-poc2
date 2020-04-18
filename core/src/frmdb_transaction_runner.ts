@@ -13,7 +13,7 @@ import * as _ from 'lodash';
 import { CircularJSON } from "@domain/json-stringify";
 
 import { isKeyValueError } from "@domain/key_value_obj";
-import { generateUUID, generateTimestampUUID } from "@domain/uuid";
+import { generateShortUID, generateShortTimestampedUID } from "@domain/uuid";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
@@ -392,7 +392,7 @@ export class FrmdbTransactionRunner {
         if (isNewDataObjId(event.obj._id)) {
             if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
             if (newComputedObjId) event.obj._id = newComputedObjId;
-            else event.obj._id = event.obj._id.replace('$AUTOID', '') + generateUUID();
+            else event.obj._id = event.obj._id.replace('$AUTOID', '') + generateShortUID();
         } else {
             oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
             if (newComputedObjId && newComputedObjId != event.obj._id) event.obj._id = newComputedObjId;
@@ -406,7 +406,7 @@ export class FrmdbTransactionRunner {
 
         let transacDAG;
         try {
-            event._id == event._id || generateTimestampUUID();
+            event._id == event._id || generateShortTimestampedUID();
 
             let oldObj = await this.computeIds(event);
             let originalObj = _.cloneDeep(event.obj);

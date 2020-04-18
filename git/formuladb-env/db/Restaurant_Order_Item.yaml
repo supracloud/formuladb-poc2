@@ -22,7 +22,7 @@ props:
         propType_: REFERENCE_TO
         referencedEntityName: Restaurant_Order
         referencedPropertyName: _id
-        referencedEntityAlias: 'true'
+        required: true
     menu_item_id:
         name: menu_item_id
         propType_: REFERENCE_TO

@@ -110,6 +110,7 @@
         "acorn": "^7.1.0",
         "animate.css": "^3.7.2",
         "aos": "^3.0.0-beta.6",
+        "base58": "^2.0.1",
         "body-parser": "~1.19.0",
         "chromedriver": "^79.0.0",
         "cluster-key-slot": "^1.1.0",

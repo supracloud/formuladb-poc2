@@ -61,7 +61,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
             this.selectedBox.style.display = 'block';
             if (this.state.currentCopiedElement || this.state.currentCutElement) {
                 this.selectedBox.innerHTML = /*html*/`
-                    <div slot="actions-top" class="d-flex flex-nowrap">
+                    <div slot="actions-top-right" class="d-flex flex-nowrap">
                         <a class="btn" onclick="$FSCMP(this).paste('before')" href="javascript:void(0)" title="Insert before"><i class="frmdb-i-before-box"></i></a>
                         <a class="btn" onclick="$FSCMP(this).paste('inside')" href="javascript:void(0)" title="Insert inside"><i class="frmdb-i-inside-box"></i></a>
                         <a class="btn" onclick="$FSCMP(this).paste('after')" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
@@ -76,21 +76,17 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                     editTextBtn = `class="btn disabled" title="Cannot edit text, value from data ${this.state.selectedEl.getAttribute('data-frmdb-value')}. Please edit the table data instead."`
                 }
                 this.selectedBox.innerHTML = /*html*/`
-                    <div slot="actions-top" class="d-flex flex-nowrap">
-                        <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
-                        <a ${editTextBtn} href="javascript:void(0)"><i class="frmdb-i-pen-fancy"></i></a>
-                        <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
-                        <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
-                        <!--<div class="btn dropdown frmdb-dropdown-hover">
+                    <div slot="actions-top-right" class="d-flex flex-nowrap">
+                        <div class="btn dropdown frmdb-dropdown-hover">
                             <i class="frmdb-i-edit" title="Edit Element"></i>
-                            <div class="dropdown-menu px-2 text-nowrap">
+                            <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
                                 <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
-                                <a ${isElementWithTextContentEditable(this.state.selectedEl) ? `class="btn" onclick="$FSCMP(this).editSelectedElement()" title="Edit element text"` : `class="btn disabled" title="Complex elements cannot use the plain text editor"`} href="javascript:void(0)"><i class="frmdb-i-pen-fancy"></i></a>
+                                <a ${editTextBtn} href="javascript:void(0)"><i class="frmdb-i-pen-fancy"></i></a>
                                 <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
                                 <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
                             </div>
                         </div>
-                        <div class="btn dropdown frmdb-dropdown-hover">
+                        <!--<div class="btn dropdown frmdb-dropdown-hover">
                             <i class="frmdb-i-0000116-arrows-alt" title="Move Element"></i>
                             <div class="dropdown-menu px-2 text-nowrap">
                                 <a class="btn" data-frmdb-action="move-before" href="javascript:void(0)" style="transform: rotate(-90deg);" title="Move element before previous sibling"><i class="frmdb-i-arrow-up"></i></a>

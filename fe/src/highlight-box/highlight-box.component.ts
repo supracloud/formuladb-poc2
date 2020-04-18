@@ -70,12 +70,13 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             el = this.state.selectedEl;
             while (el = el.previousElementSibling as HTMLElement | null) {
                 let sidx = getSiblingIndex(el);
+                // <i class="frmdb-i-hand-point-left"></i> 
                 this.addBox(el, "selected", 'previous-sibling', /*html*/`
-                    <div slot="actions-bottom">
+                    <div slot="actions-bottom" style="border-radius: 8px">
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class="btn py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i class="frmdb-i-hand-point-left"></i> ${sidx}
+                                ${sidx}
                             </a>
                         </div>
                     </div>
@@ -85,12 +86,13 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             el = this.state.selectedEl;
             while (el = el.nextElementSibling as HTMLElement | null) {
                 let sidx = getSiblingIndex(el);
+                // <i class="frmdb-i-flip-horizontal frmdb-i-hand-point-left"></i>
                 this.addBox(el, "selected", 'next-sibling', /*html*/`
-                    <div slot="actions-bottom">
+                    <div slot="actions-bottom" style="border-radius: 8px">
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
-                            <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
+                            <a class="py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i class="frmdb-i-flip-horizontal frmdb-i-hand-point-left"></i> ${sidx}
+                                ${sidx}
                             </a>
                         </div>
                     </div>
@@ -98,7 +100,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             }
             if (el = this.state.selectedEl.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "parent", /*html*/`
-                    <div slot="actions-left">
+                    <div slot="actions-top" style="transform: translateX(-11px); border-radius: 8px" >
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Parent Element">
@@ -110,9 +112,9 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             }
             if (el = this.state.selectedEl.parentElement?.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "grand-parent", /*html*/`
-                    <div slot="actions-right" class="d-flex flex-nowrap">
+                    <div slot="actions-top" class="d-flex flex-nowrap" style="transform: translateX(-12px) translateY(-18px); border-radius: 10px">
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
-                            <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
+                            <a class="py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Grand Parent Element">
                                 <i class="frmdb-i-hand-point-up" style="display: inline-block; transform: translate(0,25%) scale(0.75)"></i><i class="frmdb-i-hand-point-up" style="margin-left: -0.25em; display: inline-block; transform: scale(0.7)"></i>
                             </a>

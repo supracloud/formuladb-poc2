@@ -124,20 +124,22 @@
     color:white;
 }
 
-.formula-code-editor .editor-error{
+.formula-code-editor .editor-error {
     text-decoration: underline red dotted;
 }
 
-.formula-code-editor .error-note-holder{
+.formula-code-editor .error-note-holder {
     top:-0.85rem;
     width:0;
     position: relative;
     display:inline-block;
     vertical-align: top;
     height: 1rem;
-    overflow:visible;
+    overflow: hidden;
 }
-
+.formula-code-editor .editor-error.at-caret + .error-note-holder {
+    overflow: visible;
+}
 
 .formula-code-editor .error-note{
     color:darkred;

@@ -1,6 +1,8 @@
 _id,_owner,_role,_rev,order_id,menu_item_id,quantity,menu_item_price
-Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--7nkPVYR52KGLn7ahGGk4CL,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~7nkPVYR52KGLn7ahGGk4CL,10.00000,
-Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--qnrYmFumAtvT5YYQfZFMe9,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~qnrYmFumAtvT5YYQfZFMe9,3.00000,
-Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--vVsexqeTReF1iWoAUU4ten,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,8.00000,
-Restaurant_Order_Item~~hU6Bw3Xhy1T1qwmffXmuCt--qnrYmFumAtvT5YYQfZFMe9,,$ANONYMOUS,,Restaurant_Order~~hU6Bw3Xhy1T1qwmffXmuCt,Restaurant_Menu_Item~~qnrYmFumAtvT5YYQfZFMe9,5.00000,
-Restaurant_Order_Item~~hU6Bw3Xhy1T1qwmffXmuCt--vVsexqeTReF1iWoAUU4ten,,$ANONYMOUS,,Restaurant_Order~~hU6Bw3Xhy1T1qwmffXmuCt,Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,5.00000,""
+Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--7nkPVYR52KGLn7ahGGk4CL,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~7nkPVYR52KGLn7ahGGk4CL,10.00000,""
+Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--qnrYmFumAtvT5YYQfZFMe9,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~qnrYmFumAtvT5YYQfZFMe9,3.00000,""
+Restaurant_Order_Item~~2zG5UkK6KrVLcBNT6jtLyd--vVsexqeTReF1iWoAUU4ten,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~2zG5UkK6KrVLcBNT6jtLyd,Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,8.00000,""
+Restaurant_Order_Item~~HGchVpBif--HGbV5Wzil,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGchVpBif,Restaurant_Menu_Item~~HGbV5Wzil,4.00000,""
+Restaurant_Order_Item~~HGcjK1Fif--HGbV5Wzil,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGcjK1Fif,Restaurant_Menu_Item~~HGbV5Wzil,6.00000,""
+Restaurant_Order_Item~~hU6Bw3Xhy1T1qwmffXmuCt--qnrYmFumAtvT5YYQfZFMe9,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~hU6Bw3Xhy1T1qwmffXmuCt,Restaurant_Menu_Item~~qnrYmFumAtvT5YYQfZFMe9,5.00000,""
+Restaurant_Order_Item~~hU6Bw3Xhy1T1qwmffXmuCt--vVsexqeTReF1iWoAUU4ten,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~hU6Bw3Xhy1T1qwmffXmuCt,Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten,5.00000,""

@@ -22,6 +22,7 @@ import { FrmdbLogger } from "@domain/frmdb-logger";
 import { Page } from "@domain/uimetadata/page";
 import { MetadataStore } from "@storage/metadata-store";
 import { GitStorage } from "@storage/git-storage";
+import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
 const calculateSlot = require('cluster-key-slot');
 const logger = new FrmdbLogger("kvs:pg");
 
@@ -345,6 +346,12 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         //FIXME: why ag-grid sends _id_1, or errors_1, invetigate why ?!?!
         let regex = new RegExp("\\b(" + Object.values(this.entity.props).map(p => p.name).join('|') + ")_1\\b", "g");
         let res = await this.getDB().any(query.replace(regex, (match, $1) => $1));
+        for (let obj of res) {
+            //TODO: numbers are returned as text, fix it from the pg driver
+            for (let prop of Object.values(this.entity.props)) {
+                validateAndCovertObjPropertyType(obj, this.entity, prop.name, obj[prop.name]);
+            }
+        }
         return res;
     }
 

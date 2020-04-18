@@ -31,6 +31,30 @@ CREATE TABLE public.f_10010 (
 ALTER TABLE public.f_10010 OWNER TO postgres;
 
 --
+-- Name: f_1110; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_1110 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_1110 OWNER TO postgres;
+
+--
+-- Name: f_11535; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_11535 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_11535 OWNER TO postgres;
+
+--
 -- Name: f_11552; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -41,6 +65,18 @@ CREATE TABLE public.f_11552 (
 
 
 ALTER TABLE public.f_11552 OWNER TO postgres;
+
+--
+-- Name: f_11916; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_11916 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_11916 OWNER TO postgres;
 
 --
 -- Name: f_12671; Type: TABLE; Schema: public; Owner: postgres
@@ -149,24 +185,6 @@ CREATE TABLE public.t_dictionary (
 
 
 ALTER TABLE public.t_dictionary OWNER TO postgres;
-
---
--- Name: t_permission; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.t_permission (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    role character varying,
-    app_name character varying,
-    resource_entity_id character varying,
-    resource_id character varying,
-    permission character varying,
-    for_who character varying,
-    details character varying
-);
-
-
-ALTER TABLE public.t_permission OWNER TO postgres;
 
 --
 -- Name: t_system_param; Type: TABLE; Schema: public; Owner: postgres
@@ -434,7 +452,7 @@ CREATE TABLE public.trestaurant_order (
     email character varying,
     phone character varying,
     delivery_address character varying,
-    total character varying
+    total numeric(12,5)
 );
 
 
@@ -544,18 +562,6 @@ CREATE TABLE public.tsampleapp (
 ALTER TABLE public.tsampleapp OWNER TO postgres;
 
 --
--- Name: ttransaction; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.ttransaction (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.ttransaction OWNER TO postgres;
-
---
 -- Name: tvaggs_room_countif_room__room_type_______id___reduce; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -605,11 +611,35 @@ ALTER TABLE ONLY public.f_10010
 
 
 --
+-- Name: f_1110 f_1110_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_1110
+    ADD CONSTRAINT f_1110_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_11535 f_11535_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_11535
+    ADD CONSTRAINT f_11535_pkey PRIMARY KEY (_id);
+
+
+--
 -- Name: f_11552 f_11552_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.f_11552
     ADD CONSTRAINT f_11552_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_11916 f_11916_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_11916
+    ADD CONSTRAINT f_11916_pkey PRIMARY KEY (_id);
 
 
 --
@@ -674,14 +704,6 @@ ALTER TABLE ONLY public.t_currency
 
 ALTER TABLE ONLY public.t_dictionary
     ADD CONSTRAINT t_dictionary_pkey PRIMARY KEY (_id);
-
-
---
--- Name: t_permission t_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.t_permission
-    ADD CONSTRAINT t_permission_pkey PRIMARY KEY (_id);
 
 
 --
@@ -842,14 +864,6 @@ ALTER TABLE ONLY public.troom_type
 
 ALTER TABLE ONLY public.tsampleapp
     ADD CONSTRAINT tsampleapp_pkey PRIMARY KEY (_id);
-
-
---
--- Name: ttransaction ttransaction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.ttransaction
-    ADD CONSTRAINT ttransaction_pkey PRIMARY KEY (_id);
 
 
 --

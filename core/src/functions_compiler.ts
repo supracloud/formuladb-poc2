@@ -383,23 +383,23 @@ function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
     };
 }
 
-function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression, required: "true" | "false", tableAlias: Identifier): CompiledScalar {
-    if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO expects an TableName.column_name as argument");
+function REFERENCE_TO_COLUMN(fc: FuncCommon, tableRange: MemberExpression, required: "true" | "false", tableAlias: Identifier): CompiledScalar {
+    if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO_COLUMN expects an TableName.column_name as argument");
     return propertyTypeFunction(fc);
 }
-function NUMBER(fc: FuncCommon, required: "true" | "false") {
+function NUMBER_COLUMN(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
-function TEXT(fc: FuncCommon, required: "true" | "false") {
+function TEXT_COLUMN(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
-function IMAGE(fc: FuncCommon, required: "true" | "false") {
+function IMAGE_COLUMN(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
-function KEY(fc: FuncCommon, scalarFormula: ScalarCallExpression | CompiledScalar) {
+function KEY_COLUMN(fc: FuncCommon, scalarFormula: ScalarCallExpression | CompiledScalar) {
     return propertyTypeFunction(fc);
 }
-function DATETIME(fc: FuncCommon, required: "true" | "false") {
+function DATETIME_COLUMN(fc: FuncCommon, required: "true" | "false") {
     return propertyTypeFunction(fc);
 }
 
@@ -644,9 +644,9 @@ function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): Co
         return compileScalarFunction.apply(null, arguments);
     } else throw new FormulaCompilerError(fc.funcExpr, "Expected Logical BinaryExpression");
 }
-// function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
-//     return compileScalarFunction.apply(null, arguments);
-// }
+function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 function ID(fc: FuncCommon, _id: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -712,12 +712,12 @@ export const ScalarFunctions = {
 }
 
 export const PropertyTypeFunctions = {
-    [Pn.NUMBER]: NUMBER,
-    [Pn.TEXT]: TEXT,
-    [Pn.IMAGE]: IMAGE,
-    [Pn.DATETIME]: DATETIME,
-    [Pn.REFERENCE_TO]: REFERENCE_TO,
-    [Pn.KEY]: KEY,
+    [Pn.NUMBER + '_COLUMN']: NUMBER_COLUMN,
+    [Pn.TEXT + '_COLUMN']: TEXT_COLUMN,
+    [Pn.IMAGE + '_COLUMN']: IMAGE_COLUMN,
+    [Pn.DATETIME + '_COLUMN']: DATETIME_COLUMN,
+    [Pn.REFERENCE_TO + '_COLUMN']: REFERENCE_TO_COLUMN,
+    [Pn.KEY + '_COLUMN']: KEY_COLUMN,
 }
 
 export const FunctionsDict: { [x: string]: Function } = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
@@ -725,7 +725,7 @@ export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapFunctions))
     .concat(Object.keys(MapReduceFunctions))
     .concat(Object.keys(PropertyTypeFunctions))
-    ;
+;
 
 //cat core/src/functions_compiler.ts | perl -ne 'if (/^function ([A-Z_]+)\(/) {my $f=$1; s!:[\w \|]+([,)])!$1!g; s!\).*!)!; chomp; print "$f: `$_`,\n"}'
 export const FunctionSignatures = {
@@ -739,12 +739,12 @@ export const FunctionSignatures = {
     _RANGE: `function _RANGE(fc, basicRange, startExpr, endExpr, inclusive_start?, inclusive_end?)`,
     _REDUCE: `function _REDUCE(fc, inputRange, reduceFun)`,
     SUM: `function SUM(fc, tableRange)`,
-    REFERENCE_TO: `function REFERENCE_TO(fc, tableRange, required, alias)`,
-    NUMBER: `function NUMBER(fc, required)`,
-    IMAGE: `function IMAGE(fc, required)`,
-    BOOLEAN: `function BOOLEAN(fc, required)`,
-    DATETIME: `function DATETIME(fc, required)`,
-    KEY: `function KEY(fc, scalarFormula)`,
+    REFERENCE_TO_COLUMN: `function REFERENCE_TO_COLUMN(fc, tableRange, required, alias)`,
+    NUMBER_COLUMN: `function NUMBER_COLUMN(fc, required)`,
+    IMAGE_COLUMN: `function IMAGE_COLUMN(fc, required)`,
+    BOOLEAN_COLUMN: `function BOOLEAN_COLUMN(fc, required)`,
+    DATETIME_COLUMN: `function DATETIME_COLUMN(fc, required)`,
+    KEY_COLUMN: `function KEY_COLUMN(fc, scalarFormula)`,
     SUMIF: `function SUMIF(fc, tableRange, logicalExpression)`,
     COUNT: `function COUNT(fc, tableRange)`,
     COUNTIF: `function COUNTIF(fc, tableRange, logicalExpression)`,
