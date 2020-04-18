@@ -20,9 +20,10 @@ import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates, initMapReduceViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "@storage/key_value_store_i";
-import { Pn, FormulaProperty } from "@domain/metadata/entity";
+import { Pn, FormulaProperty, Entity } from "@domain/metadata/entity";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
 import { scalarFormulaEvaluate } from "./scalar_formula_evaluate";
+import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -381,6 +382,14 @@ export class FrmdbTransactionRunner {
             transacDAG, originalObj, oldObj);
     }
 
+    validateAndConvertObjFields(obj: DataObj, entity: Entity): string | null {
+        for (let prop of Object.values(entity.props)) {
+            let errMsg = validateAndCovertObjPropertyType(obj, entity, prop.name, obj[prop.name]);
+            if (errMsg) return `${prop.name} is invalid: ${errMsg}`;
+        }
+        return null;
+    }
+
     async computeIds(event: events.ServerEventModifiedFormData | events.ServerEventDeletedFormData | events.ServerEventPreComputeFormData): Promise<DataObj | null> {
         let oldObj: DataObj | null = null;
         let newComputedObjId: string | null = null;
@@ -407,6 +416,11 @@ export class FrmdbTransactionRunner {
         let transacDAG;
         try {
             event._id == event._id || generateShortTimestampedUID();
+
+            let entity = await this.frmdbEngineStore.getEntity(entityNameFromDataObjId(event.obj._id))
+            if (!entity) throw new Error(`Cannot find table definition for object ${JSON.stringify(event.obj)}`);
+            let errMsg = this.validateAndConvertObjFields(event.obj, entity);
+            if (errMsg) throw new Error(`Error saving ${event.obj._id}: ${errMsg}`);
 
             let oldObj = await this.computeIds(event);
             let originalObj = _.cloneDeep(event.obj);
@@ -456,7 +470,7 @@ export class FrmdbTransactionRunner {
                 event.error_ = "Failed Validations: " + ex.failedValidations.map(v => v.validationFullName).join(", ");
             } else {
                 event.reason_ = 'ABORT_ON_ERROR';
-                event.error_ = CircularJSON.stringify(ex) + '. Stack:' + ex.stack;
+                event.error_ = ex?.message || ex;
             }
             this.handleError(new TransactionAbortedError(event));//no await
         }

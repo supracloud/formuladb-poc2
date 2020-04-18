@@ -4,7 +4,6 @@ import { emit } from "@fe/delegated-events";
 import { FeFunctionsForDataBinding } from "@fe/fe-functions";
 import { scalarFormulaEvaluate } from "@core/scalar_formula_evaluate";
 import { DataObj } from "@domain/metadata/data_obj";
-import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
 const LOG = new FrmdbLogger('live-dom-template');
 
 export function moveElem(el: Elem, $newParent: Elem, position: number) {
@@ -210,7 +209,6 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
                 if (prefix && jsonKey.indexOf(prefix) === 0) jsonKey = jsonKey.slice(prefix.length + 1);
                 if (jsonKey.indexOf('[]') >= 0) continue;
                 ret[jsonKey] = value;
-                validateAndCovertObjPropertyType(ret, jsonKey, value);
             }
         }
     }

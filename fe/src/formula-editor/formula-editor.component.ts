@@ -88,9 +88,8 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         this.textarea.addEventListener('click', e => this.click());
         this.textarea.addEventListener('keydown', e => this.keydown(e));
         this.textarea.addEventListener('keyup', e => this.keyup(e));
-        onEvent(this.shadowRoot!, 'click', '.editor *', e => this.click());
-        onEventChildren(this.shadowRoot!, 'click', '#toggle-formula-editor', e => this.toggleEditor());
-        onEvent(this.shadowRoot!, 'click', '#apply-formula-changes:enabled *', e => this.applyChanges());
+        this.toggleEditorBtn.addEventListener('click', e => this.toggleEditor());
+        this.applyChangesBtn.addEventListener('click', e => this.applyChanges());
     }
 
     frmdbPropertyChangedCallback<T extends keyof FormulaEditorState>(propName: T, oldVal: FormulaEditorState[T] | undefined, newVal: FormulaEditorState[T]): Partial<FormulaEditorState> | Promise<Partial<FormulaEditorState>> {

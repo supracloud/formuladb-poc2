@@ -28,7 +28,7 @@ props:
         propType_: REFERENCE_TO
         referencedEntityName: Restaurant_Menu_Item
         referencedPropertyName: _id
-        referencedEntityAlias: 'true'
+        required: true
     quantity:
         name: quantity
         propType_: NUMBER

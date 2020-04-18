@@ -94,6 +94,11 @@ export const enum Pn {
     FORMULA = "FORMULA",
 }
 
+export interface BaseProperty {
+    name: string;
+    required?: boolean;
+}
+
 export interface NumberProperty {
     propType_: Pn.NUMBER;
     name: string;

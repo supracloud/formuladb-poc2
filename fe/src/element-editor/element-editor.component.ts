@@ -76,10 +76,10 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                     editTextBtn = `class="btn disabled" title="Cannot edit text, value from data ${this.state.selectedEl.getAttribute('data-frmdb-value')}. Please edit the table data instead."`
                 }
                 this.selectedBox.innerHTML = /*html*/`
-                    <div slot="actions-top-right" class="d-flex flex-nowrap">
+                    <div slot="actions-top" class="d-flex flex-nowrap">
                         <div class="btn dropdown frmdb-dropdown-hover">
                             <i class="frmdb-i-edit" title="Edit Element"></i>
-                            <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
+                            <div class="dropdown-menu px-2 text-nowrap">
                                 <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
                                 <a ${editTextBtn} href="javascript:void(0)"><i class="frmdb-i-pen-fancy"></i></a>
                                 <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>

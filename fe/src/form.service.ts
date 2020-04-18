@@ -270,11 +270,11 @@ export class FormService {
         }
 
 
+        let entityId = entityNameFromDataObjId(parentObj._id);
+        let entity = tools.schemaDAO.schema.entities[entityId];
         for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
             if (!isFormEl(control)) { console.log("Only form elements are sent to the server ", control.outerHTML); continue };
             let propertyName = getEntityPropertyNameFromEl(control);
-            let entityId = entityNameFromDataObjId(parentObj._id);
-            let entity = tools.schemaDAO.schema.entities[entityId];
             let err = validateAndCovertObjPropertyType(parentObj, entity, propertyName, control.value);
             if (err) { this.markInvalid(control, err); return false;}
             else this.markValid(control);
