@@ -311,6 +311,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             borderStyles = { "border-color": "blue" };
         } else if (params.node.rowIndex != this.selectedRowIdx && params.colDef.field == this.selectedColumnName) {
             backgroundStyles = {
+                ...backgroundStyles,
                 backgroundColor: '#eceeef',
             };
         }
