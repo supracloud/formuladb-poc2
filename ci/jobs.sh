@@ -13,6 +13,7 @@ export FRMDB_ENV_NAME
 export BASEDIR=`dirname $0`
 
 function _cleanup {
+    echo "Just a placeholder for now ..."
 }
 
 function build_images_and_deploy {
