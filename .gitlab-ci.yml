@@ -50,6 +50,7 @@ bundle:
 
 build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
+  image: node:10.20.1
   script:
     - ls dist-be tsc-out 
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
@@ -93,8 +94,6 @@ test_postgres:
   services: 
     - name: postgres:11
   variables:
-    # POSTGRES_DB: db
-    # POSTGRES_USER: user
     POSTGRES_PASSWORD: postgres
 
   script:
@@ -109,12 +108,9 @@ test_postgres:
 test_stress:
   stage: test_and_bundle
   image: node:10.20.1
-  retry: 2
   services: 
     - name: postgres:11
   variables:
-    # POSTGRES_DB: db
-    # POSTGRES_USER: user
     POSTGRES_PASSWORD: postgres
   script:
     - ./ci/jobs.sh $CI_JOB_NAME

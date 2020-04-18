@@ -13,14 +13,21 @@ export FRMDB_ENV_NAME
 export BASEDIR=`dirname $0`
 
 function _cleanup {
-    /usr/bin/killall -q kubectl || true
-    /usr/bin/killall -q node || true
-    docker ps|grep "${FRMDB_ENV_NAME}-stress" |cut -d' ' -f1|xargs docker rm -f || true
-    docker ps|grep "${FRMDB_ENV_NAME}-pg" |cut -d' ' -f1|xargs docker rm -f || true
 }
 
 function build_images_and_deploy {
     set -x
+    wget -O kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.2.1/kustomize_kustomize.v3.2.1_linux_amd64
+    chmod +x kustomize
+    mv kustomize /usr/local/bin/kustomize
+    
+    wget -O kubectl https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kubectl
+    chmod +x kubectl
+    mv kubectl /usr/local/bin/kubectl
+
+    wget -O skaffold https://storage.googleapis.com/skaffold/releases/v1.5.0/skaffold-linux-amd64
+    RUN chmod +x skaffold
+    mv skaffold /usr/local/bin/skaffold
     
     NAMESPACE=$1
     if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
@@ -56,7 +63,7 @@ function test_postgres {
 }
 
 function test_stress {
-    PGPORT=5432 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+    PGPORT=5432 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts || true
 }
 
 function test_e2e {
@@ -138,9 +145,6 @@ function e2e_production {
 
 function cleanup {
     set -x
-    docker system prune -af
-    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker rm -f
-    find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
     namespacesToDelete=`kubectl get namespaces|egrep '[0-9a-f]{40} .*Active.*  [0-9][0-9]*[0-9]d$'|egrep -o "n[0-9a-f]{40}" || true`
