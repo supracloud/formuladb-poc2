@@ -18,17 +18,11 @@ function _cleanup {
 
 function build_images_and_deploy {
     set -x
-    wget -O kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.2.1/kustomize_kustomize.v3.2.1_linux_amd64
-    chmod +x kustomize
-    mv kustomize /usr/local/bin/kustomize
+    curl -o /usr/local/bin/kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.2.1/kustomize_kustomize.v3.2.1_linux_amd64
+    chmod +x /usr/local/bin/kustomize
     
-    wget -O kubectl https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kubectl
-    chmod +x kubectl
-    mv kubectl /usr/local/bin/kubectl
-
-    wget -O skaffold https://storage.googleapis.com/skaffold/releases/v1.5.0/skaffold-linux-amd64
-    chmod +x skaffold
-    mv skaffold /usr/local/bin/skaffold
+    curl -o /usr/local/bin/skaffold https://storage.googleapis.com/skaffold/releases/v1.5.0/skaffold-linux-amd64
+    chmod +x /usr/local/bin/skaffold
     
     NAMESPACE=$1
     if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
