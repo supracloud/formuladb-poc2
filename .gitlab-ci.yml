@@ -50,7 +50,7 @@ bundle:
 
 build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
-  image: node:10.20.1
+  image: google/cloud-sdk
   script:
     - ls dist-be tsc-out 
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
