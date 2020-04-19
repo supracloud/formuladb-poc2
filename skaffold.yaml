@@ -2,6 +2,8 @@ apiVersion: skaffold/v2alpha3
 kind: Config
 build:
   cluster:
+    randomPullSecret: true
+    randomDockerConfigSecret: true
     pullSecretName: regcred
     dockerConfig:
       path: ci/docker-config.json
