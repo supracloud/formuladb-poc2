@@ -1,5 +1,7 @@
 variables:
   GIT_DEPTH: 5
+default:
+  image: registry.formuladb.io/formuladb/febe/ci:0.0.1
 
 stages:
   - build
@@ -24,7 +26,6 @@ stages:
 
 build:
   stage: build
-  image: node:10.20.1
   script:
     - npm install
     - npm run compile
@@ -36,7 +37,6 @@ build:
 
 bundle:
   stage: test_and_bundle
-  image: node:10.20.1
   script:
     - ls tsc-out node_modules
     - npm run bundle
@@ -50,7 +50,6 @@ bundle:
 
 build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
-  image: google/cloud-sdk
   script:
     - ls dist-be tsc-out 
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
@@ -66,7 +65,6 @@ build_images_and_deploy_dev:
 
 test_mem:
   stage: test_and_bundle
-  image: node:10.20.1
   script:
     - npm test
   cache:
@@ -78,7 +76,6 @@ test_mem:
 
 test_fe:
   stage: test_and_bundle
-  image: node:10.20.1
   script:
     - npm run test:fe
   cache:
@@ -90,7 +87,6 @@ test_fe:
 
 test_postgres:
   stage: test_and_bundle
-  image: node:10.20.1
   services: 
     - name: postgres:11
   variables:
@@ -107,7 +103,6 @@ test_postgres:
 
 test_stress:
   stage: test_and_bundle
-  image: node:10.20.1
   services: 
     - name: postgres:11
   variables:
@@ -124,7 +119,6 @@ test_stress:
 
 test_api:
   stage: e2e_dev_env
-  image: node:10.20.1
   script:
     - bash api-tests.sh
   artifacts:
@@ -134,7 +128,6 @@ test_api:
 
 e2e_dev_env:
   stage: e2e_dev_env
-  image: node:10.20.1
   retry: 2
   script:
     - ./ci/jobs.sh $CI_JOB_NAME

@@ -18,15 +18,6 @@ function _cleanup {
 
 function build_images_and_deploy {
     set -x
-    curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-    mv kustomize /usr/local/bin/kustomize
-    
-    curl -o /usr/local/bin/skaffold https://storage.googleapis.com/skaffold/releases/v1.5.0/skaffold-linux-amd64
-    chmod +x /usr/local/bin/skaffold
-
-    # Skaffold needs local registry config
-    # https://github.com/GoogleContainerTools/skaffold/issues/2840#issuecomment-543175867
-    mkdir ~/.docker && cp $BASEDIR/docker-config.json ~/.docker/config.json
     
     NAMESPACE=$1
     if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
@@ -67,8 +58,6 @@ function test_stress {
 
 function test_e2e {
     set -x
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    apt-get update && apt-get install -y ./google-chrome-stable_current_amd64.deb
 
     if [ ! -d "formuladb-e2e" ]; then
         chmod og-rwx ssh
