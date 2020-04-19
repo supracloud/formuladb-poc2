@@ -35,6 +35,9 @@ props:
         required: true
     menu_item_price:
         name: menu_item_price
-        propType_: REFERENCE_TO
-        referencedEntityName: Restaurant_Menu_Item
-        referencedPropertyName: price
+        propType_: FORMULA
+        formula: HLOOKUP(Restaurant_Menu_Item.price)
+    menu_item_name:
+        name: menu_item_name
+        propType_: FORMULA
+        formula: HLOOKUP(Restaurant_Menu_Item.name)
