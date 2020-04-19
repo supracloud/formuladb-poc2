@@ -124,6 +124,7 @@ test_stress:
 
 test_api:
   stage: e2e_dev_env
+  image: google/cloud-sdk
   script:
     - bash api-tests.sh
   artifacts:
@@ -133,6 +134,7 @@ test_api:
 
 e2e_dev_env:
   stage: e2e_dev_env
+  image: google/cloud-sdk
   retry: 2
   script:
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
