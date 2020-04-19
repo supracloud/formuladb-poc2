@@ -18,11 +18,15 @@ function _cleanup {
 
 function build_images_and_deploy {
     set -x
-    curl -o /usr/local/bin/kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.2.1/kustomize_kustomize.v3.2.1_linux_amd64
-    chmod +x /usr/local/bin/kustomize
+    curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+    mv kustomize /usr/local/bin/kustomize
     
     curl -o /usr/local/bin/skaffold https://storage.googleapis.com/skaffold/releases/v1.5.0/skaffold-linux-amd64
     chmod +x /usr/local/bin/skaffold
+
+    # Skaffold needs local registry config
+    # https://github.com/GoogleContainerTools/skaffold/issues/2840#issuecomment-543175867
+    cp $BASEDIR/ci/docker-config.json ~/.docker/config.json
     
     NAMESPACE=$1
     if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
