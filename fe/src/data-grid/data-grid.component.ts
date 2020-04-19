@@ -420,7 +420,13 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             return (params) => {
                 return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); f=m.querySelector('frmdb-form'); f.rowId='${params.value}'; $FRMDB_MODAL(m)"><i class="frmdb-i-edit"></i></a> ${this.valueFormatter(params)}`;
             }
-        } else return null;
+        } else if (this.columns.find(c => c.name === col.name)?.type === Pn.REFERENCE_TO) {
+            return (params) => {
+                return `<a href="javascript:void(0)" onclick="$FRMDB_EDITOR.HDGR('${params.value}', '_id')"><i class="frmdb-i-1630227-link"></i></a> ${this.valueFormatter(params)}`;
+            }
+        } else {
+            return null;
+        }
     }
 }
 

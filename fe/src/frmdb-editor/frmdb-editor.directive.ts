@@ -531,7 +531,6 @@ export class FrmdbEditorDirective {
             tableEditor.selectedRecord = dataGrid.selectedRow;
         });
         
-        
         onDoc("FrmdbFormulaEditorChangedColumnsHighlightEvent", "frmdb-formula-editor", async (event) => {
             let formulaEditor = queryFormulaEditor(document);
             let dataGrid = queryDataGrid(document);
@@ -690,10 +689,15 @@ export class FrmdbEditorDirective {
     }
 
     highlightDataGridCell(el: HTMLElement) {
-        let dataGrid = queryDataGrid(document);
         let cell = this.getCellFromEl(el);
         if (!cell) return;
         let { recordId, columnId } = cell;
+        this.highlightDataGridCellForRecord(recordId, columnId);
+    }
+
+    public HDGR = this.highlightDataGridCellForRecord;
+    highlightDataGridCellForRecord(recordId: string, columnId: string) {
+        let dataGrid = queryDataGrid(document);
         let tableName = entityNameFromDataObjId(recordId);
         dataGrid.highlightColumns = {
             [tableName]: {
@@ -704,7 +708,6 @@ export class FrmdbEditorDirective {
         this.changeSelectedTableIdIfDifferent(tableName);
         dataGrid.debouncedForceCellRefresh();
     }
-
 
     async saveBlobs() {
 
