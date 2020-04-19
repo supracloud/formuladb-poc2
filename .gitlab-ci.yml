@@ -1,7 +1,7 @@
 variables:
   GIT_DEPTH: 5
 default:
-  image: registry.formuladb.io/formuladb/febe/ci:0.0.2
+  image: registry.formuladb.io/formuladb/febe/ci:0.0.3
 
 stages:
   - build

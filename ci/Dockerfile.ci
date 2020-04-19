@@ -12,4 +12,4 @@ RUN curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/
     apt-get install -y nodejs && \
     apt-get install -y build-essential jq
 
-COPY docker-config.json /root/.docker/config.json:
+COPY docker-config.json /root/.docker/config.json
