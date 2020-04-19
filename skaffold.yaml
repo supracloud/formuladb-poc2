@@ -37,7 +37,7 @@ profiles:
 - name: dev
   patches:
   - op: add
-    path: /build/artifacts/0/docker/buildArgs
+    path: /build/artifacts/0/kaniko/buildArgs
     value:
       BUILD_DEVELOPMENT: 1
   - op: replace
