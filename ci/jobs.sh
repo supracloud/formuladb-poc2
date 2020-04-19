@@ -26,7 +26,7 @@ function build_images_and_deploy {
 
     # Skaffold needs local registry config
     # https://github.com/GoogleContainerTools/skaffold/issues/2840#issuecomment-543175867
-    cp $BASEDIR/docker-config.json ~/.docker/config.json
+    mkdir ~/.docker && cp $BASEDIR/docker-config.json ~/.docker/config.json
     
     NAMESPACE=$1
     if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
