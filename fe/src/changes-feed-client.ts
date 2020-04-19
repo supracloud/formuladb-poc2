@@ -53,7 +53,7 @@ export async function changesFeedLoop() {
         }
 
         // Call subscribe() again to get the next message
-        await new Promise(resolve => setTimeout(resolve, 150));//release the connection for 250ms
+        await new Promise(resolve => setTimeout(resolve, 250));//release the connection for 250ms
         await changesFeedLoop();
     }
 }

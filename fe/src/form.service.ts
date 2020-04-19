@@ -131,7 +131,17 @@ export class FormService {
                     this.markInvalid(inputEl, event.error_ || 'Internal Server Err');
                     return;
                 } else {
-                    updateDOM(event.obj, parentEl);
+                    let entityId = entityNameFromDataObjId(event.obj._id);
+                    let suffix = parentEl.hasAttribute('data-frmdb-bind-to-record') ? '{}' : '[]';
+                    let fieldsToUpdate: any = {_id: event.obj._id};
+                    for (let [key, val] of Object.entries(event.obj)) {
+                        if (val != parentObj[key]) {
+                            fieldsToUpdate[key] = val;
+                        }
+                    }
+                    updateDOM({
+                        [`$FRMDB.${entityId}${suffix}`]: fieldsToUpdate,
+                    }, parentEl);
                     if (parentObj._id != event.obj._id) {
                         parentObj._id = event.obj._id;
                         parentEl.setAttribute('data-frmdb-record', parentObj._id);

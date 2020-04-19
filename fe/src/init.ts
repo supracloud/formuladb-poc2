@@ -22,10 +22,10 @@ export async function initFrmdb() {
     await dbm.updateDOMForRoot();
     dbm.init();
     DATA_BINDING_MONITOR = dbm;
-    
-    if (!inIframe()) {
+
+    // if (!inIframe()) {
         changesFeedLoop();
-    }
+    // }
 
     setupDataFrmdbInitDirective(document.body);
 }

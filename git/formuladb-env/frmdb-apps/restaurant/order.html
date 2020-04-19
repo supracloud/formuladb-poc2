@@ -23,7 +23,7 @@
                     <div class="col-md-4 d-flex flex-column justify-content-center">
                         <div class="form-group">
                             <div class="input-group date">
-                                <input type="tel" class="form-control" placeholder="phone" name="$FRMDB.Restaurant_Order{}.phone" data-frmdb-value="$FRMDB.Restaurant_Order{}.phone" title="" data-frmdb-pending="" required="">
+                                <input type="tel" class="form-control" placeholder="phone" name="$FRMDB.Restaurant_Order{}.phone" data-frmdb-value="$FRMDB.Restaurant_Order{}.phone" title="" data-frmdb-pending="undefined" required="">
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <frmdb-icon name="fontawesome-solid-phone-call-earphone-number-support-telephone-voice" class="text-white sz-1"></frmdb-icon>
@@ -33,7 +33,7 @@
                         </div>
                         <div class="form-group">
                             <div class="input-group date">
-                                <input type="email" name="$FRMDB.Restaurant_Order{}.email" class="form-control" placeholder="email@domain.com" data-frmdb-value="$FRMDB.Restaurant_Order{}.email" title="" data-frmdb-pending="" required="">
+                                <input type="email" name="$FRMDB.Restaurant_Order{}.email" class="form-control" placeholder="email@domain.com" data-frmdb-value="$FRMDB.Restaurant_Order{}.email" title="" data-frmdb-pending="undefined" required="">
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <frmdb-icon name="fontawesome-solid-at-address-author-e-mail-email-handle" class="text-white sz-1"></frmdb-icon>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="form-group">
                             <div class="input-group date">
-                                <input type="tel" class="form-control" placeholder="delivery address" name="$FRMDB.Restaurant_Order{}.delivery_address" data-frmdb-value="$FRMDB.Restaurant_Order{}.delivery_address" title="" data-frmdb-pending="">
+                                <input type="tel" class="form-control" placeholder="delivery address" name="$FRMDB.Restaurant_Order{}.delivery_address" data-frmdb-value="$FRMDB.Restaurant_Order{}.delivery_address" title="" data-frmdb-pending="undefined">
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <frmdb-icon name="fontawesome-solid-map-marker-alt-address-coordinates-destination-gps-localize-location-map-navigation-paper-pin-place-point_of_interest-position-route-travel" class="text-white sz-1"></frmdb-icon>
@@ -60,7 +60,7 @@
                     <div class="col-md-2 d-flex flex-column justify-content-top">
                         <div class="form-group">
                             <label class="col-form-label col-md-3" for="inputDefault">Total</label>
-                            <input type="text" class="form-control" placeholder="0" id="inputDefault">
+                            <input type="text" class="form-control" placeholder="0" id="inputDefault" data-frmdb-value="$FRMDB.Restaurant_Order{}.total" name="$FRMDB.Restaurant_Order{}.total">
                         </div>
                         <button type="submit" class="btn btn-primary " href="javascript:void(0)">FinalizeOrder</button>
                     </div>
@@ -86,15 +86,15 @@
         </div>
         <frmdb-t-card-deck class="frmdb-cards-4">
             <frmdb-t-card-media-main class="" data-frmdb-table="$FRMDB.Restaurant_Menu_Item[]" data-frmdb-record="Restaurant_Menu_Item~~HGbV5Wzil" data-frmdb-table-limit="10">
-                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending=""></frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e3d1474d50ac14f6da8c7dda2936771d3edce4524c704c7d2979d2924cc558_1280.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending="undefined"></frmdb-t-img>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Pizza</h5>
-                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">best pizza in town</p>
+                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="undefined">Pizza</h5>
+                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="undefined">best pizza in town</p>
                     <form class="container" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
-                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="1" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
+                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="0" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
                             </div>
                         </div>
                         <div class="d-flex">
@@ -107,20 +107,20 @@
                     <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
-                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="">10.00</span>
+                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="undefined">10.00</span>
                     <small>EUR</small>
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
             <frmdb-t-card-media-main class="" data-frmdb-table="$FRMDB.Restaurant_Menu_Item[]" data-frmdb-record="Restaurant_Menu_Item~~HGbV5Wzik" data-frmdb-table-limit="10">
-                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e2d6454c5ab10ff3d8997cc6213f7f173edff85254794f74267ed09648_640.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending=""></frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e2d6454c5ab10ff3d8997cc6213f7f173edff85254794f74267ed09648_640.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending="undefined"></frmdb-t-img>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Grill</h5>
-                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">Juicy grill for big appetites</p>
+                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="undefined">Grill</h5>
+                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="undefined">Juicy grill for big appetites</p>
                     <form class="container" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
-                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="1" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
+                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="0" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
                             </div>
                         </div>
                         <div class="d-flex">
@@ -133,20 +133,20 @@
                     <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
-                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="">12.00</span>
+                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="undefined">12.00</span>
                     <small>EUR</small>
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
             <frmdb-t-card-media-main class="" data-frmdb-table="$FRMDB.Restaurant_Menu_Item[]" data-frmdb-record="Restaurant_Menu_Item~~HGbV5Wzij" data-frmdb-table-limit="10">
-                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e5dd47435ba514f6da8c7dda2936771d3edce4524c704c7d297ad3954ec359_1280.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending=""></frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/57e5dd47435ba514f6da8c7dda2936771d3edce4524c704c7d297ad3954ec359_1280.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending="undefined"></frmdb-t-img>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Salad</h5>
-                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">Fresh and delicious</p>
+                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="undefined">Salad</h5>
+                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="undefined">Fresh and delicious</p>
                     <form class="container" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
-                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="1" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
+                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="0" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
                             </div>
                         </div>
                         <div class="d-flex">
@@ -159,20 +159,20 @@
                     <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
-                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="">9.00</span>
+                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="undefined">9.00</span>
                     <small>EUR</small>
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
             <frmdb-t-card-media-main class="" data-frmdb-table="$FRMDB.Restaurant_Menu_Item[]" data-frmdb-record="Restaurant_Menu_Item~~HGbV5Wzii" data-frmdb-table-limit="10">
-                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/51e3d441435ab108f5d08460c6293e76143ddfe44e507441732d7dd59f4ac4_1280.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending=""></frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/restaurant/static/51e3d441435ab108f5d08460c6293e76143ddfe44e507441732d7dd59f4ac4_1280.jpg&quot;);" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].picture" data-frmdb-record="Restaurant_Menu_Item~~vVsexqeTReF1iWoAUU4ten" data-frmdb-pending="undefined"></frmdb-t-img>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="">Burger</h5>
-                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="">Best burger you ever tasted</p>
+                    <h5 data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].name" data-frmdb-pending="undefined">Burger</h5>
+                    <p data-frmdb-value="$FRMDB.Restaurant_Menu_Item[].description" data-frmdb-pending="undefined">Best burger you ever tasted</p>
                     <form class="container" data-frmdb-bind-to-record="$FRMDB.Restaurant_Order_Item~~" data-frmdb-rules="" data-frmdb-form-auto-save="">
                         <div class="form-group row">
                             <label class="col col-md-6" for="exampleInputEmail1">Quantity</label>
                             <div class="col col-md-6">
-                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="1" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
+                                <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="quantity" placeholder="0" data-frmdb-value="$FRMDB.Restaurant_Order_Item{}.quantity" name="$FRMDB.Restaurant_Order_Item{}.quantity" title="" data-frmdb-pending="undefined">
                             </div>
                         </div>
                         <div class="d-flex">
@@ -185,7 +185,7 @@
                     <a href="javascript:void(0)" class="">Action</a>
                 </frmdb-t-card-action>
                 <frmdb-t-card-note class="">
-                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="">11.00</span>
+                    <span data-frmdb-value=":TEXT(price,&quot;##,##0.00&quot;):$FRMDB.Restaurant_Menu_Item[]" data-frmdb-pending="undefined">11.00</span>
                     <small>EUR</small>
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>

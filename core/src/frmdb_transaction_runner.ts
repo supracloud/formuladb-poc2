@@ -445,6 +445,7 @@ export class FrmdbTransactionRunner {
                     await this.frmdbEngineStore.updateViewForObj(viewUpdate);
                 }
                 transacDAG.finished = true;
+                event.updatedObjs = objsToSave;
             }
 
             await this.frmdbEngineStore.withLock(event._id,

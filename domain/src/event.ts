@@ -23,6 +23,7 @@ export class MwzEvent implements KeyValueObj {
     error_?: string;
     updatedIds_?: string[];
     notifMsg_?: string;
+    updatedObjs?: DataObj[];
 
     constructor() {
         this.state_ = 'BEGIN';

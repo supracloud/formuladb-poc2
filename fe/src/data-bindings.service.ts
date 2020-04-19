@@ -120,7 +120,7 @@ export class DataBindingsService {
     }
 
     private debouncedUpdateDOMForTable = _.debounce((el) => this.updateDOMForTable(el), 100);
-    private debouncedUpdateDOMForRecord = _.debounce((el) => this.updateDOMForTable(el), 100);
+    private debouncedUpdateDOMForRecordBinding = _.debounce((el) => this.updateDOMForRecordBinding(el), 100);
 
     handlers: { [name: string]: (tableNme: string, data: any[]) => Promise<void> } = {};
     public registerDataBindingChangeHandler(name: string, handler: (tableName: string, data: any[]) => Promise<void>) {
@@ -257,6 +257,10 @@ export class DataBindingsService {
                 if (event.type_ === "ServerEventModifiedFormData") {
                     let { entityId } = parseDataObjId(event.obj._id);
                     tableNames.add(entityId);
+                    for (let obj of event.updatedObjs || []) {
+                        let { entityId } = parseDataObjId(obj._id);
+                        tableNames.add(entityId);
+                    }
                 } else if (event.type_ === "ServerEventDeleteEntity" || event.type_ === "ServerEventNewEntity") {
                     tableNames.add($Table._id);
                 } else if (event.type_ === "ServerEventSetApp") {
@@ -267,6 +271,12 @@ export class DataBindingsService {
             }
 
             for (let tableName of tableNames.values()) {
+                if (this.rootEl.matches(`[data-frmdb-bind-to-record^="$FRMDB.${tableName}~~"]`)) {
+                    this.debouncedUpdateDOMForRecordBinding(this.rootEl);
+                }
+                for (let el of Array.from(this.rootEl.querySelectorAll(`[data-frmdb-bind-to-record^="$FRMDB.${tableName}~~"]`))) {
+                    this.debouncedUpdateDOMForRecordBinding(el);
+                }
                 for (let el of Array.from(this.rootEl.querySelectorAll(`[data-frmdb-table="$FRMDB.${tableName}[]"],[data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.${tableName}[]"]`))) {
                     this.debouncedUpdateDOMForTable(el);
                 }

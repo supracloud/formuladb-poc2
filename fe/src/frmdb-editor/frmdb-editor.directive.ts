@@ -159,7 +159,7 @@ export class FrmdbEditorDirective {
             this.elementEditor.rootEl = this.iframe.contentWindow!.document.body;
             this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
             pageElementFlows(this);
-            hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
+            // hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
             // this.manageIframeNavigation();
             if (this.iframe.contentWindow?.location && window.location.pathname != this.iframe.contentWindow.location.pathname) {
                 let {appName, pageName} = parseAllPageUrl(this.iframe.contentWindow.location.pathname);

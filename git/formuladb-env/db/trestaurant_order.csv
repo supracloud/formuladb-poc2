@@ -2,4 +2,11 @@ _id,_owner,_role,_rev,email,phone,delivery_address,total
 Restaurant_Order~~HGbV65Tn4,AnounymousUserId,$ANONYMOUS,"","","","",0.00000
 Restaurant_Order~~HGbV65Tn5,AnounymousUserId,$ANONYMOUS,"",a@aaaaa,asasaffffffdd,dasdasddddd,0.00000
 Restaurant_Order~~HGchVpBif,AnounymousUserId,$ANONYMOUS,"",a@as,a,222222,0.00000
-Restaurant_Order~~HGcjK1Fif,AnounymousUserId,$ANONYMOUS,"",a@a,asasaffffffd,q,20.00000
+Restaurant_Order~~HGcjK1Fif,AnounymousUserId,$ANONYMOUS,"",a@a,asasaffffffd,q,0.00000
+Restaurant_Order~~HGoBZrHif,AnounymousUserId,$ANONYMOUS,"",a@as,asasaffffffddddd,"",0.00000
+Restaurant_Order~~HGoBfbHif,AnounymousUserId,$ANONYMOUS,"",a@add,asasaffffffdds,sasa,0.00000
+Restaurant_Order~~HGoN1udif,AnounymousUserId,$ANONYMOUS,"",a@as,asasaffffffdd,rrrrrr,0.00000
+Restaurant_Order~~HGoQsdMif,,$ANONYMOUS,,a@aa,asasaffffffd,q,4.00000
+Restaurant_Order~~HGoRxRZif,,$ANONYMOUS,,a@a,asasaffffffd,222222,5.00000
+Restaurant_Order~~HGoSZANif,,$ANONYMOUS,,a@aa,asasaffffffddddd,222222,2.00000
+Restaurant_Order~~HGoUxZaif,,$ANONYMOUS,,a@aa,asasaffffffddddd,"",4.00000
