@@ -73,7 +73,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         }
     }
     public async initViewsForNewFormula(oldCompiledFormula: CompiledFormula, compiledFormula: CompiledFormula): Promise<any> {
-        let oldTriggers = _.flatMap(oldCompiledFormula.triggers || [], trg => [
+        let oldTriggers = !oldCompiledFormula.triggers ? [] : _.flatMap(oldCompiledFormula.triggers || [], trg => [
             trg.mapObserversImpactedByOneObservable.obsViewName,
             trg.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName,
         ]);
