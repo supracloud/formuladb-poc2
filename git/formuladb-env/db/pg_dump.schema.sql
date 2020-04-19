@@ -79,18 +79,6 @@ CREATE TABLE public.f_11916 (
 ALTER TABLE public.f_11916 OWNER TO postgres;
 
 --
--- Name: f_12671; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.f_12671 (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.f_12671 OWNER TO postgres;
-
---
 -- Name: f_12849; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -101,54 +89,6 @@ CREATE TABLE public.f_12849 (
 
 
 ALTER TABLE public.f_12849 OWNER TO postgres;
-
---
--- Name: f_4914; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.f_4914 (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.f_4914 OWNER TO postgres;
-
---
--- Name: f_6844; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.f_6844 (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.f_6844 OWNER TO postgres;
-
---
--- Name: f_808; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.f_808 (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.f_808 OWNER TO postgres;
-
---
--- Name: f_9745; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.f_9745 (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.f_9745 OWNER TO postgres;
 
 --
 -- Name: t_currency; Type: TABLE; Schema: public; Owner: postgres
@@ -469,8 +409,7 @@ CREATE TABLE public.trestaurant_order_item (
     _rev character varying,
     order_id character varying,
     menu_item_id character varying,
-    quantity numeric(12,5),
-    menu_item_price character varying
+    quantity numeric(12,5)
 );
 
 
@@ -562,6 +501,18 @@ CREATE TABLE public.tsampleapp (
 ALTER TABLE public.tsampleapp OWNER TO postgres;
 
 --
+-- Name: ttransaction; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ttransaction (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.ttransaction OWNER TO postgres;
+
+--
 -- Name: tvaggs_room_countif_room__room_type_______id___reduce; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -643,51 +594,11 @@ ALTER TABLE ONLY public.f_11916
 
 
 --
--- Name: f_12671 f_12671_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.f_12671
-    ADD CONSTRAINT f_12671_pkey PRIMARY KEY (_id);
-
-
---
 -- Name: f_12849 f_12849_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.f_12849
     ADD CONSTRAINT f_12849_pkey PRIMARY KEY (_id);
-
-
---
--- Name: f_4914 f_4914_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.f_4914
-    ADD CONSTRAINT f_4914_pkey PRIMARY KEY (_id);
-
-
---
--- Name: f_6844 f_6844_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.f_6844
-    ADD CONSTRAINT f_6844_pkey PRIMARY KEY (_id);
-
-
---
--- Name: f_808 f_808_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.f_808
-    ADD CONSTRAINT f_808_pkey PRIMARY KEY (_id);
-
-
---
--- Name: f_9745 f_9745_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.f_9745
-    ADD CONSTRAINT f_9745_pkey PRIMARY KEY (_id);
 
 
 --
@@ -864,6 +775,14 @@ ALTER TABLE ONLY public.troom_type
 
 ALTER TABLE ONLY public.tsampleapp
     ADD CONSTRAINT tsampleapp_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: ttransaction ttransaction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ttransaction
+    ADD CONSTRAINT ttransaction_pkey PRIMARY KEY (_id);
 
 
 --

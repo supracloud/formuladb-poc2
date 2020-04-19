@@ -33,3 +33,4 @@ props:
         name: quantity
         propType_: NUMBER
         required: true
+

@@ -28,3 +28,14 @@ body {
     --frmdb-editor-top-panel-height: 0px;
     --frmdb-editor-left-panel-width: 0px;
 }
+
+.frmdb-hidden {
+    height: 7px;
+    font-size: 7px;
+    border: 0;
+    color: #eeeeee;
+    visibility: hidden;
+}
+.frmdb-editor-on.frmdb-editor-normal .frmdb-hidden {
+    visibility: visible;
+}

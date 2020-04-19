@@ -145,10 +145,10 @@ export class FormService {
                 let references: {[aliasName: string]: {refs: ReferenceToProperty[], entityName: string}} = {};
                 for (let prop of Object.values(entity.props)) {
                     if (prop.propType_ === Pn.REFERENCE_TO) {
-                        let ref = references[prop.referencedEntityAlias || prop.referencedEntityName];
+                        let ref = references[prop.referencedEntityName];
                         if (!ref) {
                             ref = {refs: [], entityName: prop.referencedEntityName};
-                            references[prop.referencedEntityAlias || prop.referencedEntityName] = ref;
+                            references[prop.referencedEntityName] = ref;
                         }
                         ref.refs.push(prop);
                     }

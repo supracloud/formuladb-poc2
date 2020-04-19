@@ -99,7 +99,7 @@ export function $REFERENCE_TO_OPTIONS(el: HTMLElement): { name: string, value: s
     let references: Set<string> = new Set();
     for (let prop of Object.values(entity.props)) {
         if (prop.propType_ === Pn.REFERENCE_TO) {
-            references.add(prop.referencedEntityAlias || prop.referencedEntityName);
+            references.add(prop.referencedEntityName);
         }
     }
     return Array.from(references).map(r => ({

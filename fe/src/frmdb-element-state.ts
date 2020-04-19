@@ -39,8 +39,8 @@ export class FrmdbElementState<STATE> {
                 ...ev,
             }
         }
-        updateDOM(newState, this.el);
         Object.assign(this.state, newState);
+        updateDOM(newState, this.el, this.state);
     }
 }
 

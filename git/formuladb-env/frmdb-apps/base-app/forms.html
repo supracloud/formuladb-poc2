@@ -30,7 +30,7 @@
                         </form>
                         <form>
                             <fieldset>
-                                <legend>Fieldset legend</legend>
+                                <legend>Field-set Label</legend>
                                 <div class="form-group row">
                                     <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
                                     <div class="col-sm-10">
@@ -120,13 +120,18 @@
                     </div>
                 </div>
                 <div class="col-lg-4 offset-lg-1">
-                    <form>
+                    <form class="container">
                         <h4>Inline form</h4>
                         <div class="form-group row">
-                            <label class="col col-md-4" for="exampleInputEmail1">Email address</label>
+                            <label class="col col-md-4" for="exampleInputEmail1">Email</label>
                             <div class="col col-md-8">
                                 <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
                             </div>
+                        </div>
+                        <h6>2 hidden fields for use in complex joins:</h6>
+                        <div class="d-flex">
+                            <input type="text" style="height: 8px; font-size: 8px; border: 0; color: #eeeeee;" readonly="" class="col" data-frmdb-value="$FRMDB.Restaurant_Menu_Item[]._id" title="" data-frmdb-target-field="$FRMDB.Restaurant_Order_Item{}.menu_id" value="hidden1">
+                            <input type="text" style="height: 8px; font-size: 8px; border: 0; color: #eeeeee" readonly="" class="col" data-frmdb-value="$FRMDB.Restaurant_Order{}._id" title="" data-frmdb-target-field="$FRMDB.Restaurant_Order_Item{}.order_id" value="hidden2">
                         </div>
                     </form>
                     <form class="bs-component">

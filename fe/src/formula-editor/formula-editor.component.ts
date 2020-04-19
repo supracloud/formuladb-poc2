@@ -281,7 +281,8 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             case Pn.CHILD_TABLE:
                 return `ACTION`;
             case Pn.REFERENCE_TO:
-                return `REFERENCE_TO_COLUMN(${entityProperty.referencedEntityName}.${entityProperty.referencedPropertyName})`;
+                return `REFERENCE_TO_COLUMN(${entityProperty.referencedEntityName}...n/a)`;
+                // return `REFERENCE_TO_COLUMN(${entityProperty.referencedEntityName}.${entityProperty.referencedPropertyName})`;
             case Pn.EXTENDS_ENTITY:
                 return `ACTION`;
             case Pn.FORMULA:
@@ -327,17 +328,17 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 name: elvis(this.st.editedProperty).name!,
                 propType_: Pn.REFERENCE_TO,
                 referencedEntityName: entityNameToken.value,
-                referencedPropertyName: propertyNameToken.value,
+                // referencedPropertyName: propertyNameToken.value,
                 required,
             };
-            if (entityAliasToken) {
-                if (entityAliasToken.type !== TokenType.TABLE_NAME) {
-                    tokens[0].errors.push("Expected table name as the third argument, but found " + entityAliasToken.value + " at " + entityAliasToken.pstart);
-                    return undefined;
-                } else {
-                    prop.referencedEntityAlias = entityAliasToken.value;
-                }
-            }
+            // if (entityAliasToken) {
+            //     if (entityAliasToken.type !== TokenType.TABLE_NAME) {
+            //         tokens[0].errors.push("Expected table name as the third argument, but found " + entityAliasToken.value + " at " + entityAliasToken.pstart);
+            //         return undefined;
+            //     } else {
+            //         prop.referencedEntityAlias = entityAliasToken.value;
+            //     }
+            // }
             return prop;
         } else if (editorExpr.indexOf(Pn.TEXT) === 0) {
             let required: boolean | undefined = undefined;

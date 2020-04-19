@@ -2,16 +2,19 @@ import { FrmdbElementState, camelCaseProp2kebabCaseAttr, kebabCaseAttr2CamelCase
 import { onEventChildren } from "@fe/delegated-events";
 import { ThemeColors } from "@domain/uimetadata/theme";
 
-const defaultState = {
+const defaultAttr = {
     eventTitle: "some event!",
     eventDetail: "details of the event.",
     severity: ThemeColors.success,
     visible: "show",
 };
+const defaultState = {
+    ...defaultAttr,
+};
 
 export class AlertComponent extends HTMLElement {
     state = defaultState;
-    static observedAttributes = Object.keys(defaultState).map(k => camelCaseProp2kebabCaseAttr(k));
+    static observedAttributes = Object.keys(defaultAttr).map(k => camelCaseProp2kebabCaseAttr(k));
     attributeChangedCallback(name: string, oldVal: string, newVal: string) {
         this.state[kebabCaseAttr2CamelCaseProp(name)] = newVal;
         this.render();

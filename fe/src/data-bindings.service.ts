@@ -35,7 +35,8 @@ const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
 export class DataBindingsService {
     tablesCache = {};
 
-    constructor(private rootEl: HTMLElement, private formService: FormService) {
+    constructor(private rootEl: HTMLElement, private formService: FormService) {}
+    init() {
         const observer = new MutationObserver((mutationsList, observer) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'childList') {
@@ -63,8 +64,8 @@ export class DataBindingsService {
             }
         });
 
-        observer.observe(rootEl, { attributes: true, childList: true, subtree: true });
-        onEvent(rootEl, ["change"], 'input[data-frmdb-filter^="$FRMDB."]', async (event) => {
+        observer.observe(this.rootEl, { attributes: true, childList: true, subtree: true });
+        onEvent(this.rootEl, ["change"], 'input[data-frmdb-filter^="$FRMDB."]', async (event) => {
             if (!event.target || !event.target.outerHTML) return;
             let valExpr = event.target.getAttribute('data-frmdb-filter');
             if (!valExpr) { console.warn("query expr not found ", event.target.outerHTML); return }
@@ -72,11 +73,11 @@ export class DataBindingsService {
             let m: RegExpMatchArray;
             if (m = valExpr.match(/^\$FRMDB\.(\$?\w+)\[\]\./)) {
                 let tableName = m[1];
-                let tableEl = rootEl.querySelector(`[data-frmdb-table="$FRMDB.${tableName}[]"]`);
+                let tableEl = this.rootEl.querySelector(`[data-frmdb-table="$FRMDB.${tableName}[]"]`);
                 this.debouncedUpdateDOMForTable(tableEl);
             }
         });
-        this.updateDOMOnDataUpdatesFromServer();
+        this.monitorDataUpdatesFromServer();
     }
 
     public async updateDOMForRoot(forceTableName?: string) {
@@ -101,9 +102,21 @@ export class DataBindingsService {
         let searchStr = wnd.location.search;
         console.log("updateDOMWithUrlParameters", wnd, searchStr);
         let urlParams = new URLSearchParams(searchStr);
-        let paramValues: any = {}
+        let paramValues: {[k:string]: any} = {}
         urlParams.forEach((val, key) => paramValues = { ...paramValues, [key]: val });
         updateDOM(paramValues, this.rootEl);
+        for (let [key, val] of Object.entries(paramValues)) {
+            let m = key.match(/^\$FRMDB\.(\w+)\{\}\._id$/);
+            if (m) {
+                let sel = `[data-frmdb-bind-to-record^="$FRMDB.${m[1]}~~"]`;
+                let elems: HTMLElement[] = [];
+                if (this.rootEl.matches(sel)) elems.push(this.rootEl);
+                elems = elems.concat(Array.from(this.rootEl.querySelectorAll(sel)));
+                for (let el of elems) {
+                    el.setAttribute('data-frmdb-record', val);
+                }
+            }
+        };
     }
 
     private debouncedUpdateDOMForTable = _.debounce((el) => this.updateDOMForTable(el), 100);
@@ -134,27 +147,34 @@ export class DataBindingsService {
     }
 
     async updateDOMForRecordBinding(el: HTMLElement) {
-        let recordBinding = el.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '');
-        if (!recordBinding) { console.warn("Empty record binding " + el.outerHTML); return }
-        if (isNewDataObjId(recordBinding)) {
-            let entityId = entityNameFromDataObjId(recordBinding);
-            let entity = await BACKEND_SERVICE().getEntity(entityId);
-            let idProp: EntityProperty = entity?.props?._id;
-            if (idProp && idProp.propType_ === Pn.KEY) {
-                let obj = serializeElemToObj(el);
-                let objId = scalarFormulaEvaluate(obj, idProp.scalarFormula);
-                if (objId) {
-                    let dataObj = await BACKEND_SERVICE().getDataObjAcceptNull(`${entityId}~~${objId}`);
-                    if (dataObj) {
-                        updateDOM({
-                            $FRMDB: { [`${entityId}{}`]: dataObj },
-                        }, el, FeFunctionsForDataBinding);
-                        el.setAttribute('data-frmdb-record', dataObj._id);
-                    }
+        let objId = el.getAttribute('data-frmdb-record');
+        let entityId;
+        if (!objId) {
+            let recordBinding = el.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '');
+            if (!recordBinding) { console.warn("Empty record binding " + el.outerHTML); return }
+            if (isNewDataObjId(recordBinding)) {
+                entityId = entityNameFromDataObjId(recordBinding);
+                let entity = await BACKEND_SERVICE().getEntity(entityId);
+                let idProp: EntityProperty = entity?.props?._id;
+                if (idProp && idProp.propType_ === Pn.KEY) {
+                    let obj = serializeElemToObj(el);
+                    let id = scalarFormulaEvaluate(obj, idProp.scalarFormula);
+                    objId = `${entityId}~~${id}`;
                 }
             }
+        } else {
+            entityId = entityNameFromDataObjId(objId);
         }
 
+        if (objId) {
+            let dataObj = await BACKEND_SERVICE().getDataObjAcceptNull(objId);
+            if (dataObj) {
+                updateDOM({
+                    $FRMDB: { [`${entityId}{}`]: dataObj },
+                }, el, FeFunctionsForDataBinding);
+                el.setAttribute('data-frmdb-record', dataObj._id);
+            }
+        }
     }
 
     async updateDOMForTable(el: HTMLElement) {
@@ -229,7 +249,7 @@ export class DataBindingsService {
         }
     }
 
-    async updateDOMOnDataUpdatesFromServer() {
+    async monitorDataUpdatesFromServer() {
 
         registerChangesFeedHandler("dataBindingsMonitor", async (events: events.MwzEvents[]) => {
             let tableNames: Set<string> = new Set<string>();

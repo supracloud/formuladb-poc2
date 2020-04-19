@@ -422,7 +422,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             }
         } else if (this.columns.find(c => c.name === col.name)?.type === Pn.REFERENCE_TO) {
             return (params) => {
-                return `<a href="javascript:void(0)" onclick="$FRMDB_EDITOR.HDGR('${params.value}', '_id')"><i class="frmdb-i-1630227-link"></i></a> ${this.valueFormatter(params)}`;
+                return `<a href="javascript:void(0)" onclick="$FRMDB_EDITOR.HDGR('${params.value}', '_id')"><i class="frmdb-i-1630227-link"></i></a> ${params?.value?.replace(/^.*~~/, '')}`;
             }
         } else {
             return null;

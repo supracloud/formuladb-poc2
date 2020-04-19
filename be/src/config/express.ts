@@ -479,9 +479,9 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
             })
             .catch(err => { console.error(err); next(err) });
     });
-    app.post('/formuladb-api/:app/reference_to_options/:referencedTableAlias', async function (req, res, next) {
+    app.post('/formuladb-api/:app/reference_to_options/:referencedTableName', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.app))
-            .getOptionsForReferenceToProperties(req.body, req.params.referencedTableAlias)
+            .getOptionsForReferenceToProperties(req.body, req.params.referencedTableName)
             .then(optsObjs => {
                 res.json(optsObjs);
             })

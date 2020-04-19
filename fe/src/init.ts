@@ -17,10 +17,12 @@ export async function initFrmdb() {
     formService.initFormsFromNewRecordCache();
     initRoutes();
 
-    DATA_BINDING_MONITOR = new DataBindingsService(appRootEl, formService);
-    DATA_BINDING_MONITOR.updateDOMWithUrlParameters();
-    await DATA_BINDING_MONITOR.updateDOMForRoot();
-
+    let dbm = new DataBindingsService(appRootEl, formService);
+    dbm.updateDOMWithUrlParameters();
+    await dbm.updateDOMForRoot();
+    dbm.init();
+    DATA_BINDING_MONITOR = dbm;
+    
     if (!inIframe()) {
         changesFeedLoop();
     }

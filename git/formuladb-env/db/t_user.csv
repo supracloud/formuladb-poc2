@@ -1,6 +1,5 @@
 _id,role,password,name,details
 $User~~alexandru.cristu@formuladb.io,$ADMIN,c9d9b8cab32214716ee1b44b3aae2502,alex,""
-$User~~b@b,"",92eb5ffee6ae2fec3ad71c777531578f,b,""
 $User~~bonita.collins@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Bonita Collins,Central Identity Analyst
 $User~~brandon.ondricka@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Brandon Ondricka Jr.,Legacy Metrics Planner
 $User~~edwardo.mckenzie@formuladb.io,USER,c9d9b8cab32214716ee1b44b3aae2502,Edwardo McKenzie,Forward Factors Strategist

@@ -8,22 +8,18 @@ import { FrmdbEngineStore } from "./frmdb_engine_store";
 import { SimpleAddHocQuery } from '@domain/metadata/simple-add-hoc-query';
 import { logicalExpr2FilterModel } from './logicalExpr2FilterModel';
 
-export async function getOptionsForReferenceToProperty(frmdbTransactionRunner: FrmdbTransactionRunner, frmdbEngineStore: FrmdbEngineStore, frmdbEngineTools: FrmdbEngineTools, event: events.ServerEventPreComputeFormData, referencedTableAlias: string): Promise<DataObj[]> {
+export async function getOptionsForReferenceToProperty(frmdbTransactionRunner: FrmdbTransactionRunner, frmdbEngineStore: FrmdbEngineStore, frmdbEngineTools: FrmdbEngineTools, event: events.ServerEventPreComputeFormData, referencedTableName: string): Promise<DataObj[]> {
     let ret: DataObj[] = [];
     let objId = event.obj._id;
     let entity = frmdbEngineTools.schemaDAO.getEntityForDataObj(objId);
     let references: ReferenceToProperty[] = [];
 
-    let entityName = referencedTableAlias;
     for (let prop of Object.values(entity.props)) {
-        if (prop.propType_ === Pn.REFERENCE_TO && (prop.referencedEntityName === referencedTableAlias || prop.referencedEntityAlias === referencedTableAlias)) {
-            if (prop.referencedEntityAlias === referencedTableAlias) {
-                entityName = prop.referencedEntityName;
-            }
+        if (prop.propType_ === Pn.REFERENCE_TO && (prop.referencedEntityName === referencedTableName)) {
             references.push(prop);
         }
     }
-    let baseEntity = frmdbEngineTools.schemaDAO.schema.entities[entityName];
+    let baseEntity = frmdbEngineTools.schemaDAO.schema.entities[referencedTableName];
     let filterModel: SimpleAddHocQuery['filterModel'] = {};
     for (let ref of references) {
         if (ref.filter) filterModel = {
@@ -31,7 +27,7 @@ export async function getOptionsForReferenceToProperty(frmdbTransactionRunner: F
             ...logicalExpr2FilterModel(ref.filter)
         };
     }
-    let rows = await frmdbEngineStore.simpleAdHocQuery(entityName,  {
+    let rows = await frmdbEngineStore.simpleAdHocQuery(referencedTableName,  {
         startRow: 0,
         endRow: 100,
         rowGroupCols: [],

@@ -41,13 +41,16 @@ export interface FormComponentState extends FormComponentAttr {
     dataObj: DataObj,
 };
 
-const defaultState = {
+const defaultAttr = {
     rowId: '$Dictionary~~$AUTOID',
+}
+const defaultState = {
+    ...defaultAttr,
 };
 
 export class FormComponent extends HTMLElement {
     state: Partial<FormComponentState> = defaultState;
-    static observedAttributes = Object.keys(defaultState).map(k => camelCaseProp2kebabCaseAttr(k));
+    static observedAttributes = Object.keys(defaultAttr).map(k => camelCaseProp2kebabCaseAttr(k));
     attributeChangedCallback(name: string, oldVal: string, newVal: string) {
         this.state[kebabCaseAttr2CamelCaseProp(name)] = newVal;
         this.debouncedRender();
@@ -127,7 +130,7 @@ export class FormComponent extends HTMLElement {
             if (prop.isAutocomplete) {
                 html.push(`    <frmdb-autocomplete `);
                 html.push(`        ref_entity_name="${(prop as ReferenceToProperty).referencedEntityName}"`);
-                html.push(`        ref_property_name="${(prop as ReferenceToProperty).referencedPropertyName}"`);
+                // html.push(`        ref_property_name="${(prop as ReferenceToProperty).referencedPropertyName}"`);
                 html.push(`        ></frmdb-autocomplete>`);
             }
             if (prop.isImage) {

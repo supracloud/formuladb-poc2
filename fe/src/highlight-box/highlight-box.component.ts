@@ -279,10 +279,13 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 <i class="frmdb-i-hand-point-up" title="Select Overlapping Element"></i>
                 <div class="dropdown-menu p-0 m-0 text-nowrap">
                     <a class="btn" onmouseenter="$FSCMP(this).hP()" onmouseleave="$FSCMP(this).uhP()" onclick="$FSCMP(this).sP()"
-                        href="javascript:void(0)" title="Select Parent Element"><i class="frmdb-i-hand-point-up"></i></a>
+                        href="javascript:void(0)" title="Select Parent Element">
+                        <i class="frmdb-i-hand-point-up"></i>
+                    </a>
                     <a class="btn" onmouseenter="$FSCMP(this).hGP()" onmouseleave="$FSCMP(this).uhGP()" onclick="$FSCMP(this).sGP()"
                         href="javascript:void(0)" title="Select Grand Parent Element">
                         <i class="frmdb-i-hand-point-up" style="display: inline-block; transform: translate(0,25%) scale(0.7)"></i><i class="frmdb-i-hand-point-up" style="margin-left: -0.25em; display: inline-block; transform: scale(0.7)"></i>
+                    </a>
                 </div>
             </div>
         `

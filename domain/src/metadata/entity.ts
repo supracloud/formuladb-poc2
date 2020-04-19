@@ -178,14 +178,10 @@ export function isSubEntityProperty(param): param is ExtendsEntityProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.EXTENDS_ENTITY;
 }
 
-export interface ReferenceToProperty {
+export interface ReferenceToProperty extends BaseProperty {
     propType_: Pn.REFERENCE_TO;
-    name: string;
     referencedEntityName: string;
-    referencedPropertyName: string;
-    referencedEntityAlias?: string;
     filter?: LogicalOpBinaryExpression | LogicalCallExpression;
-    required?: boolean;
 }
 export function isBelongsToProperty(param): param is ReferenceToProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;
