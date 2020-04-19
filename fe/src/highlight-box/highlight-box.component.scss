@@ -12,8 +12,8 @@
             transform: scale(0.75);
         }
     }
-    .selected:hover {
-        border: 4px dotted yellow;
+    .selected:hover,.selected.hover {
+        border: 5px dotted yellow;
         [slot^="actions"] { 
             background-color: yellow;
         }

@@ -73,9 +73,9 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 // <i class="frmdb-i-hand-point-left"></i> 
                 this.addBox(el, "selected", 'previous-sibling', /*html*/`
                     <div slot="actions-bottom" style="border-radius: 8px">
-                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
+                        <div class="actions related">
                             <a class="btn py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
-                                href="javascript:void(0)" title="Select Sibling ${sidx} Element">
+                                href="javascript:void(0)" title="Select Sibling Element #${sidx}">
                                 ${sidx}
                             </a>
                         </div>
@@ -89,9 +89,9 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 // <i class="frmdb-i-flip-horizontal frmdb-i-hand-point-left"></i>
                 this.addBox(el, "selected", 'next-sibling', /*html*/`
                     <div slot="actions-bottom" style="border-radius: 8px">
-                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
+                        <div class="actions related">
                             <a class="py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
-                                href="javascript:void(0)" title="Select Sibling ${sidx} Element">
+                                href="javascript:void(0)" title="Select Sibling Element #${sidx}">
                                 ${sidx}
                             </a>
                         </div>
@@ -99,29 +99,32 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 `);
             }
             if (el = this.state.selectedEl.parentElement as HTMLElement | null) {
-                this.addBox(el, "selected", "parent", /*html*/`
-                    <div slot="actions-top" style="transform: translateX(-11px); border-radius: 8px" >
-                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
-                            <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
-                                href="javascript:void(0)" title="Select Parent Element">
-                                <i class="frmdb-i-hand-point-up"></i>
-                            </a>
-                        </div>
-                    </div>
-                `, 2);
+                this.addBox(el, "selected", "parent", '');
+                // /*html*/`
+                //     <div slot="actions-top" style="transform: translateX(-11px); border-radius: 8px" >
+                //         <div class="actions related">
+                //             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
+                //                 href="javascript:void(0)" title="Select Parent Element">
+                //                 <i class="frmdb-i-hand-point-up"></i>
+                //             </a>
+                //         </div>
+                //     </div>
+                // `, 2);
             }
             if (el = this.state.selectedEl.parentElement?.parentElement as HTMLElement | null) {
-                this.addBox(el, "selected", "grand-parent", /*html*/`
-                    <div slot="actions-top" class="d-flex flex-nowrap" style="transform: translateX(-12px) translateY(-18px); border-radius: 10px">
-                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
-                            <a class="py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
-                                href="javascript:void(0)" title="Select Grand Parent Element">
-                                <i class="frmdb-i-hand-point-up" style="display: inline-block; transform: translate(0,25%) scale(0.75)"></i><i class="frmdb-i-hand-point-up" style="margin-left: -0.25em; display: inline-block; transform: scale(0.7)"></i>
-                            </a>
-                        </div>
-                    </div>
-                `, 4);
+                this.addBox(el, "selected", "grand-parent", '');
+                // /*html*/`
+                //     <div slot="actions-top" class="d-flex flex-nowrap" style="transform: translateX(-12px) translateY(-18px); border-radius: 10px">
+                //         <div class="actions related">
+                //             <a class="py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
+                //                 href="javascript:void(0)" title="Select Grand Parent Element">
+                //                 <i class="frmdb-i-hand-point-up" style="display: inline-block; transform: translate(0,25%) scale(0.75)"></i><i class="frmdb-i-hand-point-up" style="margin-left: -0.25em; display: inline-block; transform: scale(0.7)"></i>
+                //             </a>
+                //         </div>
+                //     </div>
+                // `, 4);
             }
+
         } else {
             this.selectedBox.style.display = 'none';
         }
@@ -187,7 +190,13 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             if (this.state.disabled) return;
             if ((event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore') || (event.target as HTMLElement)?.closest('[data-frmdb-highlight-ignore]')) return;
             event.preventDefault();
-            this.selectElement(event.target as HTMLElement);
+            this.selectElement(event.target as HTMLElement /*, TODO send click point position and use elementsFromPoint to get other overlapping elements 
+                  var elements = elementsFromPoint(
+                        evt.pageX + $(this).offset().left,
+                        evt.pageY + $(this).offset().top,
+                        this
+                    );
+                */);
         });
 
         this.state.rootEl?.ownerDocument?.addEventListener('scroll', (event) => {
@@ -224,10 +233,45 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
 
         this.selectElement(el);
     }
-    selectElementHover() {
-        this.highlightBox.style.display = 'none';
+
+    private highlightBoxOnHover(el: HTMLElement) {
+        let box = this.state.boxes.find(b => b.highlightEl === el);
+        if (box) {
+            box.classList.add('hover');
+        }
+    }
+    private unhighlightBoxOnHover(el: HTMLElement) {
+        let box = this.state.boxes.find(b => b.highlightEl === el);
+        if (box) {
+            box.classList.remove('hover');
+        }
     }
 
+    hP() {
+        let parentEl = this.selectedBox.highlightEl?.parentElement;
+        if (parentEl) this.highlightBoxOnHover(parentEl);
+    }
+    uhP() {
+        let parentEl = this.selectedBox.highlightEl?.parentElement;
+        if (parentEl) this.unhighlightBoxOnHover(parentEl);
+    }
+    sP() {
+        let parentEl = this.selectedBox.highlightEl?.parentElement;
+        if (parentEl) this.selectElement(parentEl);
+    }
+
+    hGP() {
+        let grandParentEl = this.selectedBox.highlightEl?.parentElement?.parentElement;
+        if (grandParentEl) this.highlightBoxOnHover(grandParentEl);
+    }
+    uhGP() {
+        let grandParentEl = this.selectedBox.highlightEl?.parentElement?.parentElement;
+        if (grandParentEl) this.unhighlightBoxOnHover(grandParentEl);
+    }
+    sGP() {
+        let grandParentEl = this.selectedBox.highlightEl?.parentElement?.parentElement;
+        if (grandParentEl) this.selectElement(grandParentEl);
+    }
 }
 
 customElements.define('frmdb-highlight-box', HighlightBoxComponent);
