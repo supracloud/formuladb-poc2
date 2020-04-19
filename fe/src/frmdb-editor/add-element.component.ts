@@ -17,6 +17,13 @@ export class AddElementComponent extends HTMLElement {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
         this.iframe = this.querySelector('iframe')!;
         this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+        this.highlightBox.selectedBox.innerHTML = /*html*/`
+            <div slot="actions-top">
+                <a class="btn" onclick="$FSCMP(this).closest('frmdb-add-element').triggerAddElementFlow()" href="javascript:void(0)" title="Choose Element"><i
+                        class="frmdb-i-plus-circle"></i></a>
+                ${this.highlightBox.renderSelectOverlappingElements()}
+            </div>
+        `;
         this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
             this.highlightBox.rootEl = this.iframe.contentWindow!.document.body;

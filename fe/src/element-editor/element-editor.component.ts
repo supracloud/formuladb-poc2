@@ -86,16 +86,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                                 <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
                             </div>
                         </div>
-                        <div class="btn dropdown py-0 frmdb-dropdown-hover">
-                            <i class="frmdb-i-hand-point-up" title="Select Overlapping Element"></i>
-                            <div class="dropdown-menu p-0 m-0 text-nowrap">
-                                <a class="btn" onmouseenter="$FSCMP(this).hP()" onmouseleave="$FSCMP(this).uhP()" onclick="$FSCMP(this).sP()"
-                                    href="javascript:void(0)" title="Select Parent Element"><i class="frmdb-i-hand-point-up"></i></a>
-                                <a class="btn" onmouseenter="$FSCMP(this).hGP()" onmouseleave="$FSCMP(this).uhGP()" onclick="$FSCMP(this).sGP()"
-                                    href="javascript:void(0)" title="Select Grand Parent Element">
-                                    <i class="frmdb-i-hand-point-up" style="display: inline-block; transform: translate(0,25%) scale(0.7)"></i><i class="frmdb-i-hand-point-up" style="margin-left: -0.25em; display: inline-block; transform: scale(0.7)"></i>
-                            </div>
-                        </a>                        
+                        ${this.renderSelectOverlappingElements()}
                         <!--<div class="btn dropdown frmdb-dropdown-hover">
                             <i class="frmdb-i-0000116-arrows-alt" title="Move Element"></i>
                             <div class="dropdown-menu px-2 text-nowrap">
