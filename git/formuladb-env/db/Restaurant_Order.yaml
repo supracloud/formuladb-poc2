@@ -29,4 +29,4 @@ props:
     total:
         name: total
         propType_: FORMULA
-        formula: 'SUMIF(Restaurant_Order_Item.quantity, order_id == @[_id])'
+        formula: 'SUMIF(Restaurant_Order_Item.item_cost, restaurant_order == @[_id])'

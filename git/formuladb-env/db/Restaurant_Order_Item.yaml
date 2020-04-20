@@ -4,7 +4,7 @@ props:
     _id:
         name: _id
         propType_: KEY
-        scalarFormula: 'CONCATENATE(ID(order), "--", ID(menu_item))'
+        scalarFormula: 'CONCATENATE(ID(restaurant_order), "--", ID(menu_item))'
     _owner:
         name: _owner
         propType_: TEXT
@@ -36,4 +36,7 @@ props:
         propType_: HLOOKUP
         referenceToPropertyName: menu_item
         referencedPropertyName: price
-
+    item_cost:
+        name: item_cost
+        propType_: FORMULA
+        formula: quantity * price
