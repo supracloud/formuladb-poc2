@@ -12,7 +12,7 @@ const groupName = "TBDgitlabgroup";
 
 export class GitStorage implements GitStorageI {
     async getFiles(appName: string) {
-        return fetch(`https://gitlab.com/api/v4/projects/${groupName}%2F${appName}/repository/tree?ref=develop`, {
+        return fetch(`https://gitlab.formuladb.io/api/v4/projects/${groupName}%2F${appName}/repository/tree?ref=develop`, {
             method: 'GET',
             headers: { 'PRIVATE-TOKEN': TOKEN }
         })
@@ -26,7 +26,7 @@ export class GitStorage implements GitStorageI {
     }
 
     async savePage(appName: string, pageName: string, html: string) {
-        return fetch(`https://gitlab.com/api/v4/projects/metawiz%2Ffebe/repository/files/frmdb-apps/${appName}/${pageName}`, {
+        return fetch(`https://gitlab.formuladb.io/api/v4/projects/formuladb%2Ffebe/repository/files/frmdb-apps/${appName}/${pageName}`, {
             method: 'PUT',
             body: JSON.stringify({
                 branch: "develop",
@@ -49,7 +49,7 @@ export class GitStorage implements GitStorageI {
 
 
     async getPageContent(appName: string, pageName: string): Promise<string> {
-        return fetch(`https://gitlab.com/api/v4/projects/${groupName}%2F${appName}/repository/files/${pageName}?ref=develop`, {
+        return fetch(`https://gitlab.formuladb.io/api/v4/projects/${groupName}%2F${appName}/repository/files/${pageName}?ref=develop`, {
             method: 'GET',
             headers: { 'PRIVATE-TOKEN': TOKEN }
         }).then((response) => {
@@ -61,7 +61,7 @@ export class GitStorage implements GitStorageI {
     }
 
     async getFile(appName: string, filePath: string) {
-        return fetch(`https://gitlab.com/api/v4/projects/${groupName}%2F${appName}/repository/files/${encodeURIComponent(filePath)}/raw?ref=develop`, {
+        return fetch(`https://gitlab.formuladb.io/api/v4/projects/${groupName}%2F${appName}/repository/files/${encodeURIComponent(filePath)}/raw?ref=develop`, {
             method: 'GET',
             headers: { 'PRIVATE-TOKEN': TOKEN }
         });

@@ -65,10 +65,10 @@ function test_e2e {
         chmod uog-wx ssh/*
         pwd
         export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa"
-        if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-e2e.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
-            git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-e2e.git
+        if [[ "`git ls-remote --heads git@gitlab.formuladb.io:formuladb/formuladb-e2e.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
+            git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-e2e.git
         else
-            git clone --branch master --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-e2e.git
+            git clone --branch master --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-e2e.git
         fi
 
         cd formuladb-e2e
