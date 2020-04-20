@@ -150,7 +150,7 @@ function e2e_staging_with_videos {
         --user $(id -u):$(id -g) \
         -v $PWD:/febe \
         -v /dev/shm:/dev/shm \
-        registry.gitlab.com/metawiz/febe/ci-with-video:1.0.3 \
+        registry.formuladb.io/formuladb/febe/ci-with-video:1.0.3 \
         bash -c 'source /bootstrap && TARGET=recordings-with-audio protractor e2e/protractor.conf.js --baseUrl="https://formuladb.io"'
 
         # bash -c 'source /bootstrap && 

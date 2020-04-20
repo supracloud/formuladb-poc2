@@ -8,7 +8,7 @@ build:
     dockerConfig:
       path: ci/docker-config.json
   artifacts:
-  - image: registry.gitlab.com/metawiz/febe/formuladb-be
+  - image: registry.formuladb.io/formuladb/febe/formuladb-be
     context: .
     sync:
       manual:
