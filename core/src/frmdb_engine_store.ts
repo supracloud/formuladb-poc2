@@ -214,13 +214,14 @@ export class FrmdbEngineStore extends FrmdbStore {
 
     public async getDataObj(id: string): Promise<DataObj | null> {
         let obj = await super.getDataObj(id);
-        if (!obj) throw new Error(`Cannot find obj ${id}`);
+        if (!obj) return null;
         let entityId = parseDataObjId(id).entityId;
         let entity = this.schema.entities[entityId];
-        if (!entity) throw new Error(`Cannot find table definition for obj ${JSON.stringify(obj)}`);
-        let errMsg = this.validateAndConvertObjFields(obj, entity);
-        if (errMsg) throw new Error(`obj ${id} is invalid: ${errMsg}`);
-
+        if (!entity) console.info(`cannot find entity for ${id}`);
+        else {
+            let errMsg = this.validateAndConvertObjFields(obj, entity);
+            if (errMsg) console.info(`obj ${id} is invalid: ${errMsg}`);
+        }
         return obj;
     }
 

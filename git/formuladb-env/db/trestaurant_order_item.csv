@@ -1,6 +1,6 @@
 _id,_owner,_role,_rev,restaurant_order,menu_item,quantity,price
-Restaurant_Order_Item~~HGcjK1Fif--HGbV5Wzij,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGcjK1Fif,Restaurant_Menu_Item~~HGbV5Wzij,7.00000
-Restaurant_Order_Item~~HGcjK1Fif--HGbV5Wzik,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGcjK1Fif,Restaurant_Menu_Item~~HGbV5Wzik,6.00000
-Restaurant_Order_Item~~HGcjK1Fif--HGbV5Wzil,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGcjK1Fif,Restaurant_Menu_Item~~HGbV5Wzil,10.00000
-Restaurant_Order_Item~~HGoN1udif--HGbV5Wzik,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGoN1udif,Restaurant_Menu_Item~~HGbV5Wzik,1.00000
-Restaurant_Order_Item~~HGoN1udif--HGbV5Wzil,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGoN1udif,Restaurant_Menu_Item~~HGbV5Wzil,4.00000
+Restaurant_Order_Item~~HGcjK1Fif--HGbV5Wzij,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGcjK1Fif,Restaurant_Menu_Item~~HGbV5Wzij,7.00000,
+Restaurant_Order_Item~~HGcjK1Fif--HGbV5Wzik,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGcjK1Fif,Restaurant_Menu_Item~~HGbV5Wzik,6.00000,
+Restaurant_Order_Item~~HGcjK1Fif--HGbV5Wzil,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGcjK1Fif,Restaurant_Menu_Item~~HGbV5Wzil,10.00000,
+Restaurant_Order_Item~~HGoN1udif--HGbV5Wzik,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGoN1udif,Restaurant_Menu_Item~~HGbV5Wzik,1.00000,
+Restaurant_Order_Item~~HGoN1udif--HGbV5Wzil,AnounymousUserId,$ANONYMOUS,"",Restaurant_Order~~HGoN1udif,Restaurant_Menu_Item~~HGbV5Wzil,4.00000,
