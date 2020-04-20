@@ -20,7 +20,7 @@ import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates, initMapReduceViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "@storage/key_value_store_i";
-import { Pn, FormulaProperty, Entity } from "@domain/metadata/entity";
+import { Pn, FormulaProperty, Entity, ReferenceToProperty } from "@domain/metadata/entity";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
 import { scalarFormulaEvaluate } from "./scalar_formula_evaluate";
 import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
@@ -189,7 +189,9 @@ export class FrmdbTransactionRunner {
                         triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
             }
 
-            this.computeFormulaExprWithValidations(triggerValues, compiledFormula, event.currentDataObj);
+            await this.computeHlookups(event.currentDataObj);
+            this.computeFormulaExpr(triggerValues, compiledFormula, event.currentDataObj);
+            this.applyValidations(event.currentDataObj);
 
         } catch (ex) {
             event.state_ = 'ABORT';
@@ -319,14 +321,13 @@ export class FrmdbTransactionRunner {
             obsViewUpdates.push.apply(obsViewUpdates,
                 await this.preComputeNonSelfFormulaOfTransactionRootObj(oldObj, newObj, compiledFormula));
         }
+        await this.computeHlookups(newObj);
         for (let selfFormula of this.schemaDAO.getSelfFormulas(newObj._id)) {
             newObj[selfFormula.targetPropertyName] = evalExpression(newObj, selfFormula.finalExpression);
             console.log(new Date().toISOString() + "|" + newObj + "||computeFormulasAndSave| - selfFormula: " + newObj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + newObj[selfFormula.targetPropertyName]);
         }
-        let failedValidations = this.validateObj(newObj);
-        if (failedValidations.length > 0) {
-            throw new FailedValidationsError(failedValidations);
-        }
+        
+        this.applyValidations(newObj);
 
         transacDAG.addObj(newObj, oldObj, [], obsViewUpdates);
     }
@@ -350,7 +351,8 @@ export class FrmdbTransactionRunner {
             } else {
 
                 if (oldObj && event.obj._id != oldObj._id) {
-                    await this.prepareObjWithIdChange(transacDAG, event.obj, oldObj);
+                    throw new Error(`_id has changed ${event.obj._id}, ${oldObj._id}`);
+                    // await this.prepareObjWithIdChange(transacDAG, event.obj, oldObj);
                 } else {
                     await this.prepareModifyAddObj(transacDAG, event.obj, oldObj);
                 }
@@ -382,14 +384,6 @@ export class FrmdbTransactionRunner {
             transacDAG, originalObj, oldObj);
     }
 
-    validateAndConvertObjFields(obj: DataObj, entity: Entity): string | null {
-        for (let prop of Object.values(entity.props)) {
-            let errMsg = validateAndCovertObjPropertyType(obj, entity, prop.name, obj[prop.name]);
-            if (errMsg) return `${prop.name} is invalid: ${errMsg}`;
-        }
-        return null;
-    }
-
     async computeIds(event: events.ServerEventModifiedFormData | events.ServerEventDeletedFormData | events.ServerEventPreComputeFormData): Promise<DataObj | null> {
         let oldObj: DataObj | null = null;
         let newComputedObjId: string | null = null;
@@ -404,7 +398,8 @@ export class FrmdbTransactionRunner {
             else event.obj._id = event.obj._id.replace('$AUTOID', '') + generateShortUID();
         } else {
             oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
-            if (newComputedObjId && newComputedObjId != event.obj._id) event.obj._id = newComputedObjId;
+            // if (newComputedObjId && newComputedObjId != event.obj._id) event.obj._id = newComputedObjId;
+            //TODO: _id must always be auto-generated uid and KEY must be a different type of column that points to the uid
         }
 
         return oldObj;
@@ -419,7 +414,7 @@ export class FrmdbTransactionRunner {
 
             let entity = await this.frmdbEngineStore.getEntity(entityNameFromDataObjId(event.obj._id))
             if (!entity) throw new Error(`Cannot find table definition for object ${JSON.stringify(event.obj)}`);
-            let errMsg = this.validateAndConvertObjFields(event.obj, entity);
+            let errMsg = this.frmdbEngineStore.validateAndConvertObjFields(event.obj, entity);
             if (errMsg) throw new Error(`Error saving ${event.obj._id}: ${errMsg}`);
 
             let oldObj = await this.computeIds(event);
@@ -517,13 +512,34 @@ export class FrmdbTransactionRunner {
             }
         }
         if (obsNew) {
-            this.computeFormulaExprWithValidations(triggerValues, compiledFormula, obsNew);
+            this.computeFormulaExpr(triggerValues, compiledFormula, obsNew);
         }
 
         return obsViewUpdates;
     }
 
-    private computeFormulaExprWithValidations(triggerValues: _.Dictionary<ScalarType>, compiledFormula: CompiledFormula, obsNew: DataObj): CompiledFormula[] {
+    private async computeHlookups(obj: DataObj) {
+        let entity = await this.frmdbEngineStore.getEntity(entityNameFromDataObjId(obj._id))
+        let referenceToProps: Map<string, ReferenceToProperty> = new Map();
+        for (let prop of Object.values(entity?.props||{})) {
+            if (prop.propType_ === Pn.REFERENCE_TO) referenceToProps.set(prop.name, prop);
+        }
+        for (let prop of Object.values(entity?.props||{})) {
+            if (prop.propType_ === Pn.HLOOKUP) {
+                let refToProp = referenceToProps.get(prop.referenceToPropertyName);
+                if (!refToProp) { console.error(`Reference to column not found for ${JSON.stringify(prop)} //// ${JSON.stringify(obj)}`); continue }
+                let referencedObjId = obj[refToProp.name];
+                let referencedObj: DataObj | null = null;
+                if (referencedObjId) {
+                    referencedObj = await this.frmdbEngineStore.getDataObj(referencedObjId);
+                }
+                if (!referencedObj) { console.error(`Referenced record not found for ${JSON.stringify(prop)} //// ${JSON.stringify(prop)}, ${JSON.stringify(obj)} //// ${JSON.stringify(refToProp)}`); continue }
+                obj[prop.name] = referencedObj[prop.referencedPropertyName];
+            }
+        }
+    }
+
+    private computeFormulaExpr(triggerValues: _.Dictionary<ScalarType>, compiledFormula: CompiledFormula, obsNew: DataObj): CompiledFormula[] {
         if (!compiledFormula.triggers) {
             obsNew[compiledFormula.targetPropertyName] = evalExpression(obsNew, compiledFormula.finalExpression);
         } else {
@@ -536,12 +552,25 @@ export class FrmdbTransactionRunner {
             obsNew[selfFormula.targetPropertyName] = evalExpression(obsNew, selfFormula.finalExpression);
         }
 
-        let failedValidations = this.validateObj(obsNew);
+        return selfFormulas;
+    }
+
+    private async applyValidations(obj: DataObj) {
+        let entity = await this.frmdbEngineStore.getEntity(entityNameFromDataObjId(obj._id))
+        if (!entity) throw new Error(`Cannot find entity for ${obj._id}`);
+        let errMsg = this.frmdbEngineStore.validateAndConvertObjFields(obj, entity);
+        if (errMsg) {
+            throw new FailedValidationsError([{
+                validationFullName: `${entity._id}!validateColumnTypeAndRequired`,
+                obsObj: obj,
+                errorMessage: errMsg 
+            }]);
+        }
+
+        let failedValidations = this.validateObj(obj);
         if (failedValidations.length > 0) {
             throw new FailedValidationsError(failedValidations);
         }
-
-        return selfFormulas;
     }
 
     private async preComputeFormula(oblId: string, transacDAG: TransactionDAG, oblOld: DataObj | null, oblNew: DataObj | null, compiledFormula: CompiledFormula, obsOld: DataObj, obsNew: DataObj) {
@@ -564,7 +593,7 @@ export class FrmdbTransactionRunner {
             }
         }
 
-        let selfFormulas = this.computeFormulaExprWithValidations(triggerValues, compiledFormula, obsNew);
+        let selfFormulas = this.computeFormulaExpr(triggerValues, compiledFormula, obsNew);
         console.log(ll(transacDAG) + "|preComputeFormula|" + oblId + " --> " + obsOld._id + "[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
         for (let selfFormula of selfFormulas) {
             console.log(ll(transacDAG) + "|preComputeFormula| - selfFormula: " + obsNew._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + obsNew[selfFormula.targetPropertyName]);
@@ -577,6 +606,20 @@ export class FrmdbTransactionRunner {
         let currentLevel = transactionDAG.getCurrentLevelObjs();
         transactionDAG.incrementLevel();
         for (let trObj of currentLevel) {
+
+            // let observersTriggeredByObj: Map<string, { 
+            //     obs: DataObj, 
+            //     entityId: string,
+            //     formulaProps: {[name: string]: {
+            //         propertyName: string;
+            //         formula: CompiledFormula;
+            //         triggersToCompute: [{
+            //             trigger: MapReduceTrigger
+            //         }],
+            //     }}
+            //     formulaTriggeredByObj: FormulaTriggeredByObj 
+            // }> = new Map();
+
             let observersTriggeredByObj: Map<string, { obs: DataObj, formulaTriggeredByObj: FormulaTriggeredByObj }> = new Map();
             for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(trObj.objId)) {
                 for (let triggerOfFormula of formulaTriggeredByObj.formula.triggers || []) {

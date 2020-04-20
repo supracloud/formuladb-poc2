@@ -134,10 +134,12 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     applyChanges() {
         if (!this.dirty) return;
         if (!this.frmdbState.editedEntity || !this.frmdbState.editedProperty) return;
+        let forceApplyFormulaWithErrors = false;
         if (this.hasErrors) {
-            alert("formula has errors"); return;
+            if (!confirm("Formula has errors! You want to apply it anyway (developers only) ?")) return;
+            else forceApplyFormulaWithErrors = true;
         }
-        let newProp = this.getEntityPropertyFromTokens(this.currentTokens);
+        let newProp = this.getEntityPropertyFromTokens(this.currentTokens, forceApplyFormulaWithErrors);
         if (!newProp) {alert("formula has error tokens"); return;}
         if (confirm("Please confirm, apply modifications to DB ?")) {
             BACKEND_SERVICE().putEvent(new ServerEventSetProperty(this.frmdbState.editedEntity, newProp))
@@ -263,36 +265,37 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             case Pn.KEY:
                 return `KEY_COLUMN(${entityProperty.scalarFormula})`;
             case Pn.NUMBER:
-                return `NUMBER_COLUMN(${entityProperty.required||''})`;
+                return `NUMBER_COLUMN(${entityProperty.required||'false'})`;
             case Pn.TEXT:
-                return `TEXT_COLUMN(${entityProperty.required||''})`;
+                return `TEXT_COLUMN(${entityProperty.required||'false'})`;
             case Pn.BOOLEAN:
-                return `BOOLEAN_COLUMN(${entityProperty.required||''})`;
+                return `BOOLEAN_COLUMN(${entityProperty.required||'false'})`;
             case Pn.DOCUMENT:
                 return `DOCUMENT_COLUMN`;
             case Pn.DATETIME:
-                return `DATETIME_COLUMN(${entityProperty.required||''})`;
+                return `DATETIME_COLUMN(${entityProperty.required||'false'})`;
             case Pn.ACTION:
                 return `ACTION_COLUMN`;
             case Pn.IMAGE:
-                return `IMAGE_COLUMN(${entityProperty.required||''})`;
+                return `IMAGE_COLUMN(${entityProperty.required||'false'})`;
             case Pn.ATTACHMENT:
                 return `ACTION`;
             case Pn.CHILD_TABLE:
                 return `ACTION`;
             case Pn.REFERENCE_TO:
-                return `REFERENCE_TO_COLUMN(${entityProperty.referencedEntityName}...n/a)`;
-                // return `REFERENCE_TO_COLUMN(${entityProperty.referencedEntityName}.${entityProperty.referencedPropertyName})`;
+                return `REFERENCE_TO_COLUMN(${entityProperty.referencedEntityName}, ${entityProperty.required||'false'})`;
+            case Pn.HLOOKUP:
+                return `HLOOKUP_COLUMN(${entityProperty.referenceToPropertyName}, ${entityProperty.referencedPropertyName}, ${entityProperty.required||'false'})`;
             case Pn.EXTENDS_ENTITY:
                 return `ACTION`;
             case Pn.FORMULA:
                 return entityProperty.formula;
         }
     }
-    getEntityPropertyFromTokens(tokens: UiToken[]): EntityProperty | undefined {
+    getEntityPropertyFromTokens(tokens: UiToken[], force?: boolean): EntityProperty | undefined {
         for (let token of tokens) {
             if (token.errors && token.errors.length > 0) {
-                return undefined;
+                if (!force) return undefined;
             }
         }
 
@@ -391,8 +394,8 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             if (requiredToken && requiredToken.value === "true") required = true;
             return {
                 name: elvis(this.st.editedProperty).name!,
-                propType_: Pn.BOOLEAN,
-                required,
+                propType_: Pn.KEY,
+                scalarFormula: editorExpr.replace(/^KEY_COLUMN\(/, '').replace(/\)$/, ''),
             };
         } else {
             return {

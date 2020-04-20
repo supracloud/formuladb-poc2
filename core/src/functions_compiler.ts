@@ -383,8 +383,11 @@ function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
     };
 }
 
-function REFERENCE_TO_COLUMN(fc: FuncCommon, tableRange: MemberExpression, required: "true" | "false", tableAlias: Identifier): CompiledScalar {
+function REFERENCE_TO_COLUMN(fc: FuncCommon, tableRange: MemberExpression, required: "true" | "false"): CompiledScalar {
     if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO_COLUMN expects an TableName.column_name as argument");
+    return propertyTypeFunction(fc);
+}
+function HLOOKUP_COLUMN(fc: FuncCommon, refToPropName: string, refPropName: string, required: "true" | "false"): CompiledScalar {
     return propertyTypeFunction(fc);
 }
 function NUMBER_COLUMN(fc: FuncCommon, required: "true" | "false") {
@@ -717,6 +720,7 @@ export const PropertyTypeFunctions = {
     [Pn.IMAGE + '_COLUMN']: IMAGE_COLUMN,
     [Pn.DATETIME + '_COLUMN']: DATETIME_COLUMN,
     [Pn.REFERENCE_TO + '_COLUMN']: REFERENCE_TO_COLUMN,
+    [Pn.HLOOKUP + '_COLUMN']: HLOOKUP_COLUMN,
     [Pn.KEY + '_COLUMN']: KEY_COLUMN,
 }
 
@@ -739,7 +743,8 @@ export const FunctionSignatures = {
     _RANGE: `function _RANGE(fc, basicRange, startExpr, endExpr, inclusive_start?, inclusive_end?)`,
     _REDUCE: `function _REDUCE(fc, inputRange, reduceFun)`,
     SUM: `function SUM(fc, tableRange)`,
-    REFERENCE_TO_COLUMN: `function REFERENCE_TO_COLUMN(fc, tableRange, required, alias)`,
+    REFERENCE_TO_COLUMN: `function REFERENCE_TO_COLUMN(fc, tableRange, required)`,
+    HLOOKUP_COLUMN: `function HLOOKUP_COLUMN(fc, REFERENCE_TO_column_name, referenced_column_name, required)`,
     NUMBER_COLUMN: `function NUMBER_COLUMN(fc, required)`,
     IMAGE_COLUMN: `function IMAGE_COLUMN(fc, required)`,
     BOOLEAN_COLUMN: `function BOOLEAN_COLUMN(fc, required)`,

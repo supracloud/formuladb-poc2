@@ -90,6 +90,7 @@ export const enum Pn {
     ATTACHMENT = "ATTACHMENT",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
+    HLOOKUP = "HLOOKUP",
     EXTENDS_ENTITY = "SUB_ENTITY",
     FORMULA = "FORMULA",
 }
@@ -183,8 +184,17 @@ export interface ReferenceToProperty extends BaseProperty {
     referencedEntityName: string;
     filter?: LogicalOpBinaryExpression | LogicalCallExpression;
 }
-export function isBelongsToProperty(param): param is ReferenceToProperty {
+export function isReferenceToProperty(param): param is ReferenceToProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;
+}
+
+export interface HlookupProperty extends BaseProperty {
+    propType_: Pn.HLOOKUP;
+    referenceToPropertyName: string;
+    referencedPropertyName: string;
+}
+export function isHlookupProperty(param): param is HlookupProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.HLOOKUP;
 }
 
 
@@ -225,11 +235,12 @@ export type ScalarEntityProperty =
     | AttachmentProperty
     | ImageProperty
     | FormulaProperty
+    | ReferenceToProperty
+    | HlookupProperty
 ;
 
 export type EntityProperty =
     | ScalarEntityProperty
     | ChildTableProperty
     | ExtendsEntityProperty
-    | ReferenceToProperty
 ;

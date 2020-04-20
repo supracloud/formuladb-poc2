@@ -18,10 +18,11 @@ import { TransactionManager } from './transaction_manager';
 import { Expression } from 'jsep';
 import { MapReduceView, MapReduceViewUpdates } from './map_reduce_view';
 import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
-import { DataObj } from '@domain/metadata/data_obj';
+import { DataObj, parseDataObjId } from '@domain/metadata/data_obj';
 import { Entity, Schema } from '@domain/metadata/entity';
 import { Pn } from '@domain/metadata/entity';
 import { I18nStore } from "./i18n-store";
+import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -73,7 +74,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         }
     }
     public async initViewsForNewFormula(oldCompiledFormula: CompiledFormula, compiledFormula: CompiledFormula): Promise<any> {
-        let oldTriggers = !oldCompiledFormula.triggers ? [] : _.flatMap(oldCompiledFormula.triggers || [], trg => [
+        let oldTriggers = !oldCompiledFormula?.triggers ? [] : _.flatMap(oldCompiledFormula.triggers || [], trg => [
             trg.mapObserversImpactedByOneObservable.obsViewName,
             trg.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName,
         ]);
@@ -200,6 +201,27 @@ export class FrmdbEngineStore extends FrmdbStore {
     public async preComputeViewUpdateForObj(viewHashCode: string, oldObj: DataObj | null, newObj: DataObj | null): Promise<MapReduceViewUpdates<string | number>> {
         let view = this.view(viewHashCode, undefined);
         return view.preComputeViewUpdateForObj(oldObj, newObj);
+    }
+
+    
+    validateAndConvertObjFields(obj: DataObj, entity: Entity, skipConversion?: boolean): string | null {
+        for (let prop of Object.values(entity.props)) {
+            let errMsg = validateAndCovertObjPropertyType(obj, entity, prop.name, obj[prop.name], skipConversion);
+            if (errMsg) return `${prop.name} is invalid: ${errMsg}`;
+        }
+        return null;
+    }
+
+    public async getDataObj(id: string): Promise<DataObj | null> {
+        let obj = await super.getDataObj(id);
+        if (!obj) throw new Error(`Cannot find obj ${id}`);
+        let entityId = parseDataObjId(id).entityId;
+        let entity = this.schema.entities[entityId];
+        if (!entity) throw new Error(`Cannot find table definition for obj ${JSON.stringify(obj)}`);
+        let errMsg = this.validateAndConvertObjFields(obj, entity);
+        if (errMsg) throw new Error(`obj ${id} is invalid: ${errMsg}`);
+
+        return obj;
     }
 
     public async getObserversOfObservable(observableObj: DataObj, trigger: MapReduceTrigger): Promise<DataObj[]> {

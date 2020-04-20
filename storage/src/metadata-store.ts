@@ -210,7 +210,7 @@ export class MetadataStore {
         return this.getSchema(appName).then(s => s ? Object.values(s.entities) : []);
     }
 
-    public async getEntity(appName: string, entityId: string): Promise<Entity | null> {
+    public async getEntity(appName: string | null, entityId: string): Promise<Entity | null> {
         let str = await this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`);
         let entity: Entity = this.fromYaml(str);
         return entity;

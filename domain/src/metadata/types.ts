@@ -1,7 +1,7 @@
 import { EntityProperty, Pn, Entity } from "./entity";
 import { DataObj, entityNameFromDataObjId } from "./data_obj";
 
-export function validateAndCovertObjPropertyType(obj: DataObj, entity: Entity, propertyName: string, propertyValue: string | number | boolean): string | null {
+export function validateAndCovertObjPropertyType(obj: DataObj, entity: Entity, propertyName: string, propertyValue: string | number | boolean, skipConversion?: boolean): string | null {
     if (propertyName === '_id' || propertyName === '_rev') return null;
     if (propertyValue == null) return null;
 
@@ -14,7 +14,9 @@ export function validateAndCovertObjPropertyType(obj: DataObj, entity: Entity, p
             } else if (property.required === true && propertyValue == '') {
                 return `Value is mandatory`;
             } 
-            if (typeof propertyValue === "string") obj[propertyName] = parseFloat(propertyValue);
+            if (!skipConversion) {
+                if (typeof propertyValue === "string") obj[propertyName] = parseFloat(propertyValue);
+            }
             break;
         case Pn.TEXT:
             if (property.required === true && propertyValue == '') {

@@ -14,8 +14,9 @@ import { BACKEND_SERVICE } from "@fe/backend.service";
 
 export interface FailedValidation {
     validationFullName: string;
-    validation: FormulaValidation;
+    validation?: FormulaValidation;
     obsObj: DataObj;
+    errorMessage?: string;
 }
 
 export class FrmdbEngineTools {
