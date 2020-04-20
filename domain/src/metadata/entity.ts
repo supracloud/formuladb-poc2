@@ -192,6 +192,7 @@ export interface HlookupProperty extends BaseProperty {
     propType_: Pn.HLOOKUP;
     referenceToPropertyName: string;
     referencedPropertyName: string;
+    actualPropType_: Pn.NUMBER | Pn.TEXT | Pn.BOOLEAN;
 }
 export function isHlookupProperty(param): param is HlookupProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.HLOOKUP;
@@ -208,7 +209,7 @@ export interface FormulaProperty {
     name: string;
     formula: FormulaExpression;
     compiledFormula_?: CompiledFormula;
-    returnType_?: Exclude<EntityProperty, FormulaProperty>;
+    returnType_?: Pn.NUMBER | Pn.TEXT | Pn.BOOLEAN;
 }
 export function isFormulaProperty(param): param is FormulaProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.FORMULA;

@@ -205,7 +205,9 @@ export class MapReduceView {
                 if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewHashCode, newMapKey }));
 
                 newMapValue = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.valueExpr) : evalExpression(newObj, this.map.valueExpr);
-                if (valueExample != null && typeof newMapValue !== typeof valueExample) throw new Error("newMapValue with incorrect type found " + JSON.stringify({ viewHashCode, newMapKey, newMapValue }));
+                if (valueExample != null && typeof newMapValue !== typeof valueExample) {
+                    throw new Error("newMapValue with incorrect type found " + JSON.stringify({ newObj, viewHashCode, newMapKey, newMapValue }));
+                }
 
                 keyToSet = MapReduceView.makeUniqueMapKeyByAddingId(newMapKey, newObj._id);
             }
@@ -221,7 +223,9 @@ export class MapReduceView {
                 if (!(oldMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewHashCode, oldMapKey }));
 
                 oldMapValue = this.use$ROW$ ? evalExpression({ $ROW$: oldObj }, this.map.valueExpr) : evalExpression(oldObj, this.map.valueExpr);
-                if (valueExample != null && typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewHashCode, newMapKey, newMapValue, oldMapKey, oldMapValue }));
+                if (valueExample != null && typeof oldMapValue !== typeof valueExample) {
+                    throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewHashCode, oldObj, newMapKey, newMapValue, oldMapKey, oldMapValue }));
+                }
 
                 // let otherMapValuesWithOldKey = await this.mapKVS.rangeQueryWithKeys({
                 //     startkey: oldMapKey,

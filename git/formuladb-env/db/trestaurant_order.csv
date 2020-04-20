@@ -1,3 +1,5 @@
 _id,_owner,_role,_rev,email,phone,delivery_address,total
-Restaurant_Order~~HGcjK1Fif,AnounymousUserId,$ANONYMOUS,"",a@a,asasaffffffd,q,26.00000
-Restaurant_Order~~HGoN1udif,AnounymousUserId,$ANONYMOUS,"",a@as,asasaffffffdd,rrrrrr,5.00000
+Restaurant_Order~~HGcjK1Fif,AnounymousUserId,$ANONYMOUS,"",a@a,asasaffffffd,q,245.00000
+Restaurant_Order~~HGoN1udif,AnounymousUserId,$ANONYMOUS,"",a@as,asasaffffffdd,rrrrrr,52.00000
+Restaurant_Order~~HGuT4kXif,,$ANONYMOUS,,a@b,12312,rrrrrr,31.00000
+Restaurant_Order~~HGuUgbCif,,$ANONYMOUS,,a@addd,3123,dadasd,55.00000

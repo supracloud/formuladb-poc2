@@ -107,7 +107,7 @@ describe('FrmdbEngineStore _textjoin', () => {
         let bEntity: Entity = {
             _id: 'B',
             props: {
-                list: { name: 'list', propType_: Pn.FORMULA, formula: formula, compiledFormula_: compiledFormula}
+                list: { name: 'list', propType_: Pn.FORMULA, formula: formula, compiledFormula_: compiledFormula, returnType_: Pn.TEXT}
             }
         };
         // let bTable = await frmdbTStore.adHocTableQuery(bEntity);

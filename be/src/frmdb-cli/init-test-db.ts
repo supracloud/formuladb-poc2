@@ -51,14 +51,13 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
 
         let schema: Schema = {
             _id: 'FRMDB_SCHEMA~~COMPLETE_DB',
-            entities: entitiesInOrderOfDependencies.reduce((a, x) => ({...a, [x._id]: x}), {})
+            entities: entitiesInOrderOfDependencies.reduce((a, x) => ({ ...a, [x._id]: x }), {})
         };
         if (!schema) throw new Error("Cannot get schema");
         let frmdbEngine = await getFrmdbEngine(schema);
         await frmdbEngine.init();
 
         console.log("loading test data for schema", schema);
-        let records: any[] = [];
         for (let entity of entitiesInOrderOfDependencies) {
             console.log("starting test data load for entity" + entity._id + " in table " + entityId2TableName(entity._id));
 
@@ -70,29 +69,29 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
             let csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId2TableName(entity._id)}.csv`);
 
             let parser = csvRawStream.pipe(parse({ columns: true, escape: '\\' }));
-            for await (const record of parser) {
-                records.push(record);
-            }
+            let records: any[] = [];
+            await new Promise((resolve, reject) => {
+                parser.on('readable', function () {
+                    let record;
+                    while (record = parser.read()) {
+                        records.push(record);
+                        nbRecords++;
+                    }
+                })
+                // Catch any error
+                parser.on('error', function (err) {
+                    reject(err);
+                })
+                // When we are done, test that the parsed output matched what expected
+                parser.on('end', function () {
+                    resolve();
+                })
+            });
             await Promise.all(records.map(r => putObj(frmdbEngine, r)));
         }
 
-        // //all in parallel
-        // await Promise.all(records.map(r => putObj(frmdbEngine, r)));
-
-        // // batches
-        // let batchSize = 50;
-        // for (let i = 0; i < 100; i++) {
-        //     if (records.length < i * batchSize) break;
-        //     await Promise.all(records.slice(i * batchSize, (i + 1) * batchSize).map(r => putObj(frmdbEngine, r).catch(err => {console.error(err); throw err})));
-        // }
-        // //sequential
-        // for (let r of records) {
-        //     await putObj(frmdbEngine, r);
-        // }
-        nbRecords = records.length;
-
         let end = new Date();
-        console.log("loading test data end", new Date(), "nbRecords=" + nbRecords + " in " + ((end.getTime() - start.getTime())/1000) + "sec");
+        console.log("loading test data end", new Date(), "nbRecords=" + nbRecords + " in " + ((end.getTime() - start.getTime()) / 1000) + "sec");
 
     } catch (err) {
         console.error(err);

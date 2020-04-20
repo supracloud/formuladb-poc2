@@ -34,6 +34,7 @@ props:
     price:
         name: price
         propType_: HLOOKUP
+        actualPropType_: NUMBER
         referenceToPropertyName: menu_item
         referencedPropertyName: price
     item_cost:

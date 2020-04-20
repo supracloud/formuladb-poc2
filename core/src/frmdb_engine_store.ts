@@ -22,7 +22,7 @@ import { DataObj, parseDataObjId } from '@domain/metadata/data_obj';
 import { Entity, Schema } from '@domain/metadata/entity';
 import { Pn } from '@domain/metadata/entity';
 import { I18nStore } from "./i18n-store";
-import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
+import { validateAndCovertObjPropertyType, validateAndConvertObjFields } from "@domain/metadata/types";
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -203,15 +203,6 @@ export class FrmdbEngineStore extends FrmdbStore {
         return view.preComputeViewUpdateForObj(oldObj, newObj);
     }
 
-    
-    validateAndConvertObjFields(obj: DataObj, entity: Entity, skipConversion?: boolean): string | null {
-        for (let prop of Object.values(entity.props)) {
-            let errMsg = validateAndCovertObjPropertyType(obj, entity, prop.name, obj[prop.name], skipConversion);
-            if (errMsg) return `${prop.name} is invalid: ${errMsg}`;
-        }
-        return null;
-    }
-
     public async getDataObj(id: string): Promise<DataObj | null> {
         let obj = await super.getDataObj(id);
         if (!obj) return null;
@@ -219,7 +210,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         let entity = this.schema.entities[entityId];
         if (!entity) console.info(`cannot find entity for ${id}`);
         else {
-            let errMsg = this.validateAndConvertObjFields(obj, entity);
+            let errMsg = validateAndConvertObjFields(obj, entity);
             if (errMsg) console.info(`obj ${id} is invalid: ${errMsg}`);
         }
         return obj;

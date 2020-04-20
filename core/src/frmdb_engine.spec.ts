@@ -284,6 +284,7 @@ describe('FrmdbEngine', () => {
                 name: 'x__',
                 propType_: Pn.FORMULA,
                 formula: '200 - sum__',
+                returnType_: Pn.NUMBER,
             },
             state_: "BEGIN",
             clientId_: 'ABC'
@@ -299,6 +300,7 @@ describe('FrmdbEngine', () => {
                 name: 'sum__',
                 propType_: Pn.FORMULA,
                 formula: 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])',
+                returnType_: Pn.NUMBER,
             },
             state_: "BEGIN",
             clientId_: 'ABC'

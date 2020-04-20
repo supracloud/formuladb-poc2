@@ -9,6 +9,7 @@ import { ServerEventPreviewFormula, ServerEventSetProperty } from "@domain/event
 import { FormulaTokenizerSchemaChecker } from "@core/formula_tokenizer_schema_checker";
 import { KeyEvent } from "@fe/key-event";
 import { onEvent, onEventChildren } from "@fe/delegated-events";
+import { tempInferTypeForFormula } from "@domain/metadata/types";
 
 const HTML: string = require('raw-loader!@fe-assets/formula-editor/formula-editor.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/formula-editor/formula-editor.component.scss').default;
@@ -389,6 +390,31 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 required,
             };
         } else if (editorExpr.indexOf(Pn.KEY) === 0) {
+            let referenceToPropertyName = tokens[2]?.value;
+            let referencedPropertyName = tokens[4]?.value;
+            let required: boolean | undefined = undefined;
+            let requiredToken = tokens[6];
+            if (requiredToken && requiredToken.value === "true") required = true;
+
+            if (!referenceToPropertyName || !referencedPropertyName) {
+                tokens[0].errors.push("HLOOKUP requires both referenceToPropertyName and referencedPropertyName");
+                return undefined;
+            }
+            
+            let referencedEntityName = (this.frmdbState.editedEntity?.props[referenceToPropertyName] as ReferenceToProperty).referencedEntityName;
+            let referencedProperty = BACKEND_SERVICE().currentSchema?.entities[referencedEntityName].props[referencedPropertyName];
+            if (!referencedProperty) {
+                tokens[0].errors.push(`could not HLOOKUP ${referenceToPropertyName} and ${referencedPropertyName}, target not found`);
+                return undefined;
+            }
+            return {
+                name: elvis(this.st.editedProperty).name!,
+                propType_: Pn.HLOOKUP,
+                referenceToPropertyName,
+                referencedPropertyName,
+                actualPropType_: referencedProperty.propType_ as Pn.NUMBER | Pn.TEXT | Pn.BOOLEAN,
+            };
+        } else if (editorExpr.indexOf(Pn.HLOOKUP) === 0) {
             let required: boolean | undefined = undefined;
             let requiredToken = tokens[2];
             if (requiredToken && requiredToken.value === "true") required = true;
@@ -402,6 +428,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 name: elvis(this.st.editedProperty).name!,
                 propType_: Pn.FORMULA,
                 formula: editorExpr,
+                returnType_: tempInferTypeForFormula(editorExpr)
             };
         }
     }

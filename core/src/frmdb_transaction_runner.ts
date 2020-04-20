@@ -21,9 +21,8 @@ import { MapReduceViewUpdates, MapReduceView, MapViewUpdates, initMapReduceViewU
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "@storage/key_value_store_i";
 import { Pn, FormulaProperty, Entity, ReferenceToProperty } from "@domain/metadata/entity";
-import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
 import { scalarFormulaEvaluate } from "./scalar_formula_evaluate";
-import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
+import { validateAndConvertObjFields } from "@domain/metadata/types";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -414,8 +413,6 @@ export class FrmdbTransactionRunner {
 
             let entity = await this.frmdbEngineStore.getEntity(entityNameFromDataObjId(event.obj._id))
             if (!entity) throw new Error(`Cannot find table definition for object ${JSON.stringify(event.obj)}`);
-            let errMsg = this.frmdbEngineStore.validateAndConvertObjFields(event.obj, entity);
-            if (errMsg) throw new Error(`Error saving ${event.obj._id}: ${errMsg}`);
 
             let oldObj = await this.computeIds(event);
             let originalObj = _.cloneDeep(event.obj);
@@ -558,7 +555,7 @@ export class FrmdbTransactionRunner {
     private async applyValidations(obj: DataObj) {
         let entity = await this.frmdbEngineStore.getEntity(entityNameFromDataObjId(obj._id))
         if (!entity) throw new Error(`Cannot find entity for ${obj._id}`);
-        let errMsg = this.frmdbEngineStore.validateAndConvertObjFields(obj, entity);
+        let errMsg = validateAndConvertObjFields(obj, entity);
         if (errMsg) {
             throw new FailedValidationsError([{
                 validationFullName: `${entity._id}!validateColumnTypeAndRequired`,

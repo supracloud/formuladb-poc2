@@ -128,7 +128,7 @@ describe('frmdb_engine_store', () => {
         let bEntity: Entity = {
             _id: 'B',
             props: {
-                sum__: { name: 'sum__', propType_: Pn.FORMULA, formula: formula, compiledFormula_: compiledFormula}
+                sum__: { name: 'sum__', propType_: Pn.FORMULA, formula: formula, compiledFormula_: compiledFormula, returnType_: Pn.NUMBER}
             }
         };
         // let bTable = await frmdbEngineStore.adHocTableQuery(bEntity);
