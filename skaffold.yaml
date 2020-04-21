@@ -1,8 +1,14 @@
 apiVersion: skaffold/v2alpha3
 kind: Config
 build:
+  cluster:
+    randomPullSecret: true
+    randomDockerConfigSecret: true
+    pullSecretName: regcred
+    dockerConfig:
+      path: ci/docker-config.json
   artifacts:
-  - image: registry.gitlab.com/metawiz/febe/formuladb-be
+  - image: registry.formuladb.io/formuladb/febe/formuladb-be
     context: .
     sync:
       manual:
@@ -21,7 +27,7 @@ build:
       - src: scripts/*
         dest: /scripts
         strip: scripts
-    docker:
+    kaniko:
       dockerfile: Dockerfile.be
 deploy:
   kustomize:
@@ -31,7 +37,7 @@ profiles:
 - name: dev
   patches:
   - op: add
-    path: /build/artifacts/0/docker/buildArgs
+    path: /build/artifacts/0/kaniko/buildArgs
     value:
       BUILD_DEVELOPMENT: 1
   - op: replace
@@ -40,7 +46,7 @@ profiles:
 - name: ci
   patches:
   - op: add
-    path: /build/artifacts/0/docker/buildArgs
+    path: /build/artifacts/0/kaniko/buildArgs
     value:
       BUILD_CI: 1
   - op: replace

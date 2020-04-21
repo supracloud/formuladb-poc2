@@ -66,8 +66,8 @@ I=35; for i in [a-z]*; do idx=`printf '%07d' $I`; k=`echo $i | sed 's/^/'$idx'-/
 #####################################
 ## Db stuff
 #####################################
-cat t_permission.csv | psql -h db -U postgres -c "COPY t_permission FROM STDIN WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'"
-cat  | psql -h db -U postgres -c "COPY t_user FROM STDIN WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'"
+cat t_permission.csv | psql -h ${PGHOST:-db} -U postgres -c "COPY t_permission FROM STDIN WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'"
+cat  | psql -h ${PGHOST:-db} -U postgres -c "COPY t_user FROM STDIN WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'"
 
 #####################################
 ## API stuff

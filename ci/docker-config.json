@@ -1,7 +1,10 @@
 {
     "auths": {
-            "registry.gitlab.com": {
-                    "auth": "YWNyaXN0dTpjM2NjMzdhNTQ5"
-            }
+        "registry.formuladb.io": {
+                "auth": "bHNvaWNhOmJoZjhFeHlIdTR1Y0syRQ=="
+        },
+        "registry.gitlab.com": {
+                "auth": "YWNyaXN0dTpjM2NjMzdhNTQ5"
+        }
     }
 }

@@ -35,7 +35,7 @@ spec:
           value: "true"
         - name: FRMDB_ENV_NAME
           value: $(NAMESPACE_NAME)
-        image: registry.gitlab.com/metawiz/febe/formuladb-be
+        image: registry.formuladb.io/formuladb/febe/formuladb-be
         name: be
         ports:
         - containerPort: 3000
