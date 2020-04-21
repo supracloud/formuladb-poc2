@@ -1,5 +1,8 @@
 FROM google/cloud-sdk
 
+ENV DEBIAN_FRONTEND noninteractive
+ENV DISPLAY :99
+
 # Skaffold needs local registry config
 # https://github.com/GoogleContainerTools/skaffold/issues/2840#issuecomment-543175867
 RUN curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash && \
@@ -9,7 +12,22 @@ RUN curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/
     curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt-get update && apt-get install -y ./google-chrome-stable_current_amd64.deb && \
     curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
-    apt-get install -y nodejs && \
-    apt-get install -y build-essential jq
+    apt-get install -y nodejs build-essential jq xserver-xorg-video-dummy x11-apps libpng-dev \
+    python make g++ libx11-dev libxtst-dev git
+
+RUN npm install -g @angular/cli protractor selenium standalone && \
+    webdriver-manager update
 
 COPY docker-config.json /root/.docker/config.json
+
+RUN echo 'allowed_users=anybody\nneeds_root_rights=yes' > /etc/X11/Xwrapper.config
+
+COPY xorg.conf /
+RUN chmod ugo+r /xorg.conf
+ENV GOOGLE_APPLICATION_CREDENTIALS=formuladb-text-to-speech.json
+RUN echo 'npm install && npm run compile && npm install robotjs\n\
+cp /xorg.conf .\n\
+/usr/bin/Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile ./xdummy.log -config ./xorg.conf :99 &\n\
+' > /bootstrap
+# https://github.com/elgalu/docker-selenium/issues/20#issuecomment-135092714
+# docker build -t registry.gitlab.com/metawiz/febe/ci-with-video:1.0.2 -f Dockerfile.video .
