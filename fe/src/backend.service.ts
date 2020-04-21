@@ -73,24 +73,26 @@ export function getData<OUT>(url: string): Promise<OUT> {
 export class BackendService {
 
     public applications: Map<string, App> = new Map();
-    private frmdbEngineTools: FrmdbEngineTools;
-    public currentSchema: Schema | null = null;
+    private _currentSchema: Schema = {
+        _id: 'FRMDB_SCHEMA~~emppty',
+        entities: {}
+    };
+    private _frmdbEngineTools: FrmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(this._currentSchema).compileSchema());
 
     constructor(public appName: string) {
-        this.getSchema().then(schema => {
-            if (!schema) throw new Error("Schema " + appName + " not found");
-            this.currentSchema = schema;
-            this.frmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(schema).compileSchema())
-        });
+        this.waitSchema();
     }
 
-    public getFrmdbEngineTools() {
-        return this.frmdbEngineTools;
+    public getFrmdbEngineTools(): FrmdbEngineTools {
+        return this._frmdbEngineTools;
+    }
+    public getCurrentSchema(): Schema {
+        return this._currentSchema;
     }
 
-    public async waitFrmdbEngineTools() {
-        await waitUntil(() => Promise.resolve(this.getFrmdbEngineTools()));
-        return this.frmdbEngineTools;
+    public async waitSchema() {
+        let schema = await this.getSchema();
+        if (!schema) throw new Error("Schema " + this.appName + " not found");
     }
 
     async getApp(): Promise<App | null> {
@@ -223,12 +225,9 @@ export class BackendService {
         let http = await getData<Schema | null>('/formuladb-api/' + this.appName + '/schema');
         if (!http) throw new Error("no schema for " + this.appName);
         if (!isSchema(http)) throw new Error("response is not Schema " + CircularJSON.stringify(http));
-        this.currentSchema = http;
+        this._currentSchema = http;
+        this._frmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(this._currentSchema).compileSchema())
         return http;
-    }
-
-    public async getCurrentSchema(): Promise<Schema> {
-        return waitUntil(() => this.currentSchema as any);
     }
 
     public async getEntity(path: string): Promise<Entity> {

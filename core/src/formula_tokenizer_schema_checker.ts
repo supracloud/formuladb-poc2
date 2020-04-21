@@ -2,6 +2,7 @@ import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsList, Prope
 import { Token, TokenType, Suggestion } from "./formula_tokenizer";
 import * as Fuse from 'fuse.js';
 import { Schema, Entity } from "@domain/metadata/entity";
+import { BACKEND_SERVICE } from "@fe/backend.service";
 
 
 export class FormulaTokenizerSchemaChecker {
@@ -16,7 +17,11 @@ export class FormulaTokenizerSchemaChecker {
     keys: undefined,
   };
 
-  constructor(private schema: Schema) {
+  constructor() {
+  }
+
+  getSchema() {
+    return BACKEND_SERVICE().getCurrentSchema();
   }
 
   FORBIDDEN_COLUMN_NAMES = ['user', 'table'];
@@ -30,12 +35,12 @@ export class FormulaTokenizerSchemaChecker {
         token.foundInSchema = false;
       }
     } else if (TokenType.TABLE_NAME === token.type) {
-      if (!Object.values(this.schema.entities).map(e => e._id).find(e => e === token.tableName)) {
+      if (!Object.values(this.getSchema().entities).map(e => e._id).find(e => e === token.tableName)) {
         token.errors.push("Unknown table " + token.tableName);
         token.foundInSchema = false;
       }
     } else if (TokenType.COLUMN_NAME === token.type) {
-      if (!Object.keys((this.schema.entities['' + token.tableName] ||{} as Entity).props || {}).find(p => p == token.columnName)) {
+      if (!Object.keys((this.getSchema().entities['' + token.tableName] ||{} as Entity).props || {}).find(p => p == token.columnName)) {
         token.errors.push("Unknown column " + token.columnName + " for table " + token.tableName);
         token.foundInSchema = false;
       } else if (this.FORBIDDEN_COLUMN_NAMES.includes(token.columnName||'')) {
@@ -112,11 +117,11 @@ export class FormulaTokenizerSchemaChecker {
       }
 
     } else if (TokenType.TABLE_NAME === token.type) {
-      if (!Object.values(this.schema.entities).map(e => e._id).find(e => e === token.tableName)) {
-        ret = this.getSuggestionsWithFuse(Object.keys(this.schema.entities), token.value);
+      if (!Object.values(this.getSchema().entities).map(e => e._id).find(e => e === token.tableName)) {
+        ret = this.getSuggestionsWithFuse(Object.keys(this.getSchema().entities), token.value);
       }
     } else if (TokenType.COLUMN_NAME === token.type) {
-      let entityForToken = this.schema.entities['' + token.tableName];
+      let entityForToken = this.getSchema().entities['' + token.tableName];
       if (entityForToken && !Object.keys(entityForToken.props).find(p => p == token.columnName)) {
         ret = this.getSuggestionsWithFuse(Object.keys(entityForToken.props), token.value);
       }

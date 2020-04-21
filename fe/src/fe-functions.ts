@@ -84,7 +84,7 @@ async function $MODAL(modalPageName: string, initDataBindingId?: string, recordD
 
 export function $TABLES(): { name: string }[] {
     let appBackend = BACKEND_SERVICE();
-    return Object.values(appBackend?.currentSchema?.entities || {}).map(ent => ({
+    return Object.values(appBackend?.getCurrentSchema()?.entities || {}).map(ent => ({
         name: ent._id,
     }));
 }
@@ -92,10 +92,10 @@ export function $TABLES(): { name: string }[] {
 export function $REFERENCE_TO_OPTIONS(el: HTMLElement): { name: string, value: string }[] {
     let recordEl = el.parentElement?.closest('[data-frmdb-record]');
     if (!recordEl) return [];
-    if (!BACKEND_SERVICE().currentSchema) { console.warn(`currentSchema not initialized yet`); return [] }
+    if (!BACKEND_SERVICE().getCurrentSchema()) { console.warn(`getCurrentSchema() not initialized yet`); return [] }
     let entityId = recordEl.getAttribute('data-frmdb-record')!.replace(/~~.*/, '');
-    let entity = BACKEND_SERVICE().currentSchema?.entities[entityId];
-    if (!entity) { console.warn(`entity ${entityId} not known`, BACKEND_SERVICE().currentSchema?.entities); return [] }
+    let entity = BACKEND_SERVICE().getCurrentSchema()?.entities[entityId];
+    if (!entity) { console.warn(`entity ${entityId} not known`, BACKEND_SERVICE().getCurrentSchema()?.entities); return [] }
     let references: Set<string> = new Set();
     for (let prop of Object.values(entity.props)) {
         if (prop.propType_ === Pn.REFERENCE_TO) {
@@ -127,7 +127,7 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     }
     if (!tableName) { console.warn("table not found", tableName, el.outerHTML); return [] }
     let appBackend = BACKEND_SERVICE();
-    let entity = appBackend.currentSchema?.entities?.[tableName];
+    let entity = appBackend.getCurrentSchema()?.entities?.[tableName];
     if (!entity) { console.warn("entity not found", tableName, el.outerHTML); return [] }
     let suf = isDirectRecordBinding ? '{}' : '[]';
     return Object.values(entity.props).map(p => ({

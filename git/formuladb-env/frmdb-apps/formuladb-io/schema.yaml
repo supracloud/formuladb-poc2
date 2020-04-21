@@ -7,3 +7,4 @@ entityIds:
     - $User
     - $Dictionary
     - $Currency
+    - App_Template

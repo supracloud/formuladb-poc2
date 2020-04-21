@@ -1,7 +1,7 @@
 import { LANGUAGES, DEFAULT_LANGUAGE, I18nLang, DEFAULT_FLAG } from "@domain/i18n";
 import { $DictionaryObjT, $Dictionary } from "@domain/metadata/default-metadata";
 
-const translatableSelector = 'th,td,p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,legend,[placeholder]';
+const translatableSelector = 'th,td,p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,small,strong,u,ins,s,del,em,label,legend,[placeholder]';
 const allowedInnerTags = 'b,strong,i,br,hr,em,q';
 const notAllowedTagsForTextEditing = ['input', 'select', 'textarea', 'video', 'img'];
 

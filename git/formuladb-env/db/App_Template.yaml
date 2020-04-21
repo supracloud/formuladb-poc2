@@ -1,16 +1,8 @@
-_id: ContactRequest
+_id: App_Template
 isEditable: true
 props:
     _id:
         name: _id
-        propType_: TEXT
-        required: true
-    email:
-        name: email
-        propType_: TEXT
-        required: true
-    comments:
-        name: comments
         propType_: TEXT
         required: true
     _owner:
@@ -23,5 +15,12 @@ props:
         required: true
     _rev:
         name: _rev
+        propType_: TEXT
+        required: true
+    name:
+        propType_: TEXT
+        name: name
+    description:
+        name: description
         propType_: TEXT
         required: true

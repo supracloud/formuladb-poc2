@@ -150,7 +150,7 @@ export class FormService {
                 return event;
             } else {
                 let entityId = entityNameFromDataObjId(parentObj._id);
-                let entity = BACKEND_SERVICE().currentSchema?.entities?.[entityId];
+                let entity = BACKEND_SERVICE().getCurrentSchema()?.entities?.[entityId];
                 if (!entity) {console.warn(entityId, "not found"); return}
                 let references: {[aliasName: string]: {refs: ReferenceToProperty[], entityName: string}} = {};
                 for (let prop of Object.values(entity.props)) {
@@ -249,7 +249,7 @@ export class FormService {
         if (!parentEl) return null;
         let parentObj = serializeElemToObj(parentEl) as DataObj;
         let recordId = parentEl.getAttribute('data-frmdb-record') || parentEl.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '') || '';
-        if (recordId != '' && recordId != '$AUTOID' && !parentObj._id) {
+        if (!isNewDataObjId(recordId) && isNewDataObjId(parentObj._id)) {
             parentObj._id = recordId;
         }
         if (!parentObj._id) throw new Error("Cannot find obj id for " + control);

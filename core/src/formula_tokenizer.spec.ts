@@ -45,7 +45,7 @@ describe('FormulaTokenizer', () => {
 
     function testFunction(formula: string, referencedTableName: string = 'A', token6ColName: string = 'a_x') {
         let formulaStaticTypeChecker = new FormulaTokenizer();
-        let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
+        let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker();
         let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', formula);
 
         expect(parserTokens[2]).toEqual(jasmine.objectContaining({
@@ -141,7 +141,7 @@ describe('FormulaTokenizer', () => {
 
     it ("should suggest function names", () => {
         let formulaStaticTypeChecker = new FormulaTokenizer();
-        let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
+        let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker();
         let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', "suf(A.num");
         expect(parserTokens[0]).toEqual(jasmine.objectContaining({
             callStack: [],
@@ -169,7 +169,7 @@ describe('FormulaTokenizer', () => {
     function test(it: any, expr: string, tokens: any[], suggestions: any[]) {
         it ('test ' + expr, () => {
             let formulaStaticTypeChecker = new FormulaTokenizer();
-            let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
+            let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker();
             let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', expr);
             for (let [i, token] of tokens.entries()) {
                 formulaTokenizerSchemaChecker.checkToken(parserTokens[i]);

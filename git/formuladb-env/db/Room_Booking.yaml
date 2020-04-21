@@ -53,7 +53,25 @@ props:
     cost:
         name: cost
         propType_: FORMULA
-        formula: days * 100
-    _owner: { name: _owner, propType_: TEXT, required: true }
-    _role: { name: _role, propType_: TEXT, required: true }
-    _rev: { name: _rev, propType_: TEXT, required: true }
+        formula: days * price
+        returnType_: NUMBER
+    _owner:
+        name: _owner
+        propType_: TEXT
+        required: true
+    _role:
+        name: _role
+        propType_: TEXT
+        required: true
+    _rev:
+        name: _rev
+        propType_: TEXT
+        required: true
+    room_type_name:
+        name: room_type_name
+        propType_: KEY
+        scalarFormula: 'HLOOKUP_COLUMN(room_type, name, true'
+    price:
+        name: price
+        propType_: KEY
+        scalarFormula: 'HLOOKUP_COLUMN(room_type, price, true'

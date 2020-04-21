@@ -402,7 +402,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             }
             
             let referencedEntityName = (this.frmdbState.editedEntity?.props[referenceToPropertyName] as ReferenceToProperty).referencedEntityName;
-            let referencedProperty = BACKEND_SERVICE().currentSchema?.entities[referencedEntityName].props[referencedPropertyName];
+            let referencedProperty = BACKEND_SERVICE().getCurrentSchema()?.entities[referencedEntityName].props[referencedPropertyName];
             if (!referencedProperty) {
                 tokens[0].errors.push(`could not HLOOKUP ${referenceToPropertyName} and ${referencedPropertyName}, target not found`);
                 return undefined;
@@ -519,20 +519,14 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         }
     }
 
-    private formulaTokenizerSchemaChecker: FormulaTokenizerSchemaChecker;
-    private getFormulaTokenizerSchemaChecker() {
-        if (!this.formulaTokenizerSchemaChecker) {
-            this.formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(BACKEND_SERVICE().getFrmdbEngineTools().schemaDAO.schema);
-        }
-        return this.formulaTokenizerSchemaChecker;
-    }
+    private formulaTokenizerSchemaChecker: FormulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker();
 
     public getSuggestionsForToken(token: Token) {
-        return this.getFormulaTokenizerSchemaChecker().getSuggestionsForToken(token);
+        return this.formulaTokenizerSchemaChecker.getSuggestionsForToken(token);
     }
 
     public checkTokenForErrors(token: Token) {
-        this.getFormulaTokenizerSchemaChecker().checkToken(token);
+        this.formulaTokenizerSchemaChecker.checkToken(token);
     }
 
     private formulaTokenizer = new FormulaTokenizer();

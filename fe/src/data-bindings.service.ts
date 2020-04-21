@@ -221,8 +221,8 @@ export class DataBindingsService {
         try {
             if (!parentEl) return;
             let bes = BACKEND_SERVICE();
-            await BACKEND_SERVICE().waitFrmdbEngineTools();
-            if (null == bes?.currentSchema?.entities?.[tableName]) throw new Error("BE not initialized yet");
+            await BACKEND_SERVICE().waitSchema();
+            if (null == bes?.getCurrentSchema()?.entities?.[tableName]) throw new Error("BE not initialized yet");
 
             let data = await bes.simpleAdHocQuery(tableName, query);
             this.tablesCache[tableName] = data;
@@ -263,6 +263,7 @@ export class DataBindingsService {
                     }
                 } else if (event.type_ === "ServerEventDeleteEntity" || event.type_ === "ServerEventNewEntity") {
                     tableNames.add($Table._id);
+                    await BACKEND_SERVICE().waitSchema();
                 } else if (event.type_ === "ServerEventSetApp") {
                     tableNames.add($App._id);
                 } else if (event.type_ === "ServerEventSetPage" || event.type_ === "ServerEventDeletePage") {

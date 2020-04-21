@@ -65,6 +65,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                         <a class="btn" onclick="$FSCMP(this).paste('before')" href="javascript:void(0)" title="Insert before"><i class="frmdb-i-before-box"></i></a>
                         <a class="btn" onclick="$FSCMP(this).paste('inside')" href="javascript:void(0)" title="Insert inside"><i class="frmdb-i-inside-box"></i></a>
                         <a class="btn" onclick="$FSCMP(this).paste('after')" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
+                        ${this.renderSelectOverlappingElements()}
                         <a class="btn" onclick="$FSCMP(this).paste('cancel')" href="javascript:void(0)" title="Cancel"><i class="frmdb-i-window-close"></i></a>
                     </div>
                 `;

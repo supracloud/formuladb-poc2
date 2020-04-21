@@ -13,7 +13,7 @@ export async function initFrmdb() {
     let [appName, appRootEl] = APP_AND_TENANT_ROOT();
     let formService = new FormService(appRootEl);
     FORM_SERVICE.instance = formService;
-    await BACKEND_SERVICE().waitFrmdbEngineTools();
+    await BACKEND_SERVICE().waitSchema();
     formService.initFormsFromNewRecordCache();
     initRoutes();
 

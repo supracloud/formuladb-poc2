@@ -117,7 +117,7 @@ export class FrmdbEditorDirective {
 
         if (this.state.data.selectedAppName != appName) {
             RESET_BACKEND_SERVICE();
-            BACKEND_SERVICE().waitFrmdbEngineTools()
+            BACKEND_SERVICE().waitSchema()
                 .then(async () => {
                     await DATA_BINDING_MONITOR?.updateDOMForRoot();
                 });
@@ -183,7 +183,7 @@ export class FrmdbEditorDirective {
                 DATA_BINDING_MONITOR!.registerDataBindingChangeHandler('frmdb-editor', async (tableName: string, data: any[]) => {
                     if (tableName == $Table._id) {
                         this.state.emitChange({
-                            selectedTableId: data?.[0]?._id,
+                            selectedTableId: this.state.data.selectedTableId || data?.[0]?._id,
                             tables: data as Entity[],
                         })
                     }
@@ -520,6 +520,7 @@ export class FrmdbEditorDirective {
             let formulaEditor: FormulaEditorComponent = queryFormulaEditor(document);
             let dataGrid = queryDataGrid(document);
 
+            await BACKEND_SERVICE().waitSchema();
             let entity: Entity = (await BACKEND_SERVICE().getCurrentSchema()).entities[dataGrid.tableName || ''];
             let prop: EntityProperty | undefined = entity.props[dataGrid.selectedColumnName || ''];
             formulaEditor.frmdbState.editedEntity = entity;
