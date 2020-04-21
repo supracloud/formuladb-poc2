@@ -22,12 +22,19 @@ export class ImgEditorComponent extends HTMLElement {
 
         onEvent(this, 'change', '#frmdb-search-free-images', async (event) => {
             let res = await searchFreeImages(event.target!.value);
-            let freeImagesUrls = res.hits.map(hit => ({
-                previewURL: hit.previewURL,
-                webformatURL: hit.webformatURL,
-                largeImageURL: hit.largeImageURL,
-                imgId: `${hit.id}__${hit.tags.replace(/[^a-z0-9]+/g, '_')}`,
-            }));
+
+            let freeImagesUrls = res.hits.map(hit => {
+                let tags = (hit.tags?.split(/\s*,\s*/)||[])
+                    .concat(hit.pageURL?.replace(/\/$/, '').replace(/http.*\//, '')
+                        .split(/-/)
+                    ).join(',').replace(/[^a-z0-9]+/g, '_');
+                return{
+                    previewURL: hit.previewURL,
+                    webformatURL: hit.webformatURL,
+                    largeImageURL: hit.largeImageURL,
+                    imgId: `${hit.id}__${tags}`,
+                }
+            });
             updateDOM({freeImagesUrls}, this);
             //TODO infinite scroll OR pagination
         });
