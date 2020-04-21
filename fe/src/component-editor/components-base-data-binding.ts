@@ -157,6 +157,16 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			inputtype: "TextInput",
 		},
 		{
+			name: "Filter Table by Column Value",
+			key: "data-frmdb-filter",
+			htmlAttr: "data-frmdb-filter",
+			tab: "left-panel-tab-data",
+			sort: propsSort++,
+			inline: true,
+			col: 12,
+			inputtype: "TextInput",
+		},
+		{
 			name: "Formula Value From Record",
 			key: "data-frmdb-value",
 			htmlAttr: "data-frmdb-value",

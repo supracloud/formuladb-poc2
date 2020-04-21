@@ -6,9 +6,18 @@ pages:
     - _head.html
     - _nav.html
     - _scripts.html
+    - baking-bread.html
     - index.html
+    - local-restaurant.html
+    - luxurious-restaurant.html
+    - order.html
+    - pizza-time.html
+    - proper-stack-house.html
+    - raw-baking.html
+    - restaurat-good-food.html
+    - vivaldi-restaurant.html
 name: restaurant
-defaultLook: basic
+defaultLook: cerulean
 defaultPrimaryColor: 008cba
 defaultSecondaryColor: eeeeee
 defaultTheme: Clean

@@ -34,12 +34,18 @@ deploy:
     paths:
     - k8s/overlays/production
 profiles:
-- name: dev
+- name: localdev
   patches:
+  - op: remove
+    path: /build/cluster
+  - op: remove
+    path: /build/artifacts/0/kaniko
   - op: add
-    path: /build/artifacts/0/kaniko/buildArgs
+    path: /build/artifacts/0/docker
     value:
-      BUILD_DEVELOPMENT: 1
+      dockerfile: Dockerfile.be
+      buildArgs:
+        BUILD_DEVELOPMENT: 1
   - op: replace
     path: /deploy/kustomize/paths/0
     value: k8s/overlays/development

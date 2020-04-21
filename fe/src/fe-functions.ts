@@ -159,13 +159,13 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
 
 // }
 
-export function $SAVE_DOC_PAGE(pagePath: string, doc: Document): Promise<boolean> {
+export function $SAVE_DOC_PAGE(pagePath: string, doc: Document, specificPageOpts?: boolean): Promise<boolean> {
     let htmlTools = new HTMLTools(doc, new DOMParser());
     let cleanedUpDOM = cleanupDocumentDOM(doc);
     let html = htmlTools.document2html(cleanedUpDOM);
 
     let pageOpts = parseAllPageUrl(pagePath);
-    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pageOpts, html))
+    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pageOpts, html, specificPageOpts))
         .then(async (ev: ServerEventPutPageHtml) => {
             if (ev.state_ != 'ABORT' && !ev.error_) {
                 alert(`Saved ${pagePath}`);

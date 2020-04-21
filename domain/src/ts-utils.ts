@@ -31,7 +31,7 @@ export async function waitUntil<T>(callback: () => T | Promise<T>, retries = 10,
             if (x instanceof Promise) x = await x;
             if (!x) {
                 if (retryNb >= retries) {
-                    reject(x);
+                    reject(new Error(`wait retries finished for ` + callback.toString()));
                     clearInterval(interval);
                 }
             } else {

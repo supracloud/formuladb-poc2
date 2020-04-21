@@ -221,6 +221,11 @@ describe('MetadataStore', () => {
             author: "John",
             description: "some description",
             frmdb_display_date: "2020-11-03",
+            frmdb_featured_page_order: 'none',
+            frmdb_look: '',
+            frmdb_primary_color: '',
+            frmdb_secondary_color: '',
+            frmdb_theme: '',
             screenshot: '/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/static/new-page.png',
         };
         await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
@@ -260,6 +265,11 @@ describe('MetadataStore', () => {
             author: "John",
             description: "some description 2",
             frmdb_display_date: "2020-11-03",
+            frmdb_featured_page_order: 'none',
+            frmdb_look: '',
+            frmdb_primary_color: '',
+            frmdb_secondary_color: '',
+            frmdb_theme: '',
             screenshot: '/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/static/new-page-2.png',
         };
         await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(

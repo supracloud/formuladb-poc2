@@ -11,6 +11,7 @@ interface FreeImagesRespose {
         largeImageURL: string;
         webformatHeight: number;
         webformatWidth: number;
+        tags: string;
     }[];
 }
 
@@ -18,8 +19,10 @@ export async function searchFreeImages(search: string) {
     let res: FreeImagesRespose = await fetch(`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(search)}&image_type=photo`, {
         method: 'GET'
     })
-        .then(function (response) {
-            return response.json();
+        .then(async function (response) {
+            let res = await response.json();
+            res.tags = (res.tags?.split(/\s*,\s*/)||[]).concat(res.pageURL?.replace(/http.*\//, '').split(/\s*,\s*/)).join(',')
+            return res;
         });
 
     return res;

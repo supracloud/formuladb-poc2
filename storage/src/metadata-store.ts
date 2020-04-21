@@ -23,6 +23,7 @@ import { I18nLang } from "@domain/i18n";
 import { ServerEventSetPage } from "@domain/event";
 import { getPageProperties, setPageProperties } from "@core/dom-utils";
 import { ThemeColors } from '@domain/uimetadata/theme';
+import { PickOmit } from '@domain/ts-utils';
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -320,16 +321,8 @@ export class MetadataStore {
         let headEl = cleanedUpDOM.querySelector('head');
         if (!headEl) throw new Error(`could not find head elem for ${newPageObj._id} with html ${content}`);
         let newHeadEl = htmlTools.doc.createElement('head');
-        newHeadEl.innerHTML = /*html*/`
-            <title>${newPageObj.title}</title>
-            <meta name="description" content="${newPageObj.description}">
-            <meta name="author" content="${newPageObj.author}">
-            <meta name="frmdb_display_date" content="${newPageObj.frmdb_display_date}">
-            <meta name="frmdb_look" content="${pageOpts.look}">
-            <meta name="frmdb_primary_color" content="${pageOpts.primaryColor}">
-            <meta name="frmdb_secondary_color" content="${pageOpts.secondaryColor}">
-            <meta name="frmdb_theme" content="${pageOpts.theme}">
-        `;
+        
+        setPageProperties(newHeadEl, newPageObj);
         cleanedUpDOM.replaceChild(newHeadEl, headEl);
 
         await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${newPageObj.name}.html`, htmlTools.document2html(cleanedUpDOM));
@@ -365,7 +358,6 @@ export class MetadataStore {
             }
         });
         const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
-        let pageProps = getPageProperties(htmlTools.doc);
 
         let cleanedUpDOM = cleanupDocumentDOM(htmlTools.doc);
 
@@ -401,7 +393,15 @@ export class MetadataStore {
             let headEl = cleanedUpDOM.querySelector('head');
             if (!headEl) throw new Error(`could not find head elem for ${pagePath} with html ${html}`);
             let cleanedUpHeadEl = htmlTools.doc.createElement('head');
-            setPageProperties(cleanedUpHeadEl, pageProps);
+            let pageProps = getPageProperties(htmlTools.doc);
+            let newPageProps: PickOmit<$PageObjT, '_id' | 'name' | 'screenshot'> = {
+                ...pageProps,
+                frmdb_look: pageOpts.look || pageProps.frmdb_look,
+                frmdb_primary_color: pageOpts.primaryColor || pageProps.frmdb_primary_color,
+                frmdb_secondary_color: pageOpts.secondaryColor || pageProps.frmdb_secondary_color,
+                frmdb_theme: pageOpts.theme || pageProps.frmdb_theme,
+            }
+            setPageProperties(cleanedUpHeadEl, newPageProps);
             cleanedUpDOM.replaceChild(cleanedUpHeadEl, headEl);
             await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
         }

@@ -351,9 +351,26 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'click', '#save-btn, #save-btn *', async (event) => {
+            if (event.handled === true) return;
+            else event.handled = true;
+
             await this.saveBlobs();
 
             await $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
+            .then(b => {
+                if (b) Undo.clear();
+                let pageOpts = parseAllPageUrl(window.location.pathname);
+                let { appName, lang, pageName } = pageOpts;
+                navigateTo(makeSeoFriendlyUrl(pageOpts));
+            });
+        });
+        onEvent(document.body, 'click', '#save-btn-single-page, #save-btn-single-page *', async (event) => {
+            if (event.handled === true) return;
+            else event.handled = true;
+
+            await this.saveBlobs();
+
+            await $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc, true)
             .then(b => {
                 if (b) Undo.clear();
                 let pageOpts = parseAllPageUrl(window.location.pathname);

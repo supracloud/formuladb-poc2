@@ -126,27 +126,29 @@ export class FrmdbEngine {
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
         let fullPageOpts = event.pageOpts.look ? event.pageOpts as FullPageOpts 
             : await await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
-        let app: App | null = await this.frmdbEngineStore.kvsFactory.metadataStore.getApp(event.pageOpts.appName);
-        if (app) {
-            let dirty: boolean = false;
-            if (app.defaultLook != fullPageOpts.look) {
-                app.defaultLook = fullPageOpts.look;
-                dirty = true;
-            }
-            if (app.defaultPrimaryColor != fullPageOpts.primaryColor) {
-                app.defaultPrimaryColor = fullPageOpts.primaryColor;
-                dirty = true;
-            }
-            if (app.defaultSecondaryColor != fullPageOpts.secondaryColor) {
-                app.defaultSecondaryColor = fullPageOpts.secondaryColor;
-                dirty = true;
-            }
-            if (app.defaultTheme != fullPageOpts.theme) {
-                app.defaultTheme = fullPageOpts.theme;
-                dirty = true;
-            }
-            if (dirty) {
-                await this.frmdbEngineStore.kvsFactory.metadataStore.putApp(event.pageOpts.appName, app);
+        if (!event.specificPageOpts) {
+            let app: App | null = await this.frmdbEngineStore.kvsFactory.metadataStore.getApp(event.pageOpts.appName);
+            if (app) {
+                let dirty: boolean = false;
+                if (app.defaultLook != fullPageOpts.look) {
+                    app.defaultLook = fullPageOpts.look;
+                    dirty = true;
+                }
+                if (app.defaultPrimaryColor != fullPageOpts.primaryColor) {
+                    app.defaultPrimaryColor = fullPageOpts.primaryColor;
+                    dirty = true;
+                }
+                if (app.defaultSecondaryColor != fullPageOpts.secondaryColor) {
+                    app.defaultSecondaryColor = fullPageOpts.secondaryColor;
+                    dirty = true;
+                }
+                if (app.defaultTheme != fullPageOpts.theme) {
+                    app.defaultTheme = fullPageOpts.theme;
+                    dirty = true;
+                }
+                if (dirty) {
+                    await this.frmdbEngineStore.kvsFactory.metadataStore.putApp(event.pageOpts.appName, app);
+                }
             }
         }
         await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pageOpts, event.pageHtml);

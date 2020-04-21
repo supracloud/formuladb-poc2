@@ -32,7 +32,7 @@ export class CreateSqlQuery {
         }
     }
 
-    public createFilterSql(key, item) {
+    public createFilterSql(key, item: SimpleAddHocQueryFilterItem) {
         switch (item.filterType) {
             case 'text': return this.createTextFilterSql(key, item);
             case 'number': return this.createNumberFilterSql(key, item);
@@ -62,7 +62,7 @@ export class CreateSqlQuery {
         }
     }
 
-    public createTextFilterSql(key, item) {
+    public createTextFilterSql(key, item: SimpleAddHocQueryFilterItem) {
         switch (item.type) {
             case 'equals':
                 return key + " = '" + item.filter + "'";
@@ -76,6 +76,14 @@ export class CreateSqlQuery {
                 return key + " ILIKE '" + item.filter + "%'";
             case 'endsWith':
                 return key + " ILIKE '%" + item.filter + "'";
+            case 'match':
+                return key + " ~ '" + item.filter + "'";
+            case 'notMatch':
+                return key + " !~ '" + item.filter + "'";
+            case 'matchI':
+                return key + " ~* '" + item.filter + "'";
+            case 'notMatchI':
+                return key + " !~* '" + item.filter + "'";
             default:
                 console.log('unknown text filter type: ' + item.type);
                 return 'true';

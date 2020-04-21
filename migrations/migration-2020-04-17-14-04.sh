@@ -9,7 +9,7 @@ for app in luxurious-restaurant restaurat-good-food raw-baking vivaldi-restauran
 done
 
 cd restaurant
-for app in pizza-time luxurious-restaurant restaurat-good-food raw-baking vivaldi-restaurant baking-bread local-restaurant proper-stack-house; do
+for app in pizza-time luxurious-restaurant restaurat-good-food raw-baking vegetarian-restaurant vivaldi-restaurant baking-bread local-restaurant proper-stack-house; do
     perl -p -i -e "s/\b$app\b/restaurant/g" *.html
 done
 

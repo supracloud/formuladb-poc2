@@ -43,6 +43,11 @@
             "col-lg-8"
         ]
     },
+    "frmdb-t-cover frmdb-t-main .jumbotron h1": {
+        "addClasses": [
+            "text-light"
+        ]
+    },
     "frmdb-t-cover frmdb-t-aside": {
         "addClasses": [
             "container",
@@ -86,6 +91,11 @@
             "d-flex",
             "flex-column",
             "justify-content-around"
+        ]
+    },
+    ".jumbotron h2": {
+        "addClasses": [
+            "text-light"
         ]
     },
     "frmdb-t-card-deck": {

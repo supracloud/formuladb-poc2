@@ -26,9 +26,16 @@ export class ImgEditorComponent extends HTMLElement {
                 previewURL: hit.previewURL,
                 webformatURL: hit.webformatURL,
                 largeImageURL: hit.largeImageURL,
+                imgId: `${hit.id}__${hit.tags.replace(/[^a-z0-9]+/g, '_')}`,
             }));
             updateDOM({freeImagesUrls}, this);
             //TODO infinite scroll OR pagination
+        });
+
+        onEvent(this, 'change', '#frmdb-search-available-images', async (event) => {
+            let searchTerm = event.target!.value;
+            let mediaObjectsUrls = this.availableImages.filter(x => x.indexOf(searchTerm) >= 0);
+            updateDOM({mediaObjectsUrls}, this);
         });
 
         onEvent(this, 'change', '#frmdb-search-premium-images', async (event) => {
@@ -50,10 +57,16 @@ export class ImgEditorComponent extends HTMLElement {
 
         onEvent(this, 'click', '[data-frmdb-download-url]', async (event) => {
             if (!this.imagePropertyListener) return;
-            let imgUrl = event.target.dataset.frmdbDownloadUrl;
+            let imgUrl: string = event.target.dataset.frmdbDownloadUrl;
+            if (!imgUrl) { console.error(`Cannot get imgUrl`, event); return;}
+            let imgId = event.target.closest('[data-frmdb-img-id]')?.getAttribute('data-frmdb-img-id');
+            if (!imgId) { console.error(`Cannot get imgId`, event); return;}
+            let imgExt = imgUrl.match(/.*\.([a-z]+?)$/)?.[1];
+            if (!imgExt) { console.error(`Cannot get imgExt`, event); return;}
+            imgId = imgId + '.' + imgExt;
             let res = await fetch(imgUrl, {method: 'GET'})
             let imgBlob: Blob = await res.blob();
-            await this.imagePropertyListener.setBlob(imgUrl.substring(imgUrl.lastIndexOf('/') + 1), imgBlob);
+            await this.imagePropertyListener.setBlob(imgId, imgBlob);
             $FRMDB_MODAL(this.modal, "hide");
         });
 
@@ -62,6 +75,7 @@ export class ImgEditorComponent extends HTMLElement {
         });
     }
 
+    availableImages: string[] = [];
     async start(imageProperty: ImagePropertyListener) {
         this.imagePropertyListener = imageProperty;
         let mediaObjectsUrls = await fetch(`/formuladb-api/${BACKEND_SERVICE().appName}/media`, {
@@ -72,6 +86,7 @@ export class ImgEditorComponent extends HTMLElement {
             });
 
         updateDOM({mediaObjectsUrls}, this);
+        this.availableImages = mediaObjectsUrls;
         $FRMDB_MODAL(this.modal);
     }
 }

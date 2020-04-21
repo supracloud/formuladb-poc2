@@ -1,5 +1,6 @@
 import { SimpleAddHocQuery, AggFunc, SimpleAddHocQueryFilterItem } from "@domain/metadata/simple-add-hoc-query";
 import * as _ from "lodash";
+import { keys } from "d3";
 
 export function simpleAdHocQueryOnArrayOfOBjects(query: SimpleAddHocQuery, objects: any[]): any[] {
     let { rowGroupCols, groupKeys, valueCols } = query;
@@ -91,6 +92,14 @@ function evalTextFilter(val: string, item: SimpleAddHocQueryFilterItem): boolean
             return val.startsWith(item.filter);
         case 'endsWith':
             return val.endsWith(item.filter);
+        case 'match':
+            return val.match(new RegExp(item.filter)) != null;
+        case 'notMatch':
+            return val.match(new RegExp(item.filter)) == null;
+        case 'matchI':
+            return val.match(new RegExp(item.filter, "i")) != null;
+        case 'notMatchI':
+            return val.match(new RegExp(item.filter, "i")) == null;
         default:
             throw new Error('unknown text filter type: ' + item.type);
     }

@@ -47,12 +47,18 @@ export function getSiblingIndex(el: HTMLElement) {
     return siblingIndex;
 }
 
-export function getPageProperties(doc: Document): PickOmit<$PageObjT, '_id' | 'name' | 'screenshot'> {
+export function getPageProperties(doc: Document | HTMLHeadElement): PickOmit<$PageObjT, '_id' | 'name' | 'screenshot'> {
+    let headEl = isDocument(doc) ? doc.head : doc;
     return {
-        title: doc.querySelector<HTMLTitleElement>('head title')?.textContent || '',
-        author: doc.querySelector<HTMLMetaElement>('head meta[name="author"]')?.getAttribute('content') || '',
-        description: doc.querySelector<HTMLMetaElement>('head meta[name="description"]')?.getAttribute('content') || '',
-        frmdb_display_date: doc.querySelector<HTMLMetaElement>('head meta[name="frmdb_display_date"]')?.getAttribute('content') || '',
+        title: headEl.querySelector<HTMLTitleElement>('title')?.textContent || '',
+        author: headEl.querySelector<HTMLMetaElement>('meta[name="author"]')?.getAttribute('content') || '',
+        description: headEl.querySelector<HTMLMetaElement>('meta[name="description"]')?.getAttribute('content') || '',
+        frmdb_display_date: headEl.querySelector<HTMLMetaElement>('meta[name="frmdb_display_date"]')?.getAttribute('content') || '',
+        frmdb_featured_page_order: headEl.querySelector<HTMLMetaElement>('meta[name="frmdb_featured_page_order"]')?.getAttribute('content') || '',
+        frmdb_look: headEl.querySelector<HTMLMetaElement>('meta[name="frmdb_look"]')?.getAttribute('content') || '',
+        frmdb_primary_color: headEl.querySelector<HTMLMetaElement>('meta[name="frmdb_primary_color"]')?.getAttribute('content') || '',
+        frmdb_secondary_color: headEl.querySelector<HTMLMetaElement>('meta[name="frmdb_secondary_color"]')?.getAttribute('content') || '',
+        frmdb_theme: headEl.querySelector<HTMLMetaElement>('meta[name="frmdb_theme"]')?.getAttribute('content') || '',
     };
 }
 export function setPageProperties(headEl: HTMLHeadElement, pageProps: PickOmit<$PageObjT, '_id' | 'name' | 'screenshot'>) {
@@ -62,18 +68,19 @@ export function setPageProperties(headEl: HTMLHeadElement, pageProps: PickOmit<$
         headEl.appendChild(title);
     } 
     title.textContent = pageProps.title;
-    
-    for (let [metaName, metaValue] of [
-        ['author', pageProps.author ],
-        ['description', pageProps.description ],
-        ['frmdb_display_date', pageProps.frmdb_display_date ],
-    ]) {
-        let el: HTMLMetaElement | null = headEl.querySelector(`meta[name="${metaName}"]`);
-        if (!el) {
-            el = getDoc(headEl).createElement('meta');
-            el.setAttribute('name', metaName);
-            headEl.appendChild(el);
-        } 
-        el.setAttribute('content', metaValue);
-    }
+
+    let fullProps = getPageProperties(headEl);
+    let newPageObj = {...fullProps, ...pageProps};
+
+    headEl.innerHTML = /*html*/`
+        <title>${newPageObj.title}</title>
+        <meta name="description" content="${newPageObj.description}">
+        <meta name="author" content="${newPageObj.author}">
+        <meta name="frmdb_display_date" content="${newPageObj.frmdb_display_date}">
+        <meta name="frmdb_featured_page_order" content="${newPageObj.frmdb_featured_page_order}">
+        <meta name="frmdb_look" content="${newPageObj.frmdb_look}">
+        <meta name="frmdb_primary_color" content="${newPageObj.frmdb_primary_color}">
+        <meta name="frmdb_secondary_color" content="${newPageObj.frmdb_secondary_color}">
+        <meta name="frmdb_theme" content="${newPageObj.frmdb_theme}">
+    `;
 }

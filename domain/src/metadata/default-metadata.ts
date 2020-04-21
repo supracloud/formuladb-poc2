@@ -33,8 +33,13 @@ export const _$Page = {
         title: { name: "title", propType_: Pn.TEXT, required: true } as EntityProperty,
         author: { name: "author", propType_: Pn.TEXT, required: true } as EntityProperty,
         frmdb_display_date: { name: "display_date", propType_: Pn.TEXT, required: true } as EntityProperty,
+        frmdb_featured_page_order: { name: "frmdb_featured_page_order", propType_: Pn.TEXT, required: true } as EntityProperty,
         description: { name: "description", propType_: Pn.TEXT, required: true } as EntityProperty,
         screenshot: { name: "screenshot", propType_: Pn.TEXT, required: true } as EntityProperty,
+        frmdb_look: { name: "frmdb_look", propType_: Pn.TEXT, required: true } as EntityProperty,
+        frmdb_primary_color: { name: "frmdb_primary_color", propType_: Pn.TEXT, required: true } as EntityProperty,
+        frmdb_secondary_color: { name: "frmdb_secondary_color", propType_: Pn.TEXT, required: true } as EntityProperty,
+        frmdb_theme: { name: "frmdb_theme", propType_: Pn.TEXT, required: true } as EntityProperty,
     }
 };
 export const $Page: Entity = _$Page;

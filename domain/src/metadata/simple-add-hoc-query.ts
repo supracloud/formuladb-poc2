@@ -1,5 +1,5 @@
 const NumberFilterTEnum = {'equals': 1 , 'notEqual': 1 , 'greaterThan': 1 , 'greaterThanOrEqual': 1 , 'lessThan': 1 , 'lessThanOrEqual': 1 , 'inRange': 1 };
-const TextFilterTEnum = { 'equals': 1 , 'notEqual': 1 , 'contains': 1 , 'notContains': 1 , 'startsWith': 1 , 'endsWith': 1 };
+const TextFilterTEnum = { 'equals': 1 , 'notEqual': 1 , 'contains': 1 , 'notContains': 1 , 'startsWith': 1 , 'endsWith': 1, 'match': 1, 'notMatch': 1, 'matchI': 1, 'notMatchI': 1 };
 
 type NumberFilterT = keyof typeof NumberFilterTEnum;
 type TextFilterT = keyof typeof TextFilterTEnum;
