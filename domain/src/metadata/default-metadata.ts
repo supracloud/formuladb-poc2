@@ -1,7 +1,7 @@
 import { Optional } from 'utility-types';
 import { Entity, Pn, EntityProperty, Schema } from "@domain/metadata/entity";
 import { parseDataObjId, DataObj, entityNameFromDataObjId } from './data_obj';
-import { DefaultPageOptsForApp } from '@domain/url-utils';
+import { DefaultPageLookAndThemeApp } from '@domain/url-utils';
 
 export const _$App = {
     _id: "$App",
@@ -19,10 +19,10 @@ export const _$App = {
 export const $App: Entity = _$App;
 export type $AppObjT = {[K in keyof typeof _$App['props']]: string};
 export const DefaultAppOpts = {
-    defaultLook: DefaultPageOptsForApp.look,
-    defaultPrimaryColor: DefaultPageOptsForApp.primaryColor,
-    defaultSecondaryColor: DefaultPageOptsForApp.secondaryColor,
-    defaultTheme: DefaultPageOptsForApp.theme,
+    defaultLook: DefaultPageLookAndThemeApp.look,
+    defaultPrimaryColor: DefaultPageLookAndThemeApp.primaryColor,
+    defaultSecondaryColor: DefaultPageLookAndThemeApp.secondaryColor,
+    defaultTheme: DefaultPageLookAndThemeApp.theme,
 };
 
 export const _$Page = {

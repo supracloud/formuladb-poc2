@@ -32,7 +32,7 @@ import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed-ro
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
 import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMetadataStoreEntity, $ImageObjT } from "@domain/metadata/default-metadata";
 import { simpleAdHocQueryForMetadataEntities } from "./simple-ad-hoc-query-metadata-entities";
-import { FullPageOpts, makeUrlPath, DefaultPageOptsForAppT, DefaultPageOptsForApp } from "@domain/url-utils";
+import { FullPageOpts, makeUrlPath, DefaultPageLookAndThemeT, DefaultPageLookAndThemeApp } from "@domain/url-utils";
 import { FrmdbRoutes } from "./api";
 
 const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
@@ -177,7 +177,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
     async function renderHtmlPage(req: express.Request, res: express.Response, next) {
-        let defaultPageOpts: DefaultPageOptsForAppT = DefaultPageOptsForApp;
+        let defaultPageOpts: DefaultPageLookAndThemeT = DefaultPageLookAndThemeApp;
         if (!req.params.look) {
             defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForApp(req.params.app);
         }
@@ -239,7 +239,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/:lang/:app/:page.html', renderHtmlPage);
 
     async function renderFormuladbCss(req, res, next) {
-        let defaultPageOpts: DefaultPageOptsForAppT = DefaultPageOptsForApp;
+        let defaultPageOpts: DefaultPageLookAndThemeT = DefaultPageLookAndThemeApp;
         if (!req.params.look) {
             defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForApp(req.params.app);
         }

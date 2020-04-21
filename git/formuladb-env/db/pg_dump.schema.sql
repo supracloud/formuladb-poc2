@@ -55,42 +55,6 @@ CREATE TABLE public.f_6592 (
 ALTER TABLE public.f_6592 OWNER TO postgres;
 
 --
--- Name: t_currency; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.t_currency (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    code character varying
-);
-
-
-ALTER TABLE public.t_currency OWNER TO postgres;
-
---
--- Name: t_dictionary; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.t_dictionary (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    gb character varying,
-    fr character varying,
-    de character varying,
-    it character varying,
-    es character varying,
-    pl character varying,
-    el character varying,
-    ro character varying,
-    bg character varying,
-    da character varying,
-    sv character varying,
-    no character varying,
-    nl character varying
-);
-
-
-ALTER TABLE public.t_dictionary OWNER TO postgres;
-
---
 -- Name: t_system_param; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -102,21 +66,6 @@ CREATE TABLE public.t_system_param (
 
 
 ALTER TABLE public.t_system_param OWNER TO postgres;
-
---
--- Name: t_user; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.t_user (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    role character varying,
-    password character varying,
-    name character varying,
-    details character varying
-);
-
-
-ALTER TABLE public.t_user OWNER TO postgres;
 
 --
 -- Name: tappcategory; Type: TABLE; Schema: public; Owner: postgres
@@ -357,35 +306,11 @@ ALTER TABLE ONLY public.f_6592
 
 
 --
--- Name: t_currency t_currency_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.t_currency
-    ADD CONSTRAINT t_currency_pkey PRIMARY KEY (_id);
-
-
---
--- Name: t_dictionary t_dictionary_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.t_dictionary
-    ADD CONSTRAINT t_dictionary_pkey PRIMARY KEY (_id);
-
-
---
 -- Name: t_system_param t_system_param_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.t_system_param
     ADD CONSTRAINT t_system_param_pkey PRIMARY KEY (_id);
-
-
---
--- Name: t_user t_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.t_user
-    ADD CONSTRAINT t_user_pkey PRIMARY KEY (_id);
 
 
 --

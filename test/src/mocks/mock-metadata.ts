@@ -20,7 +20,7 @@ import { $User, $Dictionary, $Currency, DefaultAppOpts } from '@domain/metadata/
 import { HotelBookingSchema, HotelBookingApp } from '../hotel-booking/metadata';
 import { InventorySchema, InventoryApp } from '../inventory/metadata';
 import { FormuladbIoSchema, FormuladbIoApp } from '@test/formuladb.io/metadata';
-import { DefaultPageOptsForApp } from '@domain/url-utils';
+import { DefaultPageLookAndThemeApp } from '@domain/url-utils';
 
 export * from "../inventory/metadata";
 export * from "./general-metadata";

@@ -16,12 +16,12 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
-import { makeUrlPath, parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts, OptionalPageOpts, DefaultPageOptsForAppT, DefaultPageOptsForApp } from "@domain/url-utils";
+import { makeUrlPath, parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts, PageLookAndTheme, DefaultPageLookAndThemeT, DefaultPageLookAndThemeApp } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
 import { ServerEventSetPage } from "@domain/event";
-import { getPageProperties, setPageProperties } from "@core/dom-utils";
+import { getPageProperties, setPageProperties, setPageLookAndTheme, removePageProperties, removePageLookAndTheme } from "@core/dom-utils";
 import { ThemeColors } from '@domain/uimetadata/theme';
 import { PickOmit } from '@domain/ts-utils';
 const STORAGE = new Storage({
@@ -330,14 +330,14 @@ export class MetadataStore {
         setTimeout(() => this.setPageScreenshot(pageOpts), 500);
     }
 
-    async getDefaultPageOptsForApp(appName: string): Promise<DefaultPageOptsForAppT> {
+    async getDefaultPageOptsForApp(appName: string): Promise<DefaultPageLookAndThemeT> {
         let app = await this.getApp(appName);
         if (!app) throw new Error(`app ${appName} not found`);
         return {
-            look: app.defaultLook || DefaultPageOptsForApp.look,
-            primaryColor: app.defaultPrimaryColor || DefaultPageOptsForApp.primaryColor,
-            secondaryColor: app.defaultSecondaryColor || DefaultPageOptsForApp.secondaryColor,
-            theme: app.defaultTheme || DefaultPageOptsForApp.theme,
+            look: app.defaultLook || DefaultPageLookAndThemeApp.look,
+            primaryColor: app.defaultPrimaryColor || DefaultPageLookAndThemeApp.primaryColor,
+            secondaryColor: app.defaultSecondaryColor || DefaultPageLookAndThemeApp.secondaryColor,
+            theme: app.defaultTheme || DefaultPageLookAndThemeApp.theme,
         }
     }
     async fullPageOptsFromMandatory(pageOpts: MandatoryPageOpts): Promise<FullPageOpts> {
@@ -347,7 +347,7 @@ export class MetadataStore {
             ...defaultOpts,
         }
     }
-    async savePageHtml(pageOpts: AllPageOpts, html: string): Promise<void> {
+    async savePageHtml(pageOpts: FullPageOpts, html: string, specificPageOpts?: boolean): Promise<void> {
         let { appName, pageName } = pageOpts;
         let pagePath = `frmdb-apps/${appName}/${pageName}.html`;
 
@@ -392,17 +392,19 @@ export class MetadataStore {
         {
             let headEl = cleanedUpDOM.querySelector('head');
             if (!headEl) throw new Error(`could not find head elem for ${pagePath} with html ${html}`);
+
             let cleanedUpHeadEl = htmlTools.doc.createElement('head');
             let pageProps = getPageProperties(htmlTools.doc);
-            let newPageProps: PickOmit<$PageObjT, '_id' | 'name' | 'screenshot'> = {
-                ...pageProps,
-                frmdb_look: pageOpts.look || pageProps.frmdb_look,
-                frmdb_primary_color: pageOpts.primaryColor || pageProps.frmdb_primary_color,
-                frmdb_secondary_color: pageOpts.secondaryColor || pageProps.frmdb_secondary_color,
-                frmdb_theme: pageOpts.theme || pageProps.frmdb_theme,
+            setPageProperties(cleanedUpHeadEl, pageProps);
+            if (specificPageOpts) {
+                setPageLookAndTheme(cleanedUpHeadEl, pageOpts);
+            } else {
+                removePageLookAndTheme(cleanedUpHeadEl);
             }
-            setPageProperties(cleanedUpHeadEl, newPageProps);
             cleanedUpDOM.replaceChild(cleanedUpHeadEl, headEl);
+
+            removePageProperties(headEl);
+            removePageLookAndTheme(headEl);
             await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
         }
 

@@ -3,26 +3,26 @@ export interface MandatoryPageOpts {
     appName: string;
     pageName: string;
 }
-export interface OptionalPageOpts {
+export interface PageLookAndTheme {
     look?: string;
     primaryColor?: string;
     secondaryColor?: string;
     theme?: string;
 }
-export interface AllPageOpts extends MandatoryPageOpts, OptionalPageOpts {
+export interface AllPageOpts extends MandatoryPageOpts, PageLookAndTheme {
     query?: {
         frmdbRender?: "editor" | "view" | "screenshot" | "pdf",
     }
 }
 
-export type FullPageOpts = MandatoryPageOpts & Required<OptionalPageOpts> & {
+export type FullPageOpts = MandatoryPageOpts & Required<PageLookAndTheme> & {
     query?: {
         frmdbRender?: "editor" | "view" | "screenshot" | "pdf",
     }
 }
 
-export type DefaultPageOptsForAppT = Required<OptionalPageOpts>;
-export const DefaultPageOptsForApp = {
+export type DefaultPageLookAndThemeT = Required<PageLookAndTheme>;
+export const DefaultPageLookAndThemeApp = {
     look: 'basic',
     primaryColor: '008cba',
     secondaryColor: 'eeeeee',

@@ -151,7 +151,7 @@ export class FrmdbEngine {
                 }
             }
         }
-        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pageOpts, event.pageHtml);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(fullPageOpts, event.pageHtml, event.specificPageOpts);
         return event;
     }
 
@@ -168,7 +168,7 @@ export class FrmdbEngine {
 
     private async setPage(event: events.ServerEventSetPage): Promise<events.MwzEvents> {
         let fullPageOpts = event.pageOpts.look ? event.pageOpts as FullPageOpts 
-            : await await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
+            : await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
         await this.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(fullPageOpts, event.pageObj, event.startPageName);
         return event;
     }

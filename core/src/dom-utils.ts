@@ -1,5 +1,6 @@
 import { $PageObjT } from "@domain/metadata/default-metadata";
 import { PickOmit } from "@domain/ts-utils";
+import { AllPageOpts, PageLookAndTheme } from "@domain/url-utils";
 
 export function isDocument(param): param is Document {
     return param?.defaultView?.Document && param instanceof param.defaultView.Document;
@@ -72,15 +73,64 @@ export function setPageProperties(headEl: HTMLHeadElement, pageProps: PickOmit<$
     let fullProps = getPageProperties(headEl);
     let newPageObj = {...fullProps, ...pageProps};
 
-    headEl.innerHTML = /*html*/`
-        <title>${newPageObj.title}</title>
-        <meta name="description" content="${newPageObj.description}">
-        <meta name="author" content="${newPageObj.author}">
-        <meta name="frmdb_display_date" content="${newPageObj.frmdb_display_date}">
-        <meta name="frmdb_featured_page_order" content="${newPageObj.frmdb_featured_page_order}">
-        <meta name="frmdb_look" content="${newPageObj.frmdb_look}">
-        <meta name="frmdb_primary_color" content="${newPageObj.frmdb_primary_color}">
-        <meta name="frmdb_secondary_color" content="${newPageObj.frmdb_secondary_color}">
-        <meta name="frmdb_theme" content="${newPageObj.frmdb_theme}">
-    `;
+    for (let [metaName, metaValue] of [
+        ['author', pageProps.author ],
+        ['description', pageProps.description ],
+        ['frmdb_display_date', pageProps.frmdb_display_date ],
+        ['frmdb_featured_page_order', pageProps.frmdb_featured_page_order ],
+    ]) {
+        let el: HTMLMetaElement | null = headEl.querySelector(`meta[name="${metaName}"]`);
+        if (!el) {
+            el = getDoc(headEl).createElement('meta');
+            el.setAttribute('name', metaName);
+            headEl.appendChild(el);
+        } 
+        el.setAttribute('content', metaValue);
+    }
+
+}
+
+export function removePageProperties(headEl: HTMLHeadElement) {
+    for (let metaName of [
+        'author',
+        'description',
+        'frmdb_display_date',
+        'frmdb_featured_page_order',
+    ]) {
+        let el: HTMLMetaElement | null = headEl.querySelector(`meta[name="${metaName}"]`);
+        if (el) {
+            headEl.removeChild(el);
+        } 
+    }
+
+}
+export function removePageLookAndTheme(headEl: HTMLHeadElement) {
+    for (let metaName of [
+        'frmdb_look',
+        'frmdb_primary_color',
+        'frmdb_secondary_color',
+        'frmdb_theme',
+    ]) {
+        let el: HTMLMetaElement | null = headEl.querySelector(`meta[name="${metaName}"]`);
+        if (el) {
+            headEl.removeChild(el);
+        } 
+    }
+
+}
+export function setPageLookAndTheme(headEl: HTMLHeadElement, pageOpts: Required<PageLookAndTheme>) {
+    for (let [metaName, metaValue] of [
+        ['frmdb_look', pageOpts.look ],
+        ['frmdb_primary_color', pageOpts.primaryColor ],
+        ['frmdb_secondary_color', pageOpts.secondaryColor ],
+        ['frmdb_theme', pageOpts.theme ],
+    ]) {
+        let el: HTMLMetaElement | null = headEl.querySelector(`meta[name="${metaName}"]`);
+        if (!el) {
+            el = getDoc(headEl).createElement('meta');
+            el.setAttribute('name', metaName);
+            headEl.appendChild(el);    
+        }                
+        el.setAttribute('content', metaValue);
+    }
 }

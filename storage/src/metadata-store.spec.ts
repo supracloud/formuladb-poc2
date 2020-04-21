@@ -105,6 +105,7 @@ describe('MetadataStore', () => {
     <meta name="author" content="John Author">
     <meta name="description" content="Some page description">
     <meta name="frmdb_display_date" content="">
+    <meta name="frmdb_featured_page_order" content="">
 </head>
 
 <body data-frmdb-tenant="formuladb-env/frmdb-apps" data-frmdb-app="formuladb-io">
@@ -128,8 +129,6 @@ describe('MetadataStore', () => {
         let headHtml = fs.readFileSync(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/_head.html`, 'utf8');
         expect(headHtml).toEqual(/*html*/`<head>
 <title>FormulaDB - Build Applications Without Code</title>
-<meta name="description" content="Some page description">
-<meta name="author" content="John Author">
 <link href="/formuladb-env/static/formuladb-io/favicon.png" rel="icon" type="image/png">
 </head>`);
     });
@@ -159,7 +158,14 @@ describe('MetadataStore', () => {
 
         let expectedHtmlWithCleanThemeAndFrenchLang = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="fr">')
-            .replace('</head>', '<meta name="frmdb_display_date" content=""></head>')
+            .replace('<meta name="description" content="Some page description">', '')
+            .replace('<meta name="author" content="John Author">', '')
+            .replace('</head>', `
+                <meta name="author" content="John Author">    
+                <meta name="description" content="Some page description">
+                <meta name="frmdb_display_date" content="">
+                <meta name="frmdb_featured_page_order" content="">
+                </head>`)
             .replace(
                 `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
                 `class="jumbotron w-100 text-center bg-transparent border-0" data-frmdb-theme-classes="w-100 text-center bg-transparent border-0"`,
@@ -182,7 +188,14 @@ describe('MetadataStore', () => {
 
         let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="en">')
-            .replace('</head>', '<meta name="frmdb_display_date" content=""></head>')
+            .replace('<meta name="description" content="Some page description">', '')
+            .replace('<meta name="author" content="John Author">', '')
+            .replace('</head>', `
+                <meta name="author" content="John Author">    
+                <meta name="description" content="Some page description">
+                <meta name="frmdb_display_date" content="">
+                <meta name="frmdb_featured_page_order" content="">
+                </head>`)
             .replace(
                 `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
                 `class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
@@ -238,13 +251,10 @@ describe('MetadataStore', () => {
             <html>
             <head>
                 <title>New Page Title</title>
-                <meta name="description" content="some description">
                 <meta name="author" content="John">
+                <meta name="description" content="some description">
                 <meta name="frmdb_display_date" content="2020-11-03">
-                <meta name="frmdb_look" content="basic">
-                <meta name="frmdb_primary_color" content="1a1a1a">
-                <meta name="frmdb_secondary_color" content="ffffff">
-                <meta name="frmdb_theme" content="Frames">
+                <meta name="frmdb_featured_page_order" content="none">
             </head>
             <body>
                 <h1>Template Page</h1>
