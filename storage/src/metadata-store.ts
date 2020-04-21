@@ -330,7 +330,28 @@ export class MetadataStore {
         setTimeout(() => this.setPageScreenshot(pageOpts), 500);
     }
 
-    async getDefaultPageOptsForApp(appName: string): Promise<DefaultPageLookAndThemeT> {
+    async getDefaultPageOptsForAppAndPage(appName: string, pageName?: string): Promise<DefaultPageLookAndThemeT> {
+        let specificPageProps: DefaultPageLookAndThemeT | null = null;
+        if (pageName) {
+            let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName + '.html' || 'index.html'}`);
+
+            const jsdom = new JSDOM(pageHtml, {}, {
+                features: {
+                    'FetchExternalResources': false,
+                    'ProcessExternalResources': false
+                }
+            });
+            const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
+            let pageProps = getPageProperties(htmlTools.doc);
+            specificPageProps = {
+                look: pageProps.frmdb_look,
+                primaryColor: pageProps.frmdb_primary_color,
+                secondaryColor: pageProps.frmdb_secondary_color,
+                theme: pageProps.frmdb_theme,
+            }
+        }
+        if (specificPageProps?.look) return specificPageProps;
+
         let app = await this.getApp(appName);
         if (!app) throw new Error(`app ${appName} not found`);
         return {
@@ -341,7 +362,7 @@ export class MetadataStore {
         }
     }
     async fullPageOptsFromMandatory(pageOpts: MandatoryPageOpts): Promise<FullPageOpts> {
-        let defaultOpts = await this.getDefaultPageOptsForApp(pageOpts.appName);
+        let defaultOpts = await this.getDefaultPageOptsForAppAndPage(pageOpts.appName);
         return {
             ...pageOpts,
             ...defaultOpts,
@@ -518,8 +539,8 @@ export class MetadataStore {
         return pdf;
     }
 
-    async getPageHtml(pageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>, flashMessages?: { [severity: string]: string[] }): Promise<string> {
-        let { appName, pageName } = pageOpts;
+    async getPageHtml(reqPageOpts: AllPageOpts, fullPageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>, flashMessages?: { [severity: string]: string[] }): Promise<string> {
+        let { appName, pageName } = reqPageOpts;
         let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName + '.html' || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {
@@ -531,6 +552,16 @@ export class MetadataStore {
         const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
         let pageDom = htmlTools.doc.documentElement;
         let pageProps = getPageProperties(htmlTools.doc);
+        let pageOpts: FullPageOpts;
+        if (false && /*disable for now*/ !reqPageOpts.look && pageProps.frmdb_look) {
+            pageOpts = {
+                ...reqPageOpts,
+                look: pageProps.frmdb_look,
+                primaryColor: pageProps.frmdb_primary_color,
+                secondaryColor: pageProps.frmdb_secondary_color,
+                theme: pageProps.frmdb_theme,
+            };
+        } else pageOpts = fullPageOpts;
 
         //<head> is managed like a special type of fragment
         {
@@ -546,7 +577,7 @@ export class MetadataStore {
             let fragmentName = fragmentEl.getAttribute('data-frmdb-fragment');
             if (!fragmentName) throw new Error("fragmentName not found for" + fragmentEl.outerHTML);
 
-            if (pageOpts.query?.frmdbRender === 'view' && '_scripts.html' === fragmentName) continue;
+            if (reqPageOpts.query?.frmdbRender === 'view' && '_scripts.html' === fragmentName) continue;
 
             let fragmentHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${fragmentName}`);
             let fragmentDom = htmlTools.html2dom(fragmentHtml);
@@ -562,8 +593,8 @@ export class MetadataStore {
             let themeRules: ThemeRules = JSON.parse(themeRulesJson);
             await applyTheme(themeRules, pageDom);
         }
-        I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, dictionaryCache);
-        pageDom.lang = pageOpts.lang;
+        I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, reqPageOpts.lang as I18nLang, dictionaryCache);
+        pageDom.lang = reqPageOpts.lang;
 
         {
             let notifContainer = pageDom.querySelector('frmdb-notification-container');
@@ -659,11 +690,15 @@ export class MetadataStore {
             });
             const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
 
+            let pageProps = getPageProperties(htmlTools.doc);
             let pageObj: $PageObjT = {
                 _id: `${appName}/${pageName}`,
                 name: pageName,
-                ...getPageProperties(htmlTools.doc),
+                ...pageProps,
                 screenshot: `/formuladb-env/frmdb-apps/${appName}/static/${pageName}.png`,
+            }
+            if (pageProps.frmdb_look) {
+                pageObj.template_url = `/en-${pageProps.frmdb_look}-${pageProps.frmdb_primary_color}-${pageProps.frmdb_secondary_color}-${pageProps.frmdb_theme}/${appName}/${pageName}.html`;
             }
             ret.push(pageObj);
         };

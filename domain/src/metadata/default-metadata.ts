@@ -2,6 +2,7 @@ import { Optional } from 'utility-types';
 import { Entity, Pn, EntityProperty, Schema } from "@domain/metadata/entity";
 import { parseDataObjId, DataObj, entityNameFromDataObjId } from './data_obj';
 import { DefaultPageLookAndThemeApp } from '@domain/url-utils';
+import { PickOmit } from '@domain/ts-utils';
 
 export const _$App = {
     _id: "$App",
@@ -40,10 +41,11 @@ export const _$Page = {
         frmdb_primary_color: { name: "frmdb_primary_color", propType_: Pn.TEXT, required: true } as EntityProperty,
         frmdb_secondary_color: { name: "frmdb_secondary_color", propType_: Pn.TEXT, required: true } as EntityProperty,
         frmdb_theme: { name: "frmdb_theme", propType_: Pn.TEXT, required: true } as EntityProperty,
+        template_url: { name: "template_url", propType_: Pn.TEXT, required: true } as EntityProperty,
     }
 };
 export const $Page: Entity = _$Page;
-export type $PageObjT = {[K in keyof typeof _$Page['props']]: string};
+export type $PageObjT = PickOmit<{[K in keyof typeof _$Page['props']]: string}, 'template_url'> & {template_url?: string};
 
 export const _$Table = {
     _id: "$Table",

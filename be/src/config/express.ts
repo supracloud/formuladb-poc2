@@ -32,7 +32,7 @@ import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed-ro
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
 import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMetadataStoreEntity, $ImageObjT } from "@domain/metadata/default-metadata";
 import { simpleAdHocQueryForMetadataEntities } from "./simple-ad-hoc-query-metadata-entities";
-import { FullPageOpts, makeUrlPath, DefaultPageLookAndThemeT, DefaultPageLookAndThemeApp } from "@domain/url-utils";
+import { FullPageOpts, makeUrlPath, DefaultPageLookAndThemeT, DefaultPageLookAndThemeApp, AllPageOpts } from "@domain/url-utils";
 import { FrmdbRoutes } from "./api";
 
 const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
@@ -179,7 +179,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     async function renderHtmlPage(req: express.Request, res: express.Response, next) {
         let defaultPageOpts: DefaultPageLookAndThemeT = DefaultPageLookAndThemeApp;
         if (!req.params.look) {
-            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForApp(req.params.app);
+            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForAppAndPage(req.params.app);
         }
 
         let appName = req.params.app;
@@ -187,24 +187,31 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
         if (! await authRoutes.authResource("page", '0READ', appName, $Page._id, pageName, req, res, next)) return;
         let query: FullPageOpts['query'] = req.query;
 
-        let pageOpts: FullPageOpts = {
+        let pageOpts: AllPageOpts = {
             lang: req.params.lang,
-            look: req.params.look || defaultPageOpts.look,
-            primaryColor: req.params.primary || defaultPageOpts.primaryColor,
-            secondaryColor: req.params.secondary || defaultPageOpts.secondaryColor,
-            theme: req.params.theme || defaultPageOpts.theme,
+            look: req.params.look,
+            primaryColor: req.params.primary,
+            secondaryColor: req.params.secondary,
+            theme: req.params.theme,
             appName: req.params.app,
             pageName: req.params.page,
             query: req.query,
         };
+        let fullPageOpts: FullPageOpts = {
+            ...pageOpts,
+            look: req.params.look || defaultPageOpts.look,
+            primaryColor: req.params.primary || defaultPageOpts.primaryColor,
+            secondaryColor: req.params.secondary || defaultPageOpts.secondaryColor,
+            theme: req.params.theme || defaultPageOpts.theme,
+        };
 
         if (query?.frmdbRender === "screenshot") {
-            let screenshot = await kvsFactory.metadataStore.getPageScreenshot(pageOpts);
+            let screenshot = await kvsFactory.metadataStore.getPageScreenshot(fullPageOpts);
             res.set('Content-Type', 'image/png')
             res.send(screenshot);
             return;
         } else if (query?.frmdbRender === "pdf") {
-            let pdf = await kvsFactory.metadataStore.getPagePdf(pageOpts);
+            let pdf = await kvsFactory.metadataStore.getPagePdf(fullPageOpts);
             res.set('Content-Type', 'application/pdf')
             res.send(pdf);
             return;
@@ -226,7 +233,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
         } else {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
             let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
-            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, dictionaryCache, {
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, fullPageOpts, dictionaryCache, {
                 'info': req.flash('info'),
                 'warning': req.flash('info'),
                 'error': req.flash('error'),
@@ -241,7 +248,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     async function renderFormuladbCss(req, res, next) {
         let defaultPageOpts: DefaultPageLookAndThemeT = DefaultPageLookAndThemeApp;
         if (!req.params.look) {
-            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForApp(req.params.app);
+            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForAppAndPage(req.params.app, req.params.page);
         }
         let css = await kvsFactory.metadataStore.getLookCss({
             lang: req.params.land,

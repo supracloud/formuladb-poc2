@@ -46,6 +46,12 @@ export const ScalarFunctionsImplementations = {
     OR: formulajs.OR,
     NOT: formulajs.NOT,
     ISNUMBER: formulajs.ISNUMBER,
+    ISBLANK: function(val) {
+        return val == "" || val == null;
+    },
+    IF: function(...args) {
+        return formulajs.IF(...args);
+    },
     CONCATENATE: formulajs.CONCATENATE,
     REGEXREPLACE: function (text, regular_expression, replacement) {
         return text.replace(new RegExp(regular_expression, 'g'), replacement);

@@ -150,9 +150,10 @@ describe('MetadataStore', () => {
     });
 
     it("Should read page with SSR for fragments and Clean theme and i18n", async () => {
+        let fullPageOpts = parseFullPageUrl('/fr-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html');
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parseFullPageUrl('/fr-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html'),
+                fullPageOpts, fullPageOpts,
                 new Map().set('$Dictionary~~main content', { fr: 'contenu principal' })
             ));
 
@@ -182,9 +183,10 @@ describe('MetadataStore', () => {
     });
 
     it("Should read page with SSR for fragments and Frames theme", async () => {
+        let fullPageOpts = parseFullPageUrl('/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/test.html');
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parseFullPageUrl('/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/test.html'), new Map()));
+                fullPageOpts, fullPageOpts, new Map()));
 
         let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="en">')
