@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FormulaDB Themes</title>
+    <meta name="author" content="">
+    <meta name="description" content="">
+    <meta name="frmdb_display_date" content="">
+    <meta name="frmdb_featured_page_order" content="">
+</head>
+<body class="frmdb-editor-normal">
+    <frmdb-t-main-nav class=""></frmdb-t-main-nav>
+    <section class="container py-5">
+        <div class="text-center mb-5"></div>
+        <div class="card-deck frmdb-cards-3">
+            <frmdb-t-card-media-main data-frmdb-table-limit="15" data-frmdb-table="$FRMDB.$Page[]" class="">
+                <frmdb-t-img class="overflow-hidden frmdb-bg-dark-20" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/hotel/static/click-hostel.png&quot;);" data-frmdb-value="$FRMDB.$Page[].screenshot"></frmdb-t-img>
+                <div class="card-body">
+                    <h5 data-frmdb-value="$FRMDB.$Page[].name">click-hostel</h5>
+                    <p contenteditable="true" spellchecker="false" data-frmdb-value="$FRMDB.$Page[].description"></p>
+                </div>
+                <frmdb-t-card-action class="">
+                    <a href="/en-journal-5e72e4-f4f5f7-Lines/hotel/click-hostel.html" class="position-relative" data-frmdb-attr="href:IF(ISBLANK(template_url),CONCATENATE('./', name, '.html'),template_url):$FRMDB.$Page[]">Visit</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class=""></frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main data-frmdb-table-limit="15" data-frmdb-table="$FRMDB.$Page[]" class="">
+                <frmdb-t-img class="overflow-hidden frmdb-bg-dark-20" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/hotel/static/king-hotel.png&quot;);" data-frmdb-value="$FRMDB.$Page[].screenshot"></frmdb-t-img>
+                <div class="card-body">
+                    <h5 data-frmdb-value="$FRMDB.$Page[].name">king-hotel</h5>
+                    <p contenteditable="true" spellchecker="false" data-frmdb-value="$FRMDB.$Page[].description"></p>
+                </div>
+                <frmdb-t-card-action class="">
+                    <a href="/en-basic-ffc208-353b41-Clean/hotel/king-hotel.html" class="position-relative" data-frmdb-attr="href:IF(ISBLANK(template_url),CONCATENATE('./', name, '.html'),template_url):$FRMDB.$Page[]">Visit</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class=""></frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main data-frmdb-table-limit="15" data-frmdb-table="$FRMDB.$Page[]" class="">
+                <frmdb-t-img class="overflow-hidden frmdb-bg-dark-20" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/hotel/static/summer-villa.png&quot;);" data-frmdb-value="$FRMDB.$Page[].screenshot"></frmdb-t-img>
+                <div class="card-body">
+                    <h5 data-frmdb-value="$FRMDB.$Page[].name">summer-villa</h5>
+                    <p contenteditable="true" spellchecker="false" data-frmdb-value="$FRMDB.$Page[].description"></p>
+                </div>
+                <frmdb-t-card-action class="">
+                    <a href="/en-basic-eb6864-aaaaaa-Frames/hotel/summer-villa.html" class="position-relative" data-frmdb-attr="href:IF(ISBLANK(template_url),CONCATENATE('./', name, '.html'),template_url):$FRMDB.$Page[]">Visit</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class=""></frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+        </div>
+        <div class="d-flex">
+            <style>
+    .frmdb-hidden:hover {
+        transform: scale(2);
+        padding: 2px;
+    }
+</style>
+            <input type="text" value="booking|index|gallery|contact|about" class="frmdb-hidden" data-frmdb-filter="$FRMDB.$Page[].filter.name.notMatch">
+            <input type="text" value="hidden2" class="frmdb-hidden">
+        </div>
+    </section>
+    <div data-frmdb-fragment="_footer.html"></div>
+    <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-notification-container style="position: fixed; top: 0px; right: 0px; padding: 5px; z-index: 56789;"></frmdb-notification-container>
+</body>
+</html>
+</html>
