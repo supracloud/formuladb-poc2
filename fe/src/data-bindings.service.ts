@@ -179,7 +179,7 @@ export class DataBindingsService {
 
     async updateDOMForTable(el: HTMLElement) {
         try {
-            let tableName = el.getAttribute('data-frmdb-table')!.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
+            let tableName = el.getAttribute('data-frmdb-table')?.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
             if (!tableName) { console.warn("Empty table name " + el.outerHTML); return }
             let promises: Promise<any>[] = [];
             if (tableName.indexOf('$REFERENCE_TO_OPTIONS') === 0) {

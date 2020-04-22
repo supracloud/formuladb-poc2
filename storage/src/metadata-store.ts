@@ -1,5 +1,7 @@
 const fetch = require('node-fetch')
 import * as puppeteer from 'puppeteer';
+import * as mergeImg from 'merge-img';
+const Jimp = require('jimp');
 import { App } from "@domain/app";
 import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/key_value_store_i";
@@ -502,9 +504,21 @@ export class MetadataStore {
             //     x: 0,
             //     y: 0,
             //     width: 1024,
-            //     height: 1600,
+            //     height: 768,
             // }
         });
+
+
+        // await page.evaluate(`window.scrollBy(0, 768)`);
+        // let img2: Buffer = await page.screenshot({
+        //     encoding: "binary",
+        //     clip: {
+        //         x: 0,
+        //         y: 768,
+        //         width: 1024,
+        //         height: 768,
+        //     }
+        // });
 
         // const bodyHandle = await page.$('body');
         // if (!bodyHandle) throw new Error(`Cannot get body elem for ${url}`);
@@ -527,6 +541,16 @@ export class MetadataStore {
         
         console.info("close browser ", url);
         await browser.close();
+
+        // let finalImgJimp = await mergeImg([img, img2]);
+        // let finalImg: Buffer = await new Promise((resolve, reject) => {
+        //     finalImgJimp.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+        //         if (err) reject(err);
+        //         else resolve(buffer);
+        //     });
+        // });
+        // return finalImg;
+
         return img;
     }
 
