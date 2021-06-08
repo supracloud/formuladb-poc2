@@ -4,8 +4,10 @@
 */
 
 import * as _ from 'lodash';
-import * as lolex from "lolex";
 import { Pn, Entity } from '@domain/metadata/entity';
+import { addEventToChangesFeed, logPoll } from './changes-feed-routes';
+import { ServerEventModifiedFormData } from '@domain/event';
+import { $Dictionary } from '@domain/metadata/default-metadata';
 
 const fetchMock = require('fetch-mock');
 fetchMock.config.overwriteRoutes = true;
@@ -18,10 +20,11 @@ const HTML = /*html*/`
 `;
 
 describe('changes-feed', () => {
-    let clock;
 
     beforeEach(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
+        jasmine.clock().install();
+        jasmine.clock().mockDate(new Date());
 
         fetchMock.post(/\/formuladb-api\/changes-feed/, []);
         fetchMock.get('/formuladb-api/test-tenant/test_app', {
@@ -36,9 +39,9 @@ describe('changes-feed', () => {
                 A: {
                     _id: 'A', 
                     props: {
-                        _id: { name: "_id", propType_: Pn.TEXT },
-                        f1:  { name: "f1", propType_: Pn.NUMBER },
-                        f2:  { name: "f2", propType_: Pn.NUMBER },
+                        _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                        f1:  { name: "f1", propType_: Pn.INPUT, actualType: {name: "NumberType"} },
+                        f2:  { name: "f2", propType_: Pn.INPUT, actualType: {name: "NumberType"} },
                     },
                 } as Entity,
             }
@@ -47,17 +50,34 @@ describe('changes-feed', () => {
 
     afterEach(() => {
         fetchMock.restore();
-        if (clock) clock.uninstall();
+        jasmine.clock().uninstall();
     })
 
-    it('should return empty reply when no events exist', async (done) => {
+    fit('should return object monitored object id(s)', async () => {
+        let p = logPoll('Client1', [])
+        jasmine.clock().tick(1100);
+        let evs = await p;
+        expect(evs).toEqual([]);
 
-        clock = lolex.install();
+        let ev1 = new ServerEventModifiedFormData({_id: 'Some_Table~~abcd'});
+        
+        p = logPoll('Client1', [])
+        addEventToChangesFeed(ev1);
+        jasmine.clock().tick(1100);
+        evs = await p;
+        expect(evs).toEqual([]);
 
+        p = logPoll('Client1', [ev1.obj._id])
+        addEventToChangesFeed(ev1);
+        jasmine.clock().tick(1100);
+        evs = await p;
+        expect(evs).toEqual([ev1]);
 
-        expect(true).toEqual(false, "TODO implement this spec");
-        clock.tick(101);
-
-        done();
+        p = logPoll('Client1', [])
+        let ev2 = new ServerEventModifiedFormData({_id: `${$Dictionary._id}~~abcd`});
+        addEventToChangesFeed(ev2)
+        jasmine.clock().tick(1100);
+        evs = await p;
+        expect(evs).toEqual([ev2]);
     });
 });

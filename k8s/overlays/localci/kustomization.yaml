@@ -1,5 +1,0 @@
-bases:
-- ../ci
-patches:
-- patches/ingress.yaml
-- patches/be-sts.yaml

@@ -1,7 +1,0 @@
-_id,guest,room_type,start_date,end_date,nb_adults,nb_children,days,cost,_owner,_role,_rev,room_type_name,price
-Room_Booking~~1__1,$User~~4,"",2019-04-03,2019-04-08,2.00000,2.00000,6.00000,0.00000,AnounymousUserId,$ANONYMOUS,"","",""
-Room_Booking~~1__2,$User~~1,"",2019-04-19,2019-04-24,2.00000,2.00000,6.00000,0.00000,AnounymousUserId,$ANONYMOUS,"","",""
-Room_Booking~~2__3,$User~~2,"",2019-04-10,2019-04-15,1.00000,0.00000,6.00000,0.00000,AnounymousUserId,$ANONYMOUS,"","",""
-Room_Booking~~2__4,$User~~3,"",2019-04-24,2019-04-28,1.00000,0.00000,5.00000,0.00000,AnounymousUserId,$ANONYMOUS,"","",""
-Room_Booking~~3__5,$User~~5,"",2019-04-06,2019-04-09,2.00000,0.00000,4.00000,0.00000,AnounymousUserId,$ANONYMOUS,"","",""
-Room_Booking~~3__6,$User~~7,"",2019-04-26,2019-04-30,2.00000,0.00000,5.00000,0.00000,AnounymousUserId,$ANONYMOUS,"","",""

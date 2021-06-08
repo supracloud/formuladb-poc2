@@ -4,7 +4,7 @@ import { CircularJSON } from "@domain/json-stringify";
 import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues, kvsStr2Key } from "@storage/key_value_store_i";
 import { MapFunctionT } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
-import { KeyValueObj } from '@domain/key_value_obj';
+import { KeyValueObj, KeyValueObjIdType, _idAsStr } from '@domain/key_value_obj';
 import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, 
     TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun, ReduceFunDefaultValue, 
     getReduceFunApply, TextjoinReduceFunApply } from "@domain/metadata/reduce_functions";
@@ -18,21 +18,21 @@ export type MapReduceViewUpdateOldNew =
 
 export interface MapViewUpdateForObjAdd<VALUET> {
     readonly type: "add";
-    objId: string;
+    objId: KeyValueObjIdType;
     keyToSet: KVSArrayKeyType;
     newMapKey: KVSArrayKeyType;
     newMapValue: VALUET;
 }
 export interface MapViewUpdateForObjDelete<VALUET> {
     readonly type: "delete";
-    objId: string;
+    objId: KeyValueObjIdType;
     keyToDelete: KVSArrayKeyType;
     oldMapKey: KVSArrayKeyType;
     oldMapValue: VALUET;
 }
 export interface MapViewUpdateForObjModify<VALUET> {
     readonly type: "modify";
-    objId: string;
+    objId: KeyValueObjIdType;
     oldMapKey: KVSArrayKeyType;
     oldMapValue: VALUET;
     keyToSet: KVSArrayKeyType;
@@ -98,26 +98,27 @@ export class MapReduceView {
     constructor(
         private kvsFactory: KeyValueStoreFactoryI,
         private viewHashCode: string,
+        private viewDesc: string,
         public map: MapFunctionT,
         private use$ROW$?: boolean,
         public reduceFun?: ReduceFun
     ) {
         if (!reduceFun) {
-            this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<any>(viewHashCode + '-map', null));
+            this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<any>(viewHashCode + '-map', viewDesc, null));
             this.reduceFunction = null;
         } else {
             switch (reduceFun.name) {
                 case SumReduceFunN:
-                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewHashCode + '-reduce', 0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewHashCode + '-map', ReduceFunDefaultValue[this.reduceFunction.name]));
+                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>('r' + viewHashCode, viewDesc, 0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>('r' + viewHashCode, viewDesc, ReduceFunDefaultValue[this.reduceFunction.name]));
                     break;
                 case CountReduceFunN:
-                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewHashCode + '-reduce', 0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewHashCode + '-map', ReduceFunDefaultValue[this.reduceFunction.name]));
+                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>('r' + viewHashCode, viewDesc, 0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>('r' + viewHashCode, viewDesc, ReduceFunDefaultValue[this.reduceFunction.name]));
                     break;
                 case TextjoinReduceFunN:
-                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(viewHashCode + '-reduce', '')));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(viewHashCode + '-map', ReduceFunDefaultValue[this.reduceFunction.name]));
+                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>('r' + viewHashCode, viewDesc, '')));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>('m' + viewHashCode, viewDesc, ReduceFunDefaultValue[this.reduceFunction.name]));
                     break;
             }
 
@@ -173,8 +174,8 @@ export class MapReduceView {
     }
 
     /** We need to allow multiple map values for the same key */
-    public static makeUniqueMapKeyByAddingId(key: KVSArrayKeyType, objId: string) {
-        return key.concat(objId);
+    public static makeUniqueMapKeyByAddingId(key: KVSArrayKeyType, objId: KeyValueObjIdType) {
+        return key.concat(_idAsStr(objId));
     }
     /** we need to pop the objectId to get the original map key */
     public static extractOriginalMapKey(key: KVSArrayKeyType) {
@@ -190,7 +191,7 @@ export class MapReduceView {
         for (let { oldObj, newObj } of objs) {
 
             let viewHashCode = this.viewHashCode;
-            let objId: string;
+            let objId: KeyValueObjIdType;
             if (oldObj) objId = oldObj._id
             else if (newObj) objId = newObj._id;
             else throw new Error("view update with old=new=null");
@@ -224,6 +225,14 @@ export class MapReduceView {
 
                 oldMapValue = this.use$ROW$ ? evalExpression({ $ROW$: oldObj }, this.map.valueExpr) : evalExpression(oldObj, this.map.valueExpr);
                 if (valueExample != null && typeof oldMapValue !== typeof valueExample) {
+                    if (oldMapValue == null) {
+                        console.warn(`Found null oldMapValue for ${objId} key ${oldMapKey}`);
+                        if (typeof valueExample === "string") {
+                            oldMapValue = "" as T;
+                        } else if (typeof valueExample === "number") {
+                            oldMapValue = 0 as T;
+                        }
+                    }
                     throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewHashCode, oldObj, newMapKey, newMapValue, oldMapKey, oldMapValue }));
                 }
 
@@ -238,7 +247,7 @@ export class MapReduceView {
 
 
             if (oldMapKey && oldMapValue) {
-                if (keyToSet && newMapKey && newMapValue) {
+                if (keyToSet && newMapKey && newMapValue != null) {
                     if (_.isEqual(oldMapKey, newMapKey)) {
                         ret.objChanges.push({ type: "modify", objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue });
                     } else {
@@ -250,9 +259,11 @@ export class MapReduceView {
                     if (!keyToDelete) throw new Error(`cannot pre-compute view update, delete key not set ${JSON.stringify(oldObj)}////${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
                     ret.objChanges.push({ type: "delete", objId, keyToDelete, oldMapKey, oldMapValue });
                 }
-            } else if (keyToSet && newMapKey && newMapValue) {
+            } else if (keyToSet && newMapKey && newMapValue != null) {
                 ret.objChanges.push({ type: "add", objId, keyToSet, newMapKey, newMapValue });                
-            } else throw new Error(`Cannot update view for both new and old objs null ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
+            } else {
+                throw new Error(`Cannot update view for both new and old objs null ${JSON.stringify(oldObj)}///${JSON.stringify(newObj)}////${JSON.stringify({objId, oldMapKey, oldMapValue, keyToSet, newMapKey, newMapValue})}`);
+            }
         }
 
         return ret;
@@ -358,6 +369,7 @@ export class MapReduceView {
                 }
             })
             .concat(isReduce(updates) ? Object.keys(updates.reduceChanges).map(k => 'REDUCE:' + k) : [])
+            .map(key => updates.viewHashCode + ':' + key);
         ;
     }
     public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {

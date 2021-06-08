@@ -1,19 +1,18 @@
 import * as micromatch from 'micromatch';
-import * as connectEnsureLogin from "connect-ensure-login";
 import { $UserObjT, $PermissionObjT, $Permission, PermissionType, $Table, $Page, $Image, $Icon, $App, $System_ParamObjT } from "@domain/metadata/default-metadata";
 import { FrmdbStore } from "@core/frmdb_store";
 import * as events from "@domain/event";
-import { parseDataObjId } from '@domain/metadata/data_obj';
+import { parseDataObjId, entityNameFromDataObjId } from '@domain/metadata/data_obj';
+import { KeyValueObj, KeyValueObjIdType, _idValueStr } from '@domain/key_value_obj';
 
-const needsLogin = connectEnsureLogin.ensureLoggedIn('/login');
 export type AuthStatus = "allowed" | "not-allowed" | "needs-login" | "off";
 export interface AuthInputData {
     userId: string;
     userRole: string;
     permission: PermissionType;
     appName: string;
-    resourceEntityId: '$ALL_RESOURCES$' | string;
-    resourceId?: string;
+    resourceEntityId: string;
+    resourceId?: KeyValueObjIdType;
 }
 
 export class Auth {
@@ -25,16 +24,37 @@ export class Auth {
         return this.frmdbStore.getDataObj(`$System_Param~~${systemParamId}`) as Promise<$System_ParamObjT | null>;
     }
 
-    async getUser(userId: string): Promise<$UserObjT | null> {
+    async getUser(userId: KeyValueObjIdType): Promise<$UserObjT | null> {
         return this.frmdbStore.getDataObj(userId) as Promise<$UserObjT | null>;
     }
 
-    async createUser(email: string, password: string, name: string): Promise<$UserObjT | null> {
+    async createUser(email: string, password: string, envname: string,  name: string, subscription_type = "Free", subscription_state = "No environment", verification_token = ''): Promise<$UserObjT> {
         return this.frmdbStore.putDataObj({
             _id: `$User~~${email}`,
             name,
-            password
-        } as $UserObjT) as Promise<$UserObjT | null>;
+            password,
+            envname,
+            nb_seats: 0,
+            role: "$USER",
+            subscription_type,
+            subscription_state,
+            verification_token
+        } as $UserObjT) as Promise<$UserObjT>;
+    }
+
+    async patchUser(_id: KeyValueObjIdType, password?: string, envname?: string,  name?: string, subscription_type?: string, subscription_state?: string, verification_token?: string): Promise<$UserObjT> {
+        let user = await this.getUser(_id);
+        return this.frmdbStore.patchDataObj({
+            _id: _id,
+            name: name || user?.name,
+            password: password || user?.password,
+            envname: envname || user?.envname,
+            nb_seats: user?.nb_seats,
+            role: user?.role,
+            subscription_type: subscription_type || user?.subscription_type,
+            subscription_state: subscription_state || user?.subscription_state,
+            verification_token: verification_token || user?.verification_token,
+        } as $UserObjT) as Promise<$UserObjT>;
     }
 
     async permissionMatchesUser(userId: string, userRole: string, perm: $PermissionObjT): Promise<boolean> {
@@ -53,8 +73,8 @@ export class Auth {
         if (perm.permission < inputData.permission) return false;
         if (!micromatch.isMatch(inputData.appName, perm.app_name)) return false;
 
-        if (perm.resource_id === "$ALL_RESOURCES$" || perm.resource_id === inputData.resourceId) return true;
-        else if (perm.resource_entity_id === inputData.resourceEntityId && !perm.resource_id) return true;
+        if (perm.resource_id && micromatch.isMatch(_idValueStr(inputData.resourceId||''), perm.resource_id)) return true;
+        else if (perm.resource_entity_id &&  micromatch.isMatch(inputData.resourceEntityId, perm.resource_entity_id)) return true;
         else if (perm.role === inputData.userRole && !perm.resource_entity_id && !perm.resource_id) return true;
         else return false;
     }
@@ -85,9 +105,9 @@ export class Auth {
     async authEvent(userId: string, userRole: string, appName: string, event: events.MwzEvents): Promise<AuthStatus> {
         switch (event.type_) {
             case "ServerEventModifiedFormData":
-                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: parseDataObjId(event.obj._id).entityId, resourceId: event.obj._id});
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: entityNameFromDataObjId(event.obj._id), resourceId: event.obj._id});
             case "ServerEventDeletedFormData":
-                return this.authResource({userId, userRole, permission: "7DELETE", appName, resourceEntityId: parseDataObjId(event.obj._id).entityId, resourceId: event.obj._id});
+                return this.authResource({userId, userRole, permission: "7DELETE", appName, resourceEntityId: entityNameFromDataObjId(event.obj._id), resourceId: event.obj._id});
             case "ServerEventNewEntity":
                 return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $Table._id, resourceId: event.entityId});
             case "ServerEventDeleteEntity":

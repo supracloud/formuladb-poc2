@@ -1,0 +1,13 @@
+namespace: orbicobeautyro #TBD_ENV_NAME
+resources:
+- resources/be-sts.yaml
+- resources/be-service.yaml
+- resources/service-account-secret.yaml
+vars:
+- name: NAMESPACE_NAME
+  objref:
+    kind: StatefulSet
+    name: be
+    apiVersion: apps/v1
+  fieldref:
+    fieldpath: metadata.namespace

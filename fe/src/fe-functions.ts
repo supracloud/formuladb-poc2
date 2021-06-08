@@ -2,15 +2,17 @@ import * as DOMPurify from "dompurify";
 
 import { BACKEND_SERVICE } from "./backend.service";
 import { DataObj, isNewDataObjId, entityNameFromDataObjId, parseDataObjId } from "@domain/metadata/data_obj";
-import { updateDOM } from "./live-dom-template/live-dom-template";
+import { updateDOM, serializeElemToObj } from "@fe/live-dom-template/live-dom-template";
 import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "../../core/src/page-utils";
 import { parseAllPageUrl } from "@domain/url-utils";
 import { isShadowRoot, isHTMLElement } from "@core/dom-utils";
-import { APP_AND_TENANT_ROOT } from "./app.service";
-import { getElemValue } from "./live-dom-template/dom-node";
+import { DataToggleTooltipDirective } from "./directives/data-toggle-tooltip.directive";
+import { getElemForKey } from "@core/live-dom-template/dom-node";
+import { _idValueStr } from "@domain/key_value_obj";
+import { DataGridComponentI } from "./data-grid/data-grid.component.i";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -21,19 +23,20 @@ DOMPurify.addHook('uponSanitizeElement', function (node, data) {
 
 export async function loadPage(pageName: string): Promise<string> {
     let appBackend = BACKEND_SERVICE();
-    let app = await appBackend.getApp();
-    if (!app) throw new Error("App not found");
-    let page: string | undefined = app.pages.find(p => p == pageName);
-    if (!page) throw new Error("App not found");
 
-    let url = `/${appBackend.appName}/${page}`;
+    let url = `/${appBackend.appName}/${pageName}`;
     console.log(`fetching ${url}...`);
-    let res = await fetch(url, {
-        headers: {
-            'accept': 'text/html',
-        },
-    });
-    let html = await res.text();
+    let html = `<html><body><h2>Page ${url} not found</h2></body></html>`;
+    try {
+        let res = await fetch(url, {
+            headers: {
+                'accept': 'text/html',
+            },
+        });
+        html = await res.text();
+    } catch (err) {
+        console.warn(`Cannot find page ${url}`, err);
+    }
     return DOMPurify.sanitize(html);
 }
 
@@ -44,7 +47,7 @@ async function loadData(dataBindingId: string): Promise<DataObj | DataObj[]> {
 
     if (dataBindingId.indexOf('~~') > 0) {
         let dataObj = await appBackend.getDataObj(dataBindingId);
-        (dataObj as any)._id_ = dataObj._id.replace(/^.*?~~/, '');
+        (dataObj as any)._id_ = _idValueStr(dataObj._id);
         return dataObj;
     } else {
         return appBackend.getTableData(dataBindingId);
@@ -82,6 +85,10 @@ async function $MODAL(modalPageName: string, initDataBindingId?: string, recordD
     ($('#frmdbModal') as any).modal('show');
 }
 
+export function $FRMDB_CHANGE(newData: {}, rootEl?: HTMLElement) {
+    updateDOM(newData, rootEl || document.body);
+}
+
 export function $TABLES(): { name: string }[] {
     let appBackend = BACKEND_SERVICE();
     return Object.values(appBackend?.getCurrentSchema()?.entities || {}).map(ent => ({
@@ -90,10 +97,11 @@ export function $TABLES(): { name: string }[] {
 }
 
 export function $REFERENCE_TO_OPTIONS(el: HTMLElement): { name: string, value: string }[] {
-    let recordEl = el.parentElement?.closest('[data-frmdb-record]');
+    let recordEl = el.parentElement?.closest('[data-frmdb-record],[data-frmdb-bind-to-record]');
     if (!recordEl) return [];
     if (!BACKEND_SERVICE().getCurrentSchema()) { console.warn(`getCurrentSchema() not initialized yet`); return [] }
-    let entityId = recordEl.getAttribute('data-frmdb-record')!.replace(/~~.*/, '');
+    let entityId = (recordEl.getAttribute('data-frmdb-record') || recordEl.getAttribute('data-frmdb-bind-to-record') )?.replace(/^\$FRMDB\./, '')?.replace(/~~.*/, '');
+    if (!entityId) { console.warn(`Could not get tableName for checking references`, el.outerHTML, recordEl.outerHTML); return [] };
     let entity = BACKEND_SERVICE().getCurrentSchema()?.entities[entityId];
     if (!entity) { console.warn(`entity ${entityId} not known`, BACKEND_SERVICE().getCurrentSchema()?.entities); return [] }
     let references: Set<string> = new Set();
@@ -132,7 +140,7 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     let suf = isDirectRecordBinding ? '{}' : '[]';
     return Object.values(entity.props).map(p => ({
         text: `${prefix}.${p.name}`,
-        value: `$FRMDB.${tableName}${suf}.${p.name}`,
+        value: `$FRMDB.${prefix}${suf}.${p.name}`,
     }));
 }
 
@@ -198,20 +206,55 @@ function $FSCMP(el: HTMLElement): HTMLElement | null {
     }
     return parent;
 }
-export function $_FRMDB_SCOPE(el: HTMLElement): any {
-    let parent: Node | null = el;
-    while (parent) {
-        if ((parent as any).$_FRMDB_SCOPE) return (parent as any).$_FRMDB_SCOPE;
-        else parent = parent.parentNode;
+
+export function $FRMDB_RECORD_EL(control: HTMLElement): HTMLElement | null {
+    let parentEl: HTMLElement = control.closest('[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement;
+    if (!parentEl) return null;
+    return parentEl;
+}
+export function $FRMDB_RECORD(el: HTMLElement): {parentEl: HTMLElement, parentObj: DataObj} | null {
+    let parentEl = $FRMDB_RECORD_EL(el);
+    if (!parentEl) return null;
+    let parentObj = serializeElemToObj(parentEl) as DataObj;
+    let recordId = parentEl.getAttribute('data-frmdb-record') || parentEl.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '') || '';
+    if (!parentObj._id || (!isNewDataObjId(recordId) && isNewDataObjId(parentObj._id))) {
+        parentObj._id = recordId;
+    }
+    if (!parentObj._id) throw new Error("Cannot find obj id for " + el);
+    return {parentEl, parentObj};
+}
+export function $FRMDB_CLOSEST_ELS(el: HTMLElement, key: string): HTMLElement[] | null {
+    let parentEl: HTMLElement | null = el.closest('[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement;
+    while (parentEl) {
+        let targetEls = getElemForKey(parentEl, key);
+        if (targetEls && targetEls.length > 0) return targetEls;
+        parentEl = parentEl.parentElement;
     }
     return null;
 }
 export function $LABEL(id: string) {
     if (id.indexOf('-') >= 0) {
-        return id.replace(/-/g, ' ').replace(/(^|(?<= ))[a-z]/g, v => v.toUpperCase());
+        return id.replace(/-/g, ' ').replace(/ [a-z]/g, v => v.toUpperCase());
     } else if (id.indexOf('_') >= 0) {
-        return this.value.replace(/_/g, ' ');
+        return id.replace(/_/g, ' ');
     } else return id;
+}
+
+export function $INCLUDE_FILTER_IN_LINK_URL(a: HTMLLinkElement) {
+    let url = new URL(a.href, window.location.href);
+    let m = url.pathname.match(/\/formuladb-api\/xlsx\/(\w+)\/(\w+)\/(\w+)/);
+    if (m) {
+        let lang = m[1];
+        let app = m[2];
+        let tableName = m[3];
+        let dataGrid: DataGridComponentI = document.querySelector(`frmdb-data-grid[table-name="${tableName}"]`) as DataGridComponentI;
+        if (!dataGrid) return '';
+    
+        let filter = encodeURIComponent(JSON.stringify(dataGrid.getFilterModel()));
+        //TODO: use data-frmdb-filter filters if data grid is not found
+    
+        a.href = `/formuladb-api/xlsx/${lang}/${app}/${tableName}?addHocQueryFilter=${filter}`;
+    }
 }
 
 (window as any).$MODAL = $MODAL;
@@ -221,3 +264,5 @@ export function $LABEL(id: string) {
 (window as any).$SAVE_DOC_PAGE = $SAVE_DOC_PAGE;
 (window as any).$FCMP = $FCMP;
 (window as any).$FSCMP = $FSCMP;
+(window as any).$FRMDB_CHANGE = $FRMDB_CHANGE;
+(window as any).$INCLUDE_FILTER_IN_LINK_URL = $INCLUDE_FILTER_IN_LINK_URL;

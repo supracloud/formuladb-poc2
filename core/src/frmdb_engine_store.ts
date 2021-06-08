@@ -22,7 +22,8 @@ import { DataObj, parseDataObjId } from '@domain/metadata/data_obj';
 import { Entity, Schema } from '@domain/metadata/entity';
 import { Pn } from '@domain/metadata/entity';
 import { I18nStore } from "./i18n-store";
-import { validateAndCovertObjPropertyType, validateAndConvertObjFields } from "@domain/metadata/types";
+import { validateAndConvertObjFields } from "@core/validate-schema-types";
+import { KeyValueObj, _idAsStr, KeyValueObjIdType } from "@domain/key_value_obj";
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -47,12 +48,14 @@ export class FrmdbEngineStore extends FrmdbStore {
     public async installFormula(formula: CompiledFormula, skipExisting?: boolean): Promise<any> {
         for (let trigger of (formula.triggers || [])) {
             let obs = trigger.mapObserversImpactedByOneObservable.obsViewName,
-                aggs = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
+                obsDesc = trigger.mapObserversImpactedByOneObservable.obsViewDescription,
+                aggs = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName,
+                aggsDesc = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewDescription;
             if (!skipExisting || null == this.mapReduceViews.get(obs)) {
-                await this.createMapReduceView(obs, trigger.mapObserversImpactedByOneObservable, true);
+                await this.createMapReduceView(obs, obsDesc, trigger.mapObserversImpactedByOneObservable, true);
             }
             if (!skipExisting || null == this.mapReduceViews.get(aggs)) {
-                await this.createMapReduceView(aggs, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
+                await this.createMapReduceView(aggs, aggsDesc, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
                     false,
                     trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
             }
@@ -91,15 +94,15 @@ export class FrmdbEngineStore extends FrmdbStore {
     public async adHocTableQuery(entity: Entity): Promise<DataObj[]> {
         //super-duper-extra-naive implementation
         let ret: DataObj[] = [];
-        let allObjs = await this.all(entity._id);
+        let allObjs: KeyValueObj[] = await this.all(entity._id);
         let formulas: CompiledFormula[] = [];
         for (let prop of Object.values(entity.props)) {
-            if (prop.propType_ === Pn.FORMULA) {
+            if (prop.propType_ === Pn.SCALAR_FORMULA || prop.propType_ === Pn.AGGREGATE_FORMULA) {
                 formulas.push(prop.compiledFormula_!);
             }
         }
         for (let obj of allObjs) {
-            if (obj._id.indexOf(entity._id) === 0) {
+            if (_idAsStr(obj._id).indexOf(entity._id) === 0) {
                 let retObj = _.cloneDeep(obj);
                 for (let formula of formulas) {
                     retObj[formula.targetPropertyName] = await this.adHocFormulaQuery(obj, formula);
@@ -163,12 +166,13 @@ export class FrmdbEngineStore extends FrmdbStore {
     public removeMapReduceView(viewHashCode: string) {
         this.mapReduceViews.delete(viewHashCode);
     }
-    public createMapReduceView(viewHashCode: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
+    public createMapReduceView(viewHashCode: string, viewDesc: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
         if (map.existingIndex != null) return Promise.resolve("existing index");
 
         this.mapReduceViews.set(viewHashCode, new MapReduceView(
             this.kvsFactory,
             viewHashCode,
+            viewDesc,
             map,
             use$ROW$,
             reduceFun,
@@ -203,15 +207,15 @@ export class FrmdbEngineStore extends FrmdbStore {
         return view.preComputeViewUpdateForObj(oldObj, newObj);
     }
 
-    public async getDataObj(id: string): Promise<DataObj | null> {
+    public async getDataObj(id: KeyValueObjIdType): Promise<DataObj | null> {
         let obj = await super.getDataObj(id);
         if (!obj) return null;
         let entityId = parseDataObjId(id).entityId;
         let entity = this.schema.entities[entityId];
-        if (!entity) console.info(`cannot find entity for ${id}`);
+        if (!entity) throw new Error(`cannot find entity for ${id}`);
         else {
-            let errMsg = validateAndConvertObjFields(obj, entity);
-            if (errMsg) console.info(`obj ${id} is invalid: ${errMsg}`);
+            let errs = validateAndConvertObjFields(obj, entity, this.schema);
+            if (errs.length > 0) console.info(`obj ${id} is invalid: ${JSON.stringify(errs)}`);
         }
         return obj;
     }

@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as util from 'util';
 const exists = util.promisify(fs.exists);
 import * as parse from 'csv-parse';
+import * as child_process from 'child_process';
+const exec = util.promisify(child_process.exec);
 
 import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
@@ -10,6 +12,7 @@ import { FrmdbEngine } from '@core/frmdb_engine';
 import { KeyValueObj } from '@domain/key_value_obj';
 import { ServerEventModifiedFormData } from '@domain/event';
 import { Schema, Entity } from '@domain/metadata/entity';
+import { $User, $Dictionary, $Currency, $System_Param, $Permission } from '@domain/metadata/default-metadata';
 
 const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
 const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
@@ -37,16 +40,15 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
         let nbRecords = 0;
 
         let entitiesInOrderOfDependencies: Entity[] = [
-            (await kvsFactory.metadataStore.getEntity(null, 'AppCategory'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'SampleApp'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'WishListRequest'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'ContactRequest'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'Restaurant_Menu_Item'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'Restaurant_Order'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'Restaurant_Order_Item'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'Room'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'Room_Booking'))!,
-            (await kvsFactory.metadataStore.getEntity(null, 'Room_Type'))!,
+            $User,
+            $Dictionary,
+            $Currency,
+            $System_Param,
+            $Permission,
+            (await kvsFactory.metadataStore.getEntity(null, 'Report_Order_Item'))!,
+            (await kvsFactory.metadataStore.getEntity(null, 'Report_Order'))!,
+            (await kvsFactory.metadataStore.getEntity(null, 'Monthly_Delivery_Rate_By_Customer'))!,
+            (await kvsFactory.metadataStore.getEntity(null, 'Monthly_Delivery_Rate_By_Brands'))!,
         ]
 
         let schema: Schema = {
@@ -92,6 +94,8 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
 
         let end = new Date();
         console.log("loading test data end", new Date(), "nbRecords=" + nbRecords + " in " + ((end.getTime() - start.getTime()) / 1000) + "sec");
+
+        await exec(`bash -c "if [ -f /wwwroot/git/formuladb-env/db/init-db.sql ]; then cat /wwwroot/git/formuladb-env/db/init-db.sql | psql -e -h \${PGHOST:-db} -U postgres; fi"`);
 
     } catch (err) {
         console.error(err);

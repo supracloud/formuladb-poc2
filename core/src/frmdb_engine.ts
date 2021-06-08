@@ -3,9 +3,9 @@
  * License TBD
  */
 
-import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn, EntityProperty } from "@domain/metadata/entity";
+import { Entity, Schema, Pn, EntityProperty, isAggregateFormulaProperty } from "@domain/metadata/entity";
 import { SchemaDAO } from "@domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId } from "@domain/metadata/data_obj";
+import { DataObj, parseDataObjId, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { CircularJSON } from "@domain/json-stringify";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
@@ -15,15 +15,16 @@ import * as _ from 'lodash';
 import { SchemaCompiler } from "./schema_compiler";
 import { generateUUID } from "@domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
-import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
+import { FrmdbEngineTransactionRunner } from "./frmdb_engine_transaction_runner";
 import { I18nStore } from "./i18n-store";
-import { isMetadataObject, isMetadataEntity, isMetadataStoreObject } from "@domain/metadata/default-metadata";
+import { isMetadataObject, isMetadataEntity, isMediaStoreMetadataObject, $AppObjT, $Dictionary, $DictionaryObjT } from "@domain/metadata/default-metadata";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
-import { App } from "@domain/app";
 import { FullPageOpts } from "@domain/url-utils";
+import { I18N_UTILS } from "./i18n-utils";
+import { _idAsStr } from "@domain/key_value_obj";
 
 export class FrmdbEngine {
-    private transactionRunner: FrmdbTransactionRunner;
+    private transactionRunner: FrmdbEngineTransactionRunner;
     private schemaDAO: SchemaDAO;
     public frmdbEngineTools: FrmdbEngineTools;
     i18nStore: I18nStore;
@@ -31,7 +32,7 @@ export class FrmdbEngine {
     constructor(public frmdbEngineStore: FrmdbEngineStore) {
         this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
-        this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
+        this.transactionRunner = new FrmdbEngineTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
         this.i18nStore = new I18nStore(this);
     }
 
@@ -42,10 +43,10 @@ export class FrmdbEngine {
 
         for (let ent of this.schemaDAO.entities()) {
             for (let prop of _.values(ent.props)) {
-                if (isFormulaProperty(prop)) {
+                if (isAggregateFormulaProperty(prop)) {
                     if (prop.compiledFormula_ && installFormulas) {
                         await this.frmdbEngineStore.installFormula(prop.compiledFormula_);
-                    } else console.warn("Found formula property that is not compiled: ", prop);
+                    } else console.warn("Found formula property that is not compiled yet: ", prop);
                 }
             }
         };
@@ -55,60 +56,72 @@ export class FrmdbEngine {
         await this.frmdbEngineStore.kvsFactory.metadataStore.putSchema(appName, schema);
         this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
-        this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
+        this.transactionRunner = new FrmdbEngineTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
         return Promise.resolve(schema);
     }
 
     public processEventAnonymous(event: events.MwzEvents): Promise<events.MwzEvents> {
         return this.processEvent('$ANONYMOUS', 'AnounymousUserId', event);
     }
-    public processEvent(userRole: string, userId: string, event: events.MwzEvents): Promise<events.MwzEvents> {
-        event._id = Date.now() + '_' + generateUUID();
-        console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
+    public async processEvent(userRole: string, userId: string, event: events.MwzEvents): Promise<events.MwzEvents> {
+        try {
+            event._id = Date.now() + '_' + generateUUID();
+            console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
 
-        switch (event.type_) {
-            case "ServerEventModifiedFormData":
-                if (isMetadataStoreObject(event.obj)) {
-                    throw new Error('Save data in record storage not allowed for metadata objects ' + JSON.stringify(event));
-                }
-                event.obj._role = userRole;
-                event.obj._owner = userId;
-                return this.transactionRunner.computeFormulasAndSave(event);
-            case "ServerEventDeletedFormData":
-                if (isMetadataStoreObject(event.obj)) {
-                    throw new Error('Delete data in record storage not allowed for metadata objects ' + JSON.stringify(event));
-                }
-                return this.transactionRunner.computeFormulasAndSave(event);
-            case "ServerEventNewEntity":
-                return this.newEntity(event)
-            case "ServerEventDeleteEntity":
-                return this.deleteEntity(event);
-            case "ServerEventPreviewFormula":
-                return this.transactionRunner.previewFormula(event);
-            case "ServerEventSetProperty":
-                if (isMetadataEntity(event.targetEntity._id)) {
-                    throw new Error('Modification of metadata entities not allowed ' + JSON.stringify(event));
-                }
-                return this.transactionRunner.setEntityProperty(event);
-            case "ServerEventDeleteProperty":
-                if (isMetadataEntity(event.targetEntity._id)) {
-                    throw new Error('Deletion of metadata entities not allowed ' + JSON.stringify(event));
-                }
-                return this.transactionRunner.deleteEntityProperty(event);
-            case "ServerEventPutPageHtml":
-                return this.putPageHtml(event);
-            case "ServerEventPutMediaObject":
-                return this.putMediaObject(event);
-            case "ServerEventPutIcon":
-                return this.putIcon(event);
-            case "ServerEventSetPage":
-                return this.setPage(event);
-            case "ServerEventDeletePage":
-                return this.deletePage(event);
-            case "ServerEventSetApp":
-                return this.setApp(event);
-            default:
-                return Promise.reject("n/a event");
+            switch (event.type_) {
+                case "ServerEventPreComputeFormData":
+                    return this.transactionRunner.preComputeOnly(event);
+                case "ServerEventModifiedFormData":
+                    if (isMediaStoreMetadataObject(event.obj)) {
+                        throw new Error('Save data in record storage not allowed for metadata objects ' + JSON.stringify(event));
+                    }
+                    event.obj._role = userRole;
+                    event.obj._owner = userId;
+                    let retEv: events.ServerEventModifiedFormData = await this.transactionRunner.computeFormulasAndSave(event) as events.ServerEventModifiedFormData;
+                    if (entityNameFromDataObjId(retEv.obj._id) == $Dictionary._id) {
+                        let dictCache = await this.i18nStore.getDictionaryCache();
+                        dictCache.set(_idAsStr(retEv.obj._id), retEv.obj as $DictionaryObjT);
+                    }
+                    return retEv;
+                case "ServerEventDeletedFormData":
+                    if (isMediaStoreMetadataObject(event.obj)) {
+                        throw new Error('Delete data in record storage not allowed for metadata objects ' + JSON.stringify(event));
+                    }
+                    return this.transactionRunner.computeFormulasAndSave(event);
+                case "ServerEventNewEntity":
+                    return this.newEntity(event)
+                case "ServerEventDeleteEntity":
+                    return this.deleteEntity(event);
+                case "ServerEventPreviewFormula":
+                    return this.transactionRunner.previewFormula(event);
+                case "ServerEventSetProperty":
+                    if (isMetadataEntity(event.targetEntity._id)) {
+                        throw new Error('Modification of metadata entities not allowed ' + JSON.stringify(event));
+                    }
+                    return this.transactionRunner.setEntityProperty(event);
+                case "ServerEventDeleteProperty":
+                    if (isMetadataEntity(event.targetEntity._id)) {
+                        throw new Error('Deletion of metadata entities not allowed ' + JSON.stringify(event));
+                    }
+                    return this.transactionRunner.deleteEntityProperty(event);
+                case "ServerEventPutPageHtml":
+                    return this.putPageHtml(event);
+                case "ServerEventPutMediaObject":
+                    return this.putMediaObject(event);
+                case "ServerEventPutIcon":
+                    return this.putIcon(event);
+                case "ServerEventSetPage":
+                    return this.setPage(event);
+                case "ServerEventDeletePage":
+                    return this.deletePage(event);
+                case "ServerEventSetApp":
+                    return this.setApp(event);
+                default:
+                    return Promise.reject("n/a event");
+            }
+        } catch (err) {
+            console.error(err);
+            throw err;
         }
     }
 
@@ -127,7 +140,7 @@ export class FrmdbEngine {
         let fullPageOpts = event.pageOpts.look ? event.pageOpts as FullPageOpts 
             : await await this.frmdbEngineStore.kvsFactory.metadataStore.fullPageOptsFromMandatory(event.pageOpts);
         if (!event.specificPageOpts) {
-            let app: App | null = await this.frmdbEngineStore.kvsFactory.metadataStore.getApp(event.pageOpts.appName);
+            let app: $AppObjT | null = await this.frmdbEngineStore.kvsFactory.metadataStore.getApp(event.pageOpts.appName);
             if (app) {
                 let dirty: boolean = false;
                 if (app.defaultLook != fullPageOpts.look) {
@@ -176,8 +189,7 @@ export class FrmdbEngine {
     private async setApp(event: events.ServerEventSetApp): Promise<events.MwzEvents> {
         await this.frmdbEngineStore.kvsFactory.metadataStore.setApp(
             event.appName,
-            event.category,
-            event.description,
+            event.app,
             event.basedOnApp);
         return event;
     }
@@ -190,10 +202,10 @@ export class FrmdbEngine {
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
         if (!event.entityId.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
         let newEntity: Entity = { _id: event.entityId, isEditable: true, props: {
-            _id: { name: "_id", propType_: Pn.TEXT, required: true } as EntityProperty,
-            _owner: { name: "_owner", propType_: Pn.TEXT, required: true } as EntityProperty,
-            _role: { name: "_role", propType_: Pn.TEXT, required: true } as EntityProperty,
-            _rev: { name: "_rev", propType_: Pn.TEXT, required: true } as EntityProperty,
+            _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"}, required: true } as EntityProperty,
+            _owner: { name: "_owner", propType_: Pn.INPUT, actualType: {name: "TextType"}, required: true } as EntityProperty,
+            _role: { name: "_role", propType_: Pn.INPUT, actualType: {name: "TextType"}, required: true } as EntityProperty,
+            _rev: { name: "_rev", propType_: Pn.INPUT, actualType: {name: "TextType"}, required: true } as EntityProperty,
         } };
 
         return this.frmdbEngineStore.putEntity(newEntity, event.appName)
@@ -222,7 +234,7 @@ export class FrmdbEngine {
     }
     public async updateViewsForObj(oldObj: DataObj | null, newObj: DataObj) {
         if (oldObj && oldObj._id !== newObj._id) throw new Error("old and new id(s) do not match " + CircularJSON.stringify({oldObj, newObj}));
-        for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(newObj._id)) {
+        for (let formulaTriggeredByObj of this.schemaDAO.getAggFormulasTriggeredByObj(newObj._id)) {
 
             for (let triggerOfFormula of formulaTriggeredByObj.formula.triggers || []) {
                 let viewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oldObj, newObj);

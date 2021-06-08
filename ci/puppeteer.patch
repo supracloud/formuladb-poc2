@@ -1,0 +1,19 @@
+--- node_modules/puppeteer/lib/Page.js	2020-04-24 11:05:31.723753600 +0300
++++ node_modules/puppeteer/lib/Page.js.new	2020-04-24 11:05:16.086196800 +0300
+@@ -928,11 +928,13 @@
+ 
+     if (options.fullPage) {
+       const metrics = await this._client.send('Page.getLayoutMetrics');
+-      const width = Math.ceil(metrics.contentSize.width);
+-      const height = Math.ceil(metrics.contentSize.height);
++      const clipWidth = Math.ceil(metrics.contentSize.width);
++      const clipHeight = Math.ceil(metrics.contentSize.height);
++      const width = this._viewport.width;
++      const height = this._viewport.height;
+ 
+       // Overwrite clip for full page at all times.
+-      clip = { x: 0, y: 0, width, height, scale: 1 };
++      clip = { x: 0, y: 0, width: clipWidth, height: clipHeight, scale: 1 };
+       const {
+         isMobile = false,
+         deviceScaleFactor = 1,

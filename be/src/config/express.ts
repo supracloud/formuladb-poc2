@@ -21,19 +21,23 @@ var ipn = require('paypal-ipn');
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
-import { App } from "@domain/app";
+import { SimpleAddHocQuery, DEFAULT_SIMPLE_ADD_HOC_QUERY } from "@domain/metadata/simple-add-hoc-query";
+import { $AppObjT } from "@domain/metadata/default-metadata";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
 import { i18nTranslateText } from "@be/i18n-be";
-import { cleanupEnvironment, createNewEnvironment } from "./env-manager";
+import { cleanupEnvironment } from "./env-manager";
 import { AuthRoutes } from "./auth-routes";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed-routes";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
-import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMetadataStoreEntity, $ImageObjT } from "@domain/metadata/default-metadata";
+import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMediaStoreMetadataEntity, $ImageObjT } from "@domain/metadata/default-metadata";
 import { simpleAdHocQueryForMetadataEntities } from "./simple-ad-hoc-query-metadata-entities";
-import { FullPageOpts, makeUrlPath, DefaultPageLookAndThemeT, DefaultPageLookAndThemeApp, AllPageOpts } from "@domain/url-utils";
+import { FullPageOpts, makeUrlPath, DefaultPageLookAndThemeT, DefaultPageLookAndThemeApp, AllPageOpts, makeSeoFriendlyUrl, parseAllPageUrl, parseAllPageUrlAllowNull } from "@domain/url-utils";
 import { FrmdbRoutes } from "./api";
+import { createExcelReport } from "./export-excel";
+import { MwzEvent, MwzEvents, ServerEventNewDataObj } from "@domain/event";
+import { DataObj, isNewDataObjId } from "@domain/metadata/data_obj";
+import { KeyValueObjIdType } from "@domain/key_value_obj";
 
 const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
 const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
@@ -106,7 +110,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
             req.body = yaml.safeLoad(req.body);
             next();
         } else if (req.headers['content-type'] === 'text/csv') {
-            csv.parse(req.body, { columns: true }, (err, data) => {
+            csv.parse(req.body, { columns: true, escape: '\\' }, (err, data) => {
                 if (err) next(err);
                 else {
                     req.body = data;
@@ -130,7 +134,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     //////////////////////////////////////////////////////////////////////////////////////
-    // API (prioritary paths)
+    // API (priority paths)
     //////////////////////////////////////////////////////////////////////////////////////
 
     setupChangesFeedRoutes(app, kvsFactory);
@@ -157,21 +161,17 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
     let formuladbEnvStatic = express.static('/wwwroot/git/formuladb-env');
 
-    app.get('/', function (req, res, next) {
-        res.redirect(makeUrlPath({
-            lang: 'en',
-            look: 'cerulean',
-            primaryColor: '7795f8',
-            secondaryColor: '6c757d',
-            appName: 'formuladb-io',
-            pageName: 'index',
-            theme: '_none_',
+    app.get('/', async function (req, res, next) {
+        let defaultApp = await kvsFactory.metadataStore.getDefaultApp();
+        res.redirect(makeSeoFriendlyUrl({
+            lang: defaultApp?.default_lang || 'en',
+            look: defaultApp?.defaultLook || 'cerulean',
+            primaryColor: defaultApp?.defaultPrimaryColor || '7795f8',
+            secondaryColor: defaultApp?.defaultSecondaryColor || '6c757d',
+            appName: defaultApp?.name || 'base-app',
+            pageName: defaultApp?.default_page || 'index',
+            theme: defaultApp?.defaultLook || 'Clean',
         }));
-    });
-
-    const DEFAULT_APP = 'formuladb-io';//TODO: make this configurable
-    app.get("/", function (req, res, next) {
-        res.redirect(`${FRMDB_ENV_DIR}/frmdb-apps/${DEFAULT_APP}/index.html`);
     });
 
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
@@ -179,7 +179,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     async function renderHtmlPage(req: express.Request, res: express.Response, next) {
         let defaultPageOpts: DefaultPageLookAndThemeT = DefaultPageLookAndThemeApp;
         if (!req.params.look) {
-            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForAppAndPage(req.params.app);
+            defaultPageOpts = await kvsFactory.metadataStore.getDefaultPageOptsForAppAndPage(req.params.app, req.params.page);
         }
 
         let appName = req.params.app;
@@ -227,15 +227,45 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
             }));
         }
         else if (query?.frmdbRender === "editor") {
-            if (! await authRoutes.authResource("api", '2PREVIEWEDIT', pageName, $Page._id, appName, req, res, next)) return;
+            if (! await authRoutes.authResource("page", '2PREVIEWEDIT', pageName, $Page._id, appName, req, res, next)) {
+                return;
+            }
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {
-            let coreFrmdbEngine = await getCoreFrmdbEngine();
-            let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
-            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, fullPageOpts, dictionaryCache, {
+            let frmdbEngine = await getFrmdbEngine(appName);
+            let dictionaryCache = await frmdbEngine.i18nStore.getDictionaryCache();
+
+            let pageVars = {};
+            if (req.get('Referrer')) {
+                let referrerUrl = new URL(req.get('Referrer')!);
+                if (req.hostname == referrerUrl.hostname) {
+                    let referrerPageOpts = parseAllPageUrlAllowNull(referrerUrl.pathname);
+                    if (referrerPageOpts && ['formuladb-io', 'users'].indexOf(referrerPageOpts.appName) < 0) {
+                        pageVars['REFERRER_APP_PAGE'] = makeSeoFriendlyUrl(referrerPageOpts);
+                        if (req.session) req.session.lastReferredApp = pageVars['REFERRER_APP_PAGE'];
+                    }
+                }
+            }
+            if (!('REFERRER_APP_PAGE' in pageVars) && req?.session?.lastReferredApp) {
+                pageVars['REFERRER_APP_PAGE'] = req?.session?.lastReferredApp;
+            }
+            if (req.user) {
+                pageVars['IS_LOGGED_IN'] = true;
+                pageVars['USER_PROFILE_PAGE'] = `../users/user.html?$FRMDB.$User{}._id=${(req.user as any)._id}`;
+                pageVars['NOT_LOGGED_IN'] = false;
+            } else {
+                pageVars['IS_LOGGED_IN'] = false;
+                pageVars['NOT_LOGGED_IN'] = true;
+            }
+
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml(
+                pageOpts,
+                fullPageOpts,
+                dictionaryCache,
+                pageVars, {
                 'info': req.flash('info'),
-                'warning': req.flash('info'),
+                'warning': req.flash('warning'),
                 'error': req.flash('error'),
             });
             res.set('Content-Type', 'text/html')
@@ -336,7 +366,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
     });
     app.post('/formuladb-api/payments-sandbox/PayPal_IPN', async function (req, res, next) {
         console.log("strting PAYPAL ipn check OK with sandbox", req.body);
-        let paymentCompleted = await verifyPayPalIPN(req.body, {allow_sandbox: true});
+        let paymentCompleted = await verifyPayPalIPN(req.body, { allow_sandbox: true });
         console.log("PAYPAL ipn check finished", paymentCompleted, req.body);
     });
 
@@ -392,7 +422,7 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb-api/:app', async function (req, res, next) {
         try {
-            let app: App | null = await kvsFactory.metadataStore.getApp(req.params.app);
+            let app: $AppObjT | null = await kvsFactory.metadataStore.getApp(req.params.app);
             if (!app) throw new Error(`App ${req.params.tenant}/${req.params.app} not found`);
             res.json(app);
         } catch (err) {
@@ -431,17 +461,67 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
+    app.get('/formuladb-api/xlsx/:lang/:app/:table', async function (req, res, next) {
+
+        exportExcel(req, res, {
+            ...DEFAULT_SIMPLE_ADD_HOC_QUERY,
+            filterModel: req.query.addHocQueryFilter ? 
+                JSON.parse(decodeURIComponent(req.query.addHocQueryFilter))
+                : {},
+            endRow: 20000,
+        });
+    });
+
+    async function exportExcel(req, res, simpleAddHocQuery: SimpleAddHocQuery) {
+        let engine = await getFrmdbEngine(req.params.app);
+        let entity = await engine.frmdbEngineStore.getEntity(req.params.table);
+        if (!entity) {
+            res.status(500)
+                .send(`Table ${req.params.table} not found for app ${req.params.app}`);
+            return;
+        }
+
+        let squery = simpleAddHocQuery;
+
+        let ret;
+        if (isMediaStoreMetadataEntity(req.params.table)) {
+            ret = await simpleAdHocQueryForMetadataEntities(req.params.app, kvsFactory, req.params.table, squery);
+        } else {
+            ret = await engine.frmdbEngineStore.simpleAdHocQuery(req.params.table, squery);
+        }
+
+        console.log("generating excel workbook");
+        let dictionaryCache = await engine.i18nStore.getDictionaryCache();
+        let workbook = await createExcelReport(entity, ret, dictionaryCache, req.params.lang);
+        console.log("workbook finished");
+        res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        await workbook.xlsx.write(res);
+        console.log("upload finished");
+        res.end();
+    }
+
     app.post('/formuladb-api/:app/:table/SimpleAddHocQuery', async function (req, res, next) {
         try {
-            let query = req.body as SimpleAddHocQuery;
+            let simpleAddHocQuery = req.body as SimpleAddHocQuery;
 
-            let ret;
-            if (isMetadataStoreEntity(req.params.table)) {
-                ret = await simpleAdHocQueryForMetadataEntities(req.params.app, kvsFactory, req.params.table, query);
-            } else {
-                ret = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
+            if (req.query?.format === "xlsx") {
+                simpleAddHocQuery.endRow = 100000;
             }
-            res.json(ret);
+
+            let engine = await getFrmdbEngine(req.params.app);
+
+            if (req.query?.format === "xlsx") {
+                exportExcel(req, res, simpleAddHocQuery);
+            } else {
+                let ret;
+                if (isMediaStoreMetadataEntity(req.params.table)) {
+                    ret = await simpleAdHocQueryForMetadataEntities(req.params.app, kvsFactory, req.params.table, simpleAddHocQuery);
+                } else {
+                    ret = await engine.frmdbEngineStore.simpleAdHocQuery(req.params.table, simpleAddHocQuery);
+                }
+
+                res.json(ret);
+            }
         } catch (err) {
             console.error(err);
             next(err);
@@ -474,17 +554,30 @@ export default async function (kvsFactory: KeyValueStoreFactoryI) {
 
     //all write operations are handled via events
     app.post('/formuladb-api/:app/event', async function (req, res, next) {
-        let event = req.body;
+        let event = req.body as MwzEvents;
         if (! await authRoutes.authEvent("api", req.params.app, event, req, res, next)) return;
         let userRole = authRoutes.roleFromReq(req);
         let userId = authRoutes.userIdFromReq(req);
+        let oldObjId: KeyValueObjIdType | null = null;
+        if (event.type_ === "ServerEventModifiedFormData") {
+            oldObjId = event.obj._id;
+        }
         return (await getFrmdbEngine(req.params.app))
             .processEvent(userRole, userId, event)
             .then(notif => {
                 addEventToChangesFeed(notif);
+                if (event.type_ === "ServerEventModifiedFormData" && oldObjId && isNewDataObjId(oldObjId)) {
+                    addEventToChangesFeed(new ServerEventNewDataObj(event.obj));
+                }
+                if (event.state_ === "ABORT") {
+                    res.status(500);
+                }
                 res.json(notif);
             })
-            .catch(err => { console.error(err); next(err) });
+            .catch(err => {
+                console.error(err);
+                next(err)
+            });
     });
     app.post('/formuladb-api/:app/reference_to_options/:referencedTableName', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.app))

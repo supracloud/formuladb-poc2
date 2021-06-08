@@ -16,6 +16,13 @@ export interface SimpleAddHocQueryFilterItem extends FilterItem {
     condition2?: FilterItem;
 }
 
+export const FILTER_REGEX = new RegExp(`^filter\\.(\\w+)\\.(${Object.keys(NumberFilterTEnum).concat(Object.keys(TextFilterTEnum)).join('|')})=(\\w+)`);
+export function filterItemFromQueryParam(queryParam: string): FilterItem | undefined {
+    let m = queryParam.match(FILTER_REGEX);
+    if (m) {
+        
+    } else return undefined;
+}
 export function makeSimpleAddHocQueryFilterItem_filterType(param: string): SimpleAddHocQueryFilterItem['filterType'] {
     if (param === "text" || param === "number") return param;
     else {console.warn(`${param} is not text OR number`); return "text"; }
@@ -50,5 +57,17 @@ export interface SimpleAddHocQuery {
     filterModel: {
         [x: string]: SimpleAddHocQueryFilterItem;
     };
-    sortModel: any;
+    sortModel: {colId: string, sort: 'asc' | 'desc'}[];
 }
+
+export const DEFAULT_SIMPLE_ADD_HOC_QUERY: SimpleAddHocQuery = {
+    startRow: 0,
+    endRow: 100,
+    rowGroupCols: [],
+    valueCols: [],
+    pivotCols: [],
+    pivotMode: false,
+    groupKeys: [],
+    filterModel: {},
+    sortModel: [],
+};

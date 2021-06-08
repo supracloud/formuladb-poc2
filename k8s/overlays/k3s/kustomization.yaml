@@ -1,0 +1,10 @@
+bases:
+- ../../base
+patches:
+- patches/be-sts.yaml
+- patches/db-sts.yaml
+- patches/db-service.yaml
+resources:
+- resources/ingress.yaml
+# - resources/pgweb-dep.yaml
+# - resources/pgweb-service.yaml

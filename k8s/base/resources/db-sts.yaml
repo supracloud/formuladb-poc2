@@ -17,7 +17,8 @@ spec:
       - env:
         - name: POSTGRES_PASSWORD
           value: postgres
-        image: postgres:11
+        # image: postgres@sha256:05580d6c8f7bb0566793c7c45ab276458c53c9c31300c046ba6fcbc66598c7b9
+        image: registry.formuladb.io/formuladb/febe/dbplv8:12.3-2.3.13
         name: db
         ports:
         - containerPort: 5432
@@ -27,11 +28,5 @@ spec:
           name: pg-persistence
           subPath: postgres
       restartPolicy: Always
-  volumeClaimTemplates:
-  - metadata:
-      name: pg-persistence
-    spec:
-      accessModes: [ ReadWriteOnce ]
-      resources:
-        requests:
-          storage: 10Gi
+      imagePullSecrets:
+        - name: regcred

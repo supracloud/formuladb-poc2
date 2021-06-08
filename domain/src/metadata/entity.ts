@@ -5,23 +5,26 @@
 
 import { KeyValueObj, isReservedPropName, RESERVED_PROP_NAMES } from '@domain/key_value_obj';
 import { CompiledFormula, CompiledScalar } from "./execution_plan";
-import * as _ from 'lodash';
-import { Expression } from 'jsep';
-import { LogicalCallExpression, LogicalOpBinaryExpression } from '@core/formula_compiler';
+import { BooleanCallExpression, BooleanBinaryExpression } from '@domain/metadata/expressions';
+import { ColumnInputTypes, ScalarValueTypes, AggregateValueTypes } from './types';
+import { DAG } from './dag';
+import { DataObj } from './data_obj';
 
 /**
  * the _id of the Entity is the path, e.g. Forms__ServiceForm
  */
-export interface Entity extends KeyValueObj {
+export interface Entity extends DataObj {
     _id: string;
     pureNavGroupingChildren?: string[];
-    // aliases?: { [aliasName: string]: string };
-    validations?: _.Dictionary<FormulaValidation>;
-    autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
+    description?: string;
     props: EntityProperties;
     stateGraph?: EntityStateGraph;
     isPresentationPage?: boolean;
     isEditable?: boolean;
+}
+export type ComputedRecordEntity = Entity & {props: {_id: ComputedRecordProperty}};
+export function isComputedRecordEntity(param): param is ComputedRecordEntity {
+    return isEntity(param) && param.props && param.props._id && param.props._id.propType_ === Pn.COMPUTED_RECORD;
 }
 
 export interface EntityStateGraph {
@@ -29,19 +32,11 @@ export interface EntityStateGraph {
     transitions: {source: string, target: string}[];
 };
 
-export interface AutoCorrectionOnValidationFailed {
-    targetPropertyName: string;
-    autoCorrectExpr: Expression;
-}
-export class FormulaValidation {
-    conditionExpr: Expression;
-    rollback?: boolean;
-}
-
-export type HasEntityProperties = Entity | ChildTableProperty | ExtendsEntityProperty;
+export type HasEntityProperties = Entity | ChildTableProperty;
 export type EntityProperties = { [x: string]: EntityProperty };
 export type EntityDeepPath = string;
-export interface Schema extends KeyValueObj {
+
+export interface Schema extends DataObj {
     readonly _id: string;
     entities: { [x: string]: Entity };
 }
@@ -58,103 +53,59 @@ export function isEntityProperty(param): param is EntityProperty {
     return param != null && typeof param === 'object' && param['propType_'] != null;
 }
 
-export function isPropertyWithProperties(param): param is ChildTableProperty | ExtendsEntityProperty {
-    return isEntityProperty(param) && (param.propType_ === Pn.CHILD_TABLE || param.propType_ === Pn.EXTENDS_ENTITY);
-}
-export function extendEntityProperties(extendedEntity: HasEntityProperties, newProperties: EntityProperties) {
-    _.toPairs(newProperties).forEach(([propName, p]) => {
-        if (isReservedPropName(propName)) return;
-        extendedEntity.props = extendedEntity.props || {};
-        extendedEntity.props[propName] = p;
-    });
-}
-export function queryEntityWithDeepPath(entity: Entity, referencedEntityName: EntityDeepPath): EntityProperties {
-    let relativePath = referencedEntityName.replace(entity._id, '').replace(/^\//, '').replace(/\/@/g, '');
-    if (null != relativePath && '' !== relativePath) {
-        let pathInsideEntity = relativePath.replace(/\//, '.');
-        return _(eval(`entity.${pathInsideEntity}`) as {}).omit(RESERVED_PROP_NAMES).extend({ _id: { name: "_id", propType_: Pn.TEXT } }).value() as EntityProperties;
+export function referenceToPropsOf(entity: Entity): Map<string, ReferenceToProperty> {
+    let referenceToProps: Map<string, ReferenceToProperty> = new Map();
+    for (let prop of Object.values(entity?.props||{})) {
+        if (prop.propType_ === Pn.REFERENCE_TO) referenceToProps.set(prop.name, prop);
     }
-    return entity.props;
+    return referenceToProps;
 }
-
 
 export const enum Pn {
+    INPUT = "INPUT",
     KEY = "KEY",
-    NUMBER = "NUMBER",
-    TEXT = "TEXT",
-    BOOLEAN = "BOOLEAN",
-    DOCUMENT = "DOCUMENT",
-    DATETIME = "DATETIME",
-    ACTION = "ACTION",
-    IMAGE = "IMAGE",
-    ATTACHMENT = "ATTACHMENT",
+    TRIGGER = "TRIGGER",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
     HLOOKUP = "HLOOKUP",
-    EXTENDS_ENTITY = "SUB_ENTITY",
-    FORMULA = "FORMULA",
+    SCALAR_FORMULA = "SCALAR_FORMULA",
+    AGGREGATE_FORMULA = "AGGREGATE_FORMULA",
+    VALIDATE_RECORD = "VALIDATE_RECORD",
+    AUTO_CORRECT = "AUTO_CORRECT",
+    COMPUTED_RECORD = "COMPUTED_RECORD",
+    COMPUTED_RECORD_VALUE = "COMPUTED_RECORD_VALUE",
 }
 
-export interface BaseProperty {
+export interface BaseProperty /*extends DataObj*/ {
     name: string;
     required?: boolean;
+    description?: string;
+    exampleValue?: string;
+    lockEditing?: boolean;
 }
 
-export interface NumberProperty {
-    propType_: Pn.NUMBER;
-    name: string;
-    format?: "default" | "currency" | "percentage";
-    defaultValue?: number;
-    required?: boolean;
+export interface InputProperty extends BaseProperty {
+    propType_: Pn.INPUT;
+    actualType: ColumnInputTypes;
 }
-export interface StringProperty {
-    propType_: Pn.TEXT;
+export function isInputProperty(param): param is InputProperty {
+    return param != null && typeof param === 'object' && param.propType_ === Pn.INPUT;
+}
+
+export interface ActionProperty extends BaseProperty {
+    propType_: Pn.TRIGGER;
     name: string;
     defaultValue?: string;
     required?: boolean;
-    enumValues?: string[];
 }
-export interface BooleanProperty {
-    propType_: Pn.BOOLEAN;
-    name: string;
-    required?: boolean;
-}
-export interface DocumentProperty {
-    propType_: Pn.DOCUMENT;
-    name: string;
-    required?: boolean;
-}
-export interface DatetimeProperty {
-    propType_: Pn.DATETIME;
-    name: string;
-    timeMandatory?: boolean;
-    required?: boolean;
-}
-
-export interface AttachmentProperty {
-    propType_: Pn.ATTACHMENT;
-    name: string;
-    mediaType: "pdf" | "csv" | "docx" | "xlsx";
-    url: string;
-}
-
-export interface ImageProperty {
-    propType_: Pn.IMAGE;
-    name: string;
-    required?: boolean;
-}
-
-export interface ActionProperty {
-    propType_: Pn.ACTION;
-    name: string;
-    defaultValue?: string;
-    required?: boolean;
+export function isActionProperty(param): param is ActionProperty {
+    return param != null && typeof param === 'object' && param.propType_ === Pn.TRIGGER;
 }
 
 /**
  * TablePage of existing entities or entities created
  */
-export interface ChildTableProperty {
+export interface ChildTableProperty extends BaseProperty {
     propType_: Pn.CHILD_TABLE;
     name: string;
     referencedEntityName: string;
@@ -165,24 +116,9 @@ export function isChildTableProperty(param): param is ChildTableProperty {
     return param != null && typeof param === 'object' && param.propType_ === Pn.CHILD_TABLE;
 }
 
-
-/**
- * This property represents an embedded entity that is created when the parent entity is created
- */
-export interface ExtendsEntityProperty {
-    propType_: Pn.EXTENDS_ENTITY;
-    name: string;
-    referencedEntityName: string;
-    props: EntityProperties;
-}
-export function isSubEntityProperty(param): param is ExtendsEntityProperty {
-    return param != null && typeof param === 'object' && param.propType_ == Pn.EXTENDS_ENTITY;
-}
-
 export interface ReferenceToProperty extends BaseProperty {
     propType_: Pn.REFERENCE_TO;
     referencedEntityName: string;
-    filter?: LogicalOpBinaryExpression | LogicalCallExpression;
 }
 export function isReferenceToProperty(param): param is ReferenceToProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;
@@ -192,7 +128,6 @@ export interface HlookupProperty extends BaseProperty {
     propType_: Pn.HLOOKUP;
     referenceToPropertyName: string;
     referencedPropertyName: string;
-    actualPropType_: Pn.NUMBER | Pn.TEXT | Pn.BOOLEAN;
 }
 export function isHlookupProperty(param): param is HlookupProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.HLOOKUP;
@@ -201,47 +136,92 @@ export function isHlookupProperty(param): param is HlookupProperty {
 
 export type FormulaExpression = string;
 
+interface FormulaPropertyBase extends BaseProperty {
+    formula: FormulaExpression;
+    compiledFormula_?: CompiledFormula;
+    dependsOn_?: {entity: Entity, property: EntityProperty}[];
+}
 /**
  * This property represents a formula definition
  */
-export interface FormulaProperty {
-    propType_: Pn.FORMULA;
-    name: string;
-    formula: FormulaExpression;
-    compiledFormula_?: CompiledFormula;
-    returnType_?: Pn.NUMBER | Pn.TEXT | Pn.BOOLEAN;
+export interface ScalarFormulaProperty extends FormulaPropertyBase {
+    propType_: Pn.SCALAR_FORMULA;
+    returnType_: ScalarValueTypes;
 }
-export function isFormulaProperty(param): param is FormulaProperty {
-    return param != null && typeof param === 'object' && param.propType_ == Pn.FORMULA;
+export function isScalarFormulaProperty(param): param is ScalarFormulaProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.SCALAR_FORMULA;
 }
 
-export interface KeyProperty {
+export interface AggregateFormulaProperty extends FormulaPropertyBase {
+    propType_: Pn.AGGREGATE_FORMULA;
+    returnType_: AggregateValueTypes;
+}
+export function isAggregateFormulaProperty(param): param is AggregateFormulaProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.AGGREGATE_FORMULA;
+}
+
+export interface KeyProperty extends BaseProperty {
     propType_: Pn.KEY;
     name: string;
     scalarFormula: FormulaExpression;
 }
-export function isKeyProperty(param): param is FormulaProperty {
+export function isKeyProperty(param): param is KeyProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.KEY;
 }
 
+export interface ComputedRecordProperty extends FormulaPropertyBase {
+    propType_: Pn.COMPUTED_RECORD;
+    name: string;
+    referencedEntityName: string;
+    returnType_: ScalarValueTypes;
+}
+export function isComputedRecordProperty(param): param is ComputedRecordProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.COMPUTED_RECORD;
+}
 
-export type ScalarEntityProperty = 
-    | KeyProperty
-    | NumberProperty
-    | StringProperty
-    | BooleanProperty
-    | DocumentProperty
-    | DatetimeProperty
-    | ActionProperty
-    | AttachmentProperty
-    | ImageProperty
-    | FormulaProperty
-    | ReferenceToProperty
-    | HlookupProperty
-;
+export interface ComputedRecordValueProperty extends FormulaPropertyBase {
+    propType_: Pn.COMPUTED_RECORD_VALUE;
+    name: string;
+    returnType_: ScalarValueTypes;
+}
+export function isComputedRecordValueProperty(param): param is ComputedRecordValueProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.COMPUTED_RECORD_VALUE;
+}
+
+export interface ValidateRecordProperty extends BaseProperty {
+    propType_: Pn.VALIDATE_RECORD;
+    name: string;
+    scalarFormula: FormulaExpression;
+    errorMessage?: string;
+    params?: string[];
+}
+export function isValidateRecordProperty(param): param is ValidateRecordProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.VALIDATE_RECORD;
+}
+
+export interface AutoCorrectProperty extends BaseProperty {
+    propType_: Pn.AUTO_CORRECT;
+    name: string;
+    targetPropertyName: string;
+    scalarFormula: FormulaExpression;
+    validationTableName: string;
+    validationColName?: string;
+}
+export function isAutoCorrectProperty(param): param is AutoCorrectProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.AUTO_CORRECT;
+}
 
 export type EntityProperty =
-    | ScalarEntityProperty
+    | KeyProperty
+    | InputProperty
+    | ActionProperty
+    | ScalarFormulaProperty
+    | ReferenceToProperty
+    | HlookupProperty
+    | ValidateRecordProperty
+    | AutoCorrectProperty
     | ChildTableProperty
-    | ExtendsEntityProperty
+    | AggregateFormulaProperty
+    | ComputedRecordProperty
+    | ComputedRecordValueProperty
 ;

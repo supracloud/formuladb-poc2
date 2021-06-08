@@ -1,4 +1,5 @@
 import { DataObj } from "@domain/metadata/data_obj";
+import { SimpleAddHocQueryFilterItem } from "@domain/metadata/simple-add-hoc-query";
 
 export interface DataGridComponentI extends HTMLElement {
     highlightColumns: { 
@@ -15,6 +16,9 @@ export interface DataGridComponentI extends HTMLElement {
     debouncedForceCellRefresh();
     initAgGrid();
     forceReloadData();
+    getFilterModel(): {
+        [x: string]: SimpleAddHocQueryFilterItem;
+    }
 }
 
 export function queryDataGrid(el: Document | HTMLElement): DataGridComponentI {

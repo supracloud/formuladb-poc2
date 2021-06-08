@@ -1,11 +1,16 @@
 import * as events from "@domain/event";
 import { generateTimestampUUID } from "@domain/uuid";
-import { inIframe } from "@core/dom-utils";
 import { waitUntil } from "@domain/ts-utils";
 import { CLIENT_ID } from "./client-id";
 import { centralizedLog } from "./logging.service";
+import { KeyValueObjIdType } from "@domain/key_value_obj";
 
-const Handlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } = {};
+const Handlers: {
+    [name: string]: {
+        callback: (events: events.MwzEvents[]) => Promise<void>,
+        getActiveObjectIds: () => KeyValueObjIdType[],
+    }
+} = {};
 (window as any).$FRMDB_CHANGES_FEED_HANDLERS$ = Handlers;
 
 let Stop = false;
@@ -16,6 +21,12 @@ export function stopChangesFeedLoop() {
 export async function changesFeedLoop() {
     if (Stop) return;
     // console.debug(`[${CLIENT_ID}] changesFeedLoop START`, new Date(), document?.defaultView?.location?.href);
+
+    let monitoredObjIds: KeyValueObjIdType[] = [];
+    for (let handler of Object.values(Handlers)) {
+        let objsForHandler = handler.getActiveObjectIds();
+        monitoredObjIds.push(...objsForHandler);
+    }
 
     let response = await fetch(`/formuladb-api/changes-feed/${CLIENT_ID}`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -28,6 +39,7 @@ export async function changesFeedLoop() {
         },
         redirect: 'follow', // manual, *follow, error
         referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify(monitoredObjIds),
     });
     // console.debug(`[${CLIENT_ID}] changesFeedLoop response`, response.status, response.statusText);
 
@@ -49,22 +61,34 @@ export async function changesFeedLoop() {
         if (events && events.length > 0) {
             centralizedLog(`changesFeedLoop response events ` +
                 events.map(ev => ev._id + ':' + ev.updatedIds_?.join(',')).join('; '));
-            await Promise.all(Object.values(Handlers).map(h => h(events)));
+            await Promise.all(Object.values(Handlers).map(h => h.callback(events)));
         }
 
         // Call subscribe() again to get the next message
-        await new Promise(resolve => setTimeout(resolve, 250));//release the connection for 250ms
+        await new Promise(resolve => setTimeout(resolve, 550));//release the connection for some time
         await changesFeedLoop();
     }
 }
 
-export function registerChangesFeedHandler(name: string, handler: (events: events.MwzEvents[]) => Promise<void>) {
-    Handlers[name] = handler;
+export function registerChangesFeedHandler(name: string,
+    callback: (events: events.MwzEvents[]) => Promise<void>,
+    getActiveObjectIds: () => KeyValueObjIdType[],
+) {
+    Handlers[name] = {
+        callback,
+        getActiveObjectIds,
+    };
+}
+
+export function updateChangesFeedHandler(name: string,
+    getActiveObjectIds: () => KeyValueObjIdType[],
+) {
+    Handlers[name].getActiveObjectIds = getActiveObjectIds;
 }
 
 export async function hookIframeChangesFeedHandlers(iframeWindow: Window) {
     await waitUntil(() => (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$, 25, 500);
-    let iframeHandlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } =
+    let iframeHandlers: typeof Handlers =
         (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$;
     if (!iframeHandlers) { console.warn('no changes feed handlers for iframe window', iframeWindow); return; }
     for (let handlerName of Object.keys(iframeHandlers)) {

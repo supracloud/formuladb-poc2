@@ -3,13 +3,15 @@
  * License TBD
  */
 
-import { KeyValueObj } from "../key_value_obj";
+import { KeyValueObj, KeyValueObjIdType, _idAsStr } from "../key_value_obj";
+
 export interface DataObj extends KeyValueObj {
-    _id: string;
     _rev?: string;
     _owner?: string;
     _role?: string;
+    _schema_rev?: string;
 }
+
 export interface DataObjId {
     entityId: string;
     id: string;
@@ -19,11 +21,12 @@ export function parsePrefix(prefix: string): string {
     let idx = prefix.indexOf('~~');
     return prefix.substr(0, idx) || 'ZZZblabla';
 }
-export function entityNameFromDataObjId(_id: string): string {
-    return _id.substring(0, _id.indexOf('~~'));
+export function entityNameFromDataObjId(_id: KeyValueObjIdType): string {
+    let id = _idAsStr(_id);
+    return id.substring(0, id.indexOf('~~'));
 }
-export function parseDataObjId(_id: string): DataObjId {
-    let ret = _parseDataObjId(_id);
+export function parseDataObjId(_id: KeyValueObjIdType): DataObjId {
+    let ret = _parseDataObjId(_idAsStr(_id));
     if (ret) return ret;
     else throw new Error("Expected id entityId:id but found " + _id);
 }
@@ -44,11 +47,13 @@ export function parseDataObjIdES5(_id) {
 function _parseDataObjId(_id: string | undefined): DataObjId | null {
     return parseDataObjIdES5(_id);
 }
-export function isNewDataObjId(_id: string): boolean {
-    return _id.endsWith('~~') || _id.endsWith('__') || _id.endsWith('$AUTOID');
+export function isNewDataObjId(_id: KeyValueObjIdType): boolean {
+    let id = _idAsStr(_id);
+    return id.endsWith('~~') || id.endsWith('__') || id.endsWith('$AUTOID');
 }
-export function isNewTopLevelDataObjId(_id: string): boolean {
-    return _id.endsWith('~~');
+export function isNewTopLevelDataObjId(_id: KeyValueObjIdType): boolean {
+    let id = _idAsStr(_id);
+    return id.endsWith('~~');
 }
 
 export function getChildrenPrefix(referencedEntityName: string, parentUID: string) {

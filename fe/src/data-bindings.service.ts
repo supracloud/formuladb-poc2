@@ -2,38 +2,31 @@ import * as _ from "lodash";
 
 import * as events from "@domain/event";
 import { BACKEND_SERVICE, postData, BackendService } from "./backend.service";
-import { updateDOM, serializeElemToObj } from "./live-dom-template/live-dom-template";
-import { DATA_FRMDB_ATTRS_Enum } from "./live-dom-template/dom-node";
+import { serializeElemToObj } from "./live-dom-template/live-dom-template";
+import { updateDOM } from "@fe/live-dom-template/live-dom-template";
+import { DATA_FRMDB_ATTRS_Enum } from "@core/live-dom-template/dom-node";
 import { entityNameFromDataObjId, parseDataObjId, DataObj, isNewDataObjId } from "@domain/metadata/data_obj";
 import { FeFunctionsForDataBinding } from "./fe-functions";
 import { generateTimestampUUID } from "@domain/uuid";
 import { DataGridComponentI } from "./data-grid/data-grid.component.i";
-import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem, makeSimpleAddHocQueryFilterItem_filterType, makeSimpleAddHocQueryFilterItem_type } from "@domain/metadata/simple-add-hoc-query";
+import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem, makeSimpleAddHocQueryFilterItem_filterType, makeSimpleAddHocQueryFilterItem_type, DEFAULT_SIMPLE_ADD_HOC_QUERY } from "@domain/metadata/simple-add-hoc-query";
 import { onEventChildren, onEvent } from "./delegated-events";
 import { regexExtract, waitUntil } from "@domain/ts-utils";
 import { registerChangesFeedHandler } from "./changes-feed-client";
 import { $ImageObjT, $AppObjT, $PageObjT, $Table, $App, $Page } from "@domain/metadata/default-metadata";
-import { isHTMLElement, getWindow } from "@core/dom-utils";
+import { isHTMLElement, getWindowOf } from "@core/dom-utils";
 import { FormService } from "./form.service";
 import { Pn, EntityProperty } from "@domain/metadata/entity";
 import { scalarFormulaEvaluate } from "@core/scalar_formula_evaluate";
+import { _idAsStr, KeyValueObjIdType } from "@domain/key_value_obj";
+import { TableService } from "./table.service";
+import { UserFilterTable } from "./frmdb-user-events";
 
 declare var $: any;
 
-const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
-    startRow: 0,
-    endRow: 100,
-    rowGroupCols: [],
-    valueCols: [],
-    pivotCols: [],
-    pivotMode: false,
-    groupKeys: [],
-    filterModel: {},
-    sortModel: [],
-};
-
 export class DataBindingsService {
-    tablesCache = {};
+    tableService = new TableService();
+    tablesCache: {[tableName: string]: DataObj[]} = {};
 
     constructor(private rootEl: HTMLElement, private formService: FormService) {}
     init() {
@@ -57,7 +50,7 @@ export class DataBindingsService {
                         if (parentRecordEl.getAttribute('data-frmdb-table')) {
                             this.debouncedUpdateDOMForTable(parentRecordEl);
                         } else {
-                            this.debouncedUpdateDOMForTable(parentRecordEl);
+                            this.debouncedUpdateDOMForRecordBinding(parentRecordEl);
                         }
                     }
                 }
@@ -65,7 +58,12 @@ export class DataBindingsService {
         });
 
         observer.observe(this.rootEl, { attributes: true, childList: true, subtree: true });
-        onEvent(this.rootEl, ["change"], 'input[data-frmdb-filter^="$FRMDB."]', async (event) => {
+        onEvent(this.rootEl, ['UserFilterTable'], 'frmdb-data-grid[data-frmdb-filter]', (ev: {detail: UserFilterTable}) => {
+            let tableEl = this.rootEl.querySelector(`[data-frmdb-table="$FRMDB.${ev.detail.tableName}[]"]`);
+            this.debouncedUpdateDOMForTable(tableEl);
+        });
+
+        onEvent(this.rootEl, ["change"], 'input[data-frmdb-filter^="$FRMDB."],select[data-frmdb-filter^="$FRMDB."]', async (event) => {
             if (!event.target || !event.target.outerHTML) return;
             let valExpr = event.target.getAttribute('data-frmdb-filter');
             if (!valExpr) { console.warn("query expr not found ", event.target.outerHTML); return }
@@ -84,8 +82,10 @@ export class DataBindingsService {
         let tableNames = forceTableName ? [`$FRMDB.${forceTableName}[]`] : _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-table^="$FRMDB."]'))
             .map(el => el.getAttribute('data-frmdb-table')));
         for (let tableName of tableNames) {
-            let tableEl = this.rootEl.querySelector(`[data-frmdb-table="${tableName}"]`);
-            await this.updateDOMForTable(tableEl as HTMLElement);
+            let tableEls = this.rootEl.querySelectorAll(`[data-frmdb-table="${tableName}"]:first-child,:not([data-frmdb-table="${tableName}"]) + [data-frmdb-table="${tableName}"]`);
+            for (let tableEl of Array.from(tableEls)) {
+                await this.updateDOMForTable(tableEl as HTMLElement);
+            }
         }
 
         let recordBindingElems: HTMLElement[] = []
@@ -98,7 +98,7 @@ export class DataBindingsService {
     }
 
     public updateDOMWithUrlParameters() {
-        let wnd = getWindow(this.rootEl);
+        let wnd = getWindowOf(this.rootEl);
         let searchStr = wnd.location.search;
         console.log("updateDOMWithUrlParameters", wnd, searchStr);
         let urlParams = new URLSearchParams(searchStr);
@@ -106,7 +106,7 @@ export class DataBindingsService {
         urlParams.forEach((val, key) => paramValues = { ...paramValues, [key]: val });
         updateDOM(paramValues, this.rootEl);
         for (let [key, val] of Object.entries(paramValues)) {
-            let m = key.match(/^\$FRMDB\.(\w+)\{\}\._id$/);
+            let m = key.match(/^\$FRMDB\.([$\w]+)\{\}\._id$/);
             if (m) {
                 let sel = `[data-frmdb-bind-to-record^="$FRMDB.${m[1]}~~"]`;
                 let elems: HTMLElement[] = [];
@@ -114,6 +114,8 @@ export class DataBindingsService {
                 elems = elems.concat(Array.from(this.rootEl.querySelectorAll(sel)));
                 for (let el of elems) {
                     el.setAttribute('data-frmdb-record', val);
+                    // let inputEl = el.querySelector('input,select,textarea');
+                    // inputEl?.dispatchEvent(new Event("change", { bubbles: true }));
                 }
             }
         };
@@ -172,7 +174,7 @@ export class DataBindingsService {
                 updateDOM({
                     $FRMDB: { [`${entityId}{}`]: dataObj },
                 }, el, FeFunctionsForDataBinding);
-                el.setAttribute('data-frmdb-record', dataObj._id);
+                el.setAttribute('data-frmdb-record', _idAsStr(dataObj._id));
             }
         }
     }
@@ -181,6 +183,7 @@ export class DataBindingsService {
         try {
             let tableName = el.getAttribute('data-frmdb-table')?.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
             if (!tableName) { console.warn("Empty table name " + el.outerHTML); return }
+
             let promises: Promise<any>[] = [];
             if (tableName.indexOf('$REFERENCE_TO_OPTIONS') === 0) {
                 promises.push(this.formService.updateOptionsForEl(el));
@@ -197,7 +200,7 @@ export class DataBindingsService {
     }
 
     getQueryForTable(tableName: string): SimpleAddHocQuery {
-        let ret: SimpleAddHocQuery = _.cloneDeep(DefaultSimpleAddHocQuery);
+        let ret: SimpleAddHocQuery = _.cloneDeep(DEFAULT_SIMPLE_ADD_HOC_QUERY);
 
         let filterEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-filter^="$FRMDB.${tableName}[].filter."]`));
         for (let filterEl of filterEls) {
@@ -214,24 +217,83 @@ export class DataBindingsService {
             }
         }
 
+        let filterGrids: DataGridComponentI[] = Array.from(this.rootEl.querySelectorAll(`frmdb-data-grid[data-frmdb-filter][table-name="${tableName}"]`));
+        for (let filterGrid of filterGrids) {
+            ret.filterModel = {
+                ...ret.filterModel,
+                ...filterGrid.getFilterModel(),
+            }
+        }
+
+        let sortEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-sort^="$FRMDB.${tableName}[]"]`));
+        let sortModel: SimpleAddHocQuery['sortModel'] = [];
+        for (let sortEl of sortEls) {
+            let m = sortEl.value.match(/(\w+)\s*(asc|desc)?/);
+            if (m) {
+                sortModel.push({colId: m[1], sort: (m[2] as 'asc'|'desc') || 'asc'});
+            }
+        }
+        ret.sortModel = sortModel;
+
         return ret;
+    }
+
+    public async queryTableRecords(tableName, query): Promise<DataObj[]> {
+        let bes = BACKEND_SERVICE();
+        await BACKEND_SERVICE().waitSchema();
+        if (null == bes?.getCurrentSchema()?.entities?.[tableName]) throw new Error("BE not initialized yet");
+
+        let data = await bes.simpleAdHocQuery(tableName, query);
+        this.tablesCache[tableName] = data;
+        return data;
     }
 
     async updateDOMForTableParent(parentEl: HTMLElement, tableName: string, query: SimpleAddHocQuery, limit: number) {
         try {
-            if (!parentEl) return;
-            let bes = BACKEND_SERVICE();
-            await BACKEND_SERVICE().waitSchema();
-            if (null == bes?.getCurrentSchema()?.entities?.[tableName]) throw new Error("BE not initialized yet");
 
-            let data = await bes.simpleAdHocQuery(tableName, query);
-            this.tablesCache[tableName] = data;
+            if (!parentEl) {console.warn(`Cannot apply data binding for el without parent`); return}
+
+            let allElemsForTable = this.rootEl.querySelectorAll(`[data-frmdb-table="$FRMDB.${tableName}[]"]`);
+            let parents: Set<HTMLElement> = new Set();
+            parents.add(parentEl);
+            for (let otherEl of Array.from(allElemsForTable)) {
+                if (!otherEl.parentElement) {
+                    console.warn(`Cannot apply data binding for otherEl without parent`, otherEl); 
+                    continue
+                }
+                if (otherEl.parentElement != parentEl) {
+                    parents.add(otherEl.parentElement);
+                }
+            }
+
+            let data = await this.queryTableRecords(tableName, query);
             for (let handler of Object.values(this.handlers)) {
                 await handler(tableName, data);
             }
-            updateDOM({
-                $FRMDB: { [tableName]: data.slice(0, limit) },
-            }, parentEl, FeFunctionsForDataBinding);
+
+            let entity = await BACKEND_SERVICE().getEntity(tableName);
+            let filterModelForDataBinding: {
+                [x: string]: SimpleAddHocQueryFilterItem & { firstValue?: string };
+            } = _.cloneDeep(query.filterModel);
+            for (let propName of Object.keys(entity.props)) {
+                if (filterModelForDataBinding[propName] == null) {
+                    filterModelForDataBinding[propName] = { filter: '', filterType: "text", type: "equals"};
+                }                
+                if (data[0]) {
+                    filterModelForDataBinding[propName].firstValue = (data[0][propName] || '') + '';
+                }
+            }
+
+            for (let pEl of parents.values()) {
+                updateDOM({
+                    $FRMDB: { 
+                        [tableName]: data.slice(0, limit),
+                        $QUERY_FILTER: {
+                            [tableName]: filterModelForDataBinding,
+                        }
+                    },
+                }, pEl, FeFunctionsForDataBinding);
+            }
         } catch (err) {
             console.error(err);
         }
@@ -249,18 +311,30 @@ export class DataBindingsService {
         }
     }
 
+    getChangesFeedObjectIds(): KeyValueObjIdType[] {
+        let ret: KeyValueObjIdType[] = [];
+        for (let tableData of Object.values(this.tablesCache)) {
+            let objIds = tableData.map(o => o._id);
+            ret.push(...objIds);
+        }
+        return ret;
+    }
+    private readonly CHANGE_FEED_HANDLE_NAME = "dataBindingsMonitor";
     async monitorDataUpdatesFromServer() {
 
-        registerChangesFeedHandler("dataBindingsMonitor", async (events: events.MwzEvents[]) => {
+        registerChangesFeedHandler(this.CHANGE_FEED_HANDLE_NAME, async (events: events.MwzEvents[]) => {
             let tableNames: Set<string> = new Set<string>();
             for (let event of events) {
-                if (event.type_ === "ServerEventModifiedFormData") {
-                    let { entityId } = parseDataObjId(event.obj._id);
+                if (event.type_ === "ServerEventModifiedFormData" || event.type_ === "ServerEventDeletedFormData") {
+                    let entityId = entityNameFromDataObjId(event.obj._id);
                     tableNames.add(entityId);
                     for (let obj of event.updatedObjs || []) {
                         let { entityId } = parseDataObjId(obj._id);
                         tableNames.add(entityId);
                     }
+                } else if (event.type_ === "ServerEventNewDataObj") {
+                    let entityId = entityNameFromDataObjId(event.obj._id);
+                    tableNames.add(entityId);
                 } else if (event.type_ === "ServerEventDeleteEntity" || event.type_ === "ServerEventNewEntity") {
                     tableNames.add($Table._id);
                     await BACKEND_SERVICE().waitSchema();
@@ -286,6 +360,6 @@ export class DataBindingsService {
                     dataGrid.forceReloadData();
                 }
             }
-        });
+        }, () => this.getChangesFeedObjectIds());
     }
 }

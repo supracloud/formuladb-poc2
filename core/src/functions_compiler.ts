@@ -38,12 +38,22 @@ import {
     CompiledScalar,
     MapKeyQuery,
     includesMapFunctionAndQuery,
-    ScalarCallExpression,
+    isMapReduceTrigger,
+    extendsMapKey,
+    extendsMapValue,
 } from "@domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError, isLogicalCallExpression, isLogicalOpBinaryExpression, extractKeysAndQueriesFromBinaryExpression, BooleanCallExpression, isBooleanCallExpression, LogicalOperator } from './formula_compiler';
+import { FuncCommon, FormulaCompilerContextType, compileExpression, 
+    getViewName, FormulaCompilerError, 
+    extractKeysAndQueriesFromBinaryExpression, 
+    getViewDesc} from './formula_compiler';
+import { isBooleanCallExpression, isBooleanBinaryExpression, 
+    BooleanCallExpression, LogicalBinaryOperator } from '@domain/metadata/expressions';
 import { _throw, _throwEx } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 import { $s2e } from "@functions/s2e";
+import { functionSignature, getFunctionSignature, FunctionSignature } from "./functions_signature_decorator";
+import { TyScalarValues } from "@domain/metadata/types";
+import { ScalarFunctionsImplementations } from "@functions/scalar_functions_implementations";
 import { Pn } from "@domain/metadata/entity";
 
 function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
@@ -195,18 +205,14 @@ function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | Ca
         };
     } else throw new FormulaCompilerError(fc.funcExpr, "GROUP_BY expects MapValue or MapFunction but received " + basicRange.origExpr);
 }
-function IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpression, logicalExpression: LogicalExpression | BinaryExpression): MapReduceKeysAndQueries | MapReduceKeysQueriesAndValue {
-    let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
-    return _IF(fc, inputRange, compiledLogicalExpression);
-}
 function __IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpression, logicalExpression: LogicalExpression | BinaryExpression | CallExpression): [ExecPlanCompiledExpression, MapReduceKeysAndQueries] {
     let inputRange = compileArgNV(fc, 'basicRange', tableRange, [isIdentifier, isMemberExpression], fc.context, MapFunctionN);
     let logicalExpressionContext = { ...fc.context };
-    if (includesMapValue(inputRange)) {
-        logicalExpressionContext.currentEntityName = inputRange.entityId;
+    if (extendsMapValue(inputRange)) {
+        logicalExpressionContext.referencedEntityName = inputRange.entityId;
     }
     let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression,
-        [isLogicalExpression, isLogicalOpBinaryExpression, isLogicalCallExpression],
+        [isLogicalExpression, isBooleanBinaryExpression, isBooleanCallExpression],
         logicalExpressionContext, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
     return [inputRange, compiledLogicalExpression];
 }
@@ -252,16 +258,38 @@ function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLog
                 ...compiledLogicalExpression.mapObserversImpactedByOneObservable,
             }
         };
+    } else if (isMapReduceKeysQueriesAndValue(inputRange)) {
+        return {
+            type_: MapReduceKeysQueriesAndValueN,
+            rawExpr: fc.funcExpr,
+            mapreduceAggsOfManyObservablesQueryableFromOneObs: {
+                map: {
+                    entityId: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId,
+                    keyExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr
+                        .concat(compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr),
+                    valueExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.valueExpr,
+                    query: {
+                        startkeyExpr: compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr,
+                        endkeyExpr: compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr,
+                        inclusive_start: compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
+                        inclusive_end: compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
+                    },
+                },
+            },
+            mapObserversImpactedByOneObservable: {
+                ...compiledLogicalExpression.mapObserversImpactedByOneObservable
+            }
+        };
     } else return {
         type_: MapReduceKeysQueriesAndValueN,
         rawExpr: fc.funcExpr,
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
             map: {
-                entityId: includesMapKey(inputRange) ? inputRange.entityId : _throw("IF Expected MapKey but found ", inputRange),
-                keyExpr: includesMapKey(inputRange) ? inputRange.keyExpr.concat(
+                entityId: extendsMapKey(inputRange) ? inputRange.entityId : _throw("IF Expected MapKey but found ", inputRange),
+                keyExpr: extendsMapKey(inputRange) ? inputRange.keyExpr.concat(
                     compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr)
                     : compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr,
-                valueExpr: includesMapValue(inputRange) ? inputRange.valueExpr : _throw("IF Expected MapValue but found ", inputRange),
+                valueExpr: extendsMapValue(inputRange) ? inputRange.valueExpr : _throw("IF Expected MapValue but found ", inputRange),
                 query: {
                     startkeyExpr: compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr,
                     endkeyExpr: compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr,
@@ -278,8 +306,8 @@ function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLog
 
 function _RANGE(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallExpression, startExpr: Expression, endExpr: Expression, inclusive_start?: Identifier, inclusive_end?: Identifier): MapFunctionAndQuery {
     let inputRange = compileArgNV(fc, 'basicRange', basicRange, [isIdentifier, isMemberExpression, isCallExpression], fc.context, MapFunctionN);
-    if (!includesMapKey(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "basicRange is expected to have lookup keys: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
-    if (!includesMapValue(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "basicRange is expected to have a selected column or computed value: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
+    if (!extendsMapKey(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "basicRange is expected to have lookup keys: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
+    if (!extendsMapValue(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "basicRange is expected to have a selected column or computed value: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
     let compiledStartExpr = compileArg(fc, 'start', startExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
     if (!isCompiledScalar(compiledStartExpr) || !compiledStartExpr.has$Identifier || compiledStartExpr.hasNon$Identifier)
         throw new FormulaCompilerError(fc.funcExpr, "RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + startExpr.origExpr + "; " + CircularJSON.stringify(compiledStartExpr, null, 4));
@@ -308,8 +336,8 @@ export const MapFunctions = {
     _MAP_KEY: _MAP_KEY,
     _MAP: _MAP,
     _RANGE: _RANGE,
-    IF: IF,
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // reduce functions
@@ -321,14 +349,16 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
             type_: MapReduceTriggerN,
             rawExpr: fc.funcExpr,
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-                aggsViewName: getViewName(true, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId, fc.funcExpr),
+                aggsViewName: getViewName(true, fc.context.targetPropertyName, fc.funcExpr, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId),
+                aggsViewDescription: getViewDesc(true, fc.context.targetPropertyName, fc.funcExpr, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map),
                 map: {
                     ...inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
                 },
                 reduceFun: reduceFun,
             },
             mapObserversImpactedByOneObservable: {
-                obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
+                obsViewName: getViewName(false, fc.context.targetPropertyName, fc.funcExpr, fc.context.targetEntityName),
+                obsViewDescription: getViewDesc(false, fc.context.targetPropertyName, fc.funcExpr, {entityId: fc.context.targetEntityName, keyExpr: inputRange.mapObserversImpactedByOneObservable.keyExpr}),
                 entityId: fc.context.targetEntityName,
                 ...inputRange.mapObserversImpactedByOneObservable,
                 valueExpr: $s2e(`@[_id]`),
@@ -339,7 +369,11 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
             type_: MapReduceTriggerN,
             rawExpr: fc.funcExpr,
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-                aggsViewName: getViewName(true, inputRange.entityId, fc.funcExpr),
+                aggsViewName: getViewName(true, fc.context.targetPropertyName, fc.funcExpr, inputRange.entityId),
+                aggsViewDescription: getViewDesc(true, fc.context.targetPropertyName, fc.funcExpr, {
+                    entityId: inputRange.entityId,
+                    keyExpr: isMapValue(inputRange) ? [$s2e(`_id`)] : inputRange.keyExpr,
+                }),
                 map: {
                     entityId: inputRange.entityId,
                     keyExpr: isMapValue(inputRange) ? [$s2e(`_id`)] : inputRange.keyExpr,
@@ -354,7 +388,11 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
                 reduceFun: reduceFun,
             },
             mapObserversImpactedByOneObservable: {
-                obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
+                obsViewName: getViewName(false, fc.context.targetPropertyName, fc.funcExpr, fc.context.targetEntityName),
+                obsViewDescription: getViewDesc(false, fc.context.targetPropertyName, fc.funcExpr, {
+                    entityId: fc.context.targetEntityName,
+                    keyExpr: [$s2e(`@[_id]`)],
+                }),
                 entityId: fc.context.targetEntityName,
                 keyExpr: [$s2e(`@[_id]`)],
                 valueExpr: $s2e(`@[_id]`),
@@ -369,54 +407,14 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
     }
 }
 
-function SUM(fc: FuncCommon, tableRange: MemberExpression | CallExpression): MapReduceTrigger {
-    let inputRange = compileArg(fc, 'basicRange', tableRange, [isMemberExpression, isCallExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
-    return _REDUCE(fc, inputRange, { name: SumReduceFunN });
-}
-
-function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
-    return {
-        type_: CompiledScalarN,
-        rawExpr: fc.funcExpr,
-        has$Identifier: false,
-        hasNon$Identifier: false,
-    };
-}
-
-function REFERENCE_TO_COLUMN(fc: FuncCommon, tableRange: MemberExpression, required: "true" | "false"): CompiledScalar {
-    if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO_COLUMN expects an TableName.column_name as argument");
-    return propertyTypeFunction(fc);
-}
-function HLOOKUP_COLUMN(fc: FuncCommon, refToPropName: string, refPropName: string, required: "true" | "false"): CompiledScalar {
-    return propertyTypeFunction(fc);
-}
-function NUMBER_COLUMN(fc: FuncCommon, required: "true" | "false") {
-    return propertyTypeFunction(fc);
-}
-function TEXT_COLUMN(fc: FuncCommon, required: "true" | "false") {
-    return propertyTypeFunction(fc);
-}
-function IMAGE_COLUMN(fc: FuncCommon, required: "true" | "false") {
-    return propertyTypeFunction(fc);
-}
-function KEY_COLUMN(fc: FuncCommon, scalarFormula: ScalarCallExpression | CompiledScalar) {
-    return propertyTypeFunction(fc);
-}
-function DATETIME_COLUMN(fc: FuncCommon, required: "true" | "false") {
-    return propertyTypeFunction(fc);
-}
-
-
+functionSignature("SUMIF", { types: [{name: "NumberAggType"}]}, "sum the values in another table matching a condition", {name: 'table_column', types: [{name: "TableAndColumnNameType"}]}, {name: 'condition', types: [{name: "BooleanType"}]});
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
     if (!isMapReduceKeysQueriesAndValue(range)) throw new FormulaCompilerError(fc.funcExpr, "SUMIF expects a value to sum at " + fc.funcExpr.origExpr);
     return _REDUCE(fc, range, { name: SumReduceFunN });
 }
-function COUNT(fc: FuncCommon, tableRange: MemberExpression | CallExpression) {
-    let inputRange = compileArg(fc, 'basicRange', tableRange, [isMemberExpression, isCallExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
-    return _REDUCE(fc, inputRange, { name: CountReduceFunN });
-}
+functionSignature("COUNTIF", { types: [{name: "NumberAggType"}]}, "count the values in another table matching a condition", {name: 'tableRange', types: [{name: "TableNameType"}, {name: "TableAndColumnNameType"}]}, {name: 'logicalExpression', types: [{name: "BooleanType"}]});
 function COUNTIF(fc: FuncCommon, tableRange: Identifier | MemberExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     if (!tableRange || !logicalExpression) throw new FormulaCompilerError(fc.funcExpr, "Expected arguments tableRange, logicalExpression");
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
@@ -437,20 +435,33 @@ function COUNTIF(fc: FuncCommon, tableRange: Identifier | MemberExpression, logi
     }
     return _REDUCE(fc, countRange, { name: CountReduceFunN });
 }
-function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiteral): MapReduceTrigger {
-    let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
+functionSignature("TEXTJOIN", { types: [{name: "TextAggType"}]}, "concatenate the values in another table matching a condition", {name: 'tableRange', types: [{name: "TableAndColumnNameType"}]}, {name: 'logicalExpression', types: [{name: "BooleanType"}]}, {name: 'delimiter', types: [{name: "TextType"}]});
+function TEXTJOIN(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression, delimiter: StringLiteral): MapReduceTrigger {
+    if (!tableRange || !logicalExpression) throw new FormulaCompilerError(fc.funcExpr, "Expected arguments tableRange, logicalExpression");
+    let [_inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
+    let inputRange = _IF(fc, _inputRange, compiledLogicalExpression);
+    if (!isMapReduceKeysQueriesAndValue(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "TEXTJOIN expects a value to join at " + fc.funcExpr.origExpr);
 
     return {
         ...inputRange,
         type_: MapReduceTriggerN,
         mapObserversImpactedByOneObservable: {
             ...inputRange.mapObserversImpactedByOneObservable,
-            obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
+            obsViewName: getViewName(false, fc.context.targetPropertyName, fc.funcExpr, fc.context.targetEntityName),
+            obsViewDescription: getViewDesc(false, fc.context.targetPropertyName, fc.funcExpr, {
+                entityId: fc.context.targetEntityName,
+                keyExpr: inputRange.mapObserversImpactedByOneObservable.keyExpr,
+            }),
             valueExpr: $s2e(`@[_id]`),
             entityId: fc.context.targetEntityName,
         },
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-            aggsViewName: getViewName(true, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId, fc.funcExpr),
+            aggsViewName: getViewName(true, fc.context.targetPropertyName, fc.funcExpr, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId),
+            aggsViewDescription: getViewDesc(true, fc.context.targetPropertyName, fc.funcExpr, {
+                entityId: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId,
+                keyExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr
+                    .concat(inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.valueExpr),
+            }),
             map: {
                 entityId: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId,
                 keyExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr
@@ -475,24 +486,37 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
  * Reduces using _count and then searches 
  */
 // function RANK(value: string | Expression, data: string | CallExpression, isAscending: string | Literal): string { return f2s(RANK, value, data, isAscending); }
-function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression): MapReduceTrigger {
-    let compiledLookupExpr = compileArg(fc, 'lookupExpr', lookupExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
-    if (!isCompiledScalar(compiledLookupExpr) || !compiledLookupExpr.has$Identifier || compiledLookupExpr.hasNon$Identifier)
-        throw new FormulaCompilerError(fc.funcExpr, "RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + lookupExpr.origExpr + "; " + CircularJSON.stringify(compiledLookupExpr, null, 4));
-    let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapFunctionN, isMapFunction);
-
+functionSignature("RANK", { types: [{name: "NumberAggType"}]}, "compute the position of a value from the current table in a list of values from another table", {name: 'group_lookups_by', types: TyScalarValues, denyNon$Identifier: true}, {name: 'lookup_value', types: TyScalarValues, denyNon$Identifier: true}, { name: "table", types: [{name: "TableNameType"}]}, {name: 'group_values_by', types: TyScalarValues, deny$Identifier: true}, {name: 'values', types: TyScalarValues, deny$Identifier: true});
+function RANK(fc: FuncCommon, group_lookups_by: Expression, lookupExpr: Expression, table: Identifier, group_values_by: Expression, values: Expression): MapReduceTrigger {
+    if (!isIdentifier(table)) throw new FormulaCompilerError(fc.funcExpr, `RANK expects a table to compute the list of lookup values, but found ${table}`);
+    let c = compileArg(fc, 'group_lookups_by', group_lookups_by, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
+    if (!isCompiledScalar(c) || !c.has$Identifier || c.hasNon$Identifier)
+        throw new FormulaCompilerError(fc.funcExpr, `RANK expects lookup group_by expression to be a formula using values from the current record (e.g. @[column_name] where column_name is a column of ${fc.context.targetEntityName})`);
+    if (!isCompiledScalar(c) || !c.has$Identifier || c.hasNon$Identifier)
+        throw new FormulaCompilerError(fc.funcExpr, `RANK expects lookup_value to be a formula using values from the current record (e.g. @[column_name] where column_name is a column of ${fc.context.targetEntityName})`);
+    c = compileArg(fc, 'start_expr', group_values_by, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
+    if (!isCompiledScalar(c) || c.has$Identifier || !c.hasNon$Identifier)
+        throw new FormulaCompilerError(fc.funcExpr, `RANK expects a start_value to be a formula applied to records from table ${table.name} (not using @[], just plain column names from table ${table.name})`);
+    c = compileArg(fc, 'end_expr', values, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
+    if (!isCompiledScalar(c) || c.has$Identifier || !c.hasNon$Identifier)
+        throw new FormulaCompilerError(fc.funcExpr, `RANK expects a end_value to be a formula applied to records from table ${table.name} (not using @[], just plain column names from table ${table.name})`);
+    
     return {
         type_: MapReduceTriggerN,
         rawExpr: fc.funcExpr,
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-            aggsViewName: getViewName(true, inputRange.entityId, fc.funcExpr),
+            aggsViewName: getViewName(true, fc.context.targetPropertyName, fc.funcExpr, table.name),
+            aggsViewDescription: getViewDesc(true, fc.context.targetPropertyName, fc.funcExpr, {
+                entityId: table.name,
+                keyExpr: [group_values_by, values],
+            }),
             map: {
-                entityId: inputRange.entityId || _throw("RANK table range missing table name: " + tableRange.origExpr + "; " + CircularJSON.stringify(inputRange)),
-                keyExpr: inputRange.keyExpr,
+                entityId: table.name,
+                keyExpr: [group_values_by, values],
                 valueExpr: $s2e(`1`),
                 query: {
-                    startkeyExpr: isArrayExpression(lookupExpr) ? lookupExpr.elements.slice(0, -1).concat($s2e(`null`)) : [$s2e(`null`)],
-                    endkeyExpr: isArrayExpression(lookupExpr) ? lookupExpr.elements : [lookupExpr],
+                    startkeyExpr: [group_lookups_by],
+                    endkeyExpr: [group_lookups_by, lookupExpr],
                     inclusive_start: false,
                     inclusive_end: true,
                 }
@@ -500,13 +524,17 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
             reduceFun: { name: CountReduceFunN },
         },
         mapObserversImpactedByOneObservable: {
-            obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
+            obsViewName: getViewName(false, fc.context.targetPropertyName, fc.funcExpr, fc.context.targetEntityName),
+            obsViewDescription: getViewDesc(false, fc.context.targetPropertyName, fc.funcExpr, {
+                entityId: fc.context.targetEntityName,
+                keyExpr: [group_lookups_by, lookupExpr],
+            }),
             entityId: fc.context.targetEntityName,
-            keyExpr: isArrayExpression(lookupExpr) ? lookupExpr.elements : [lookupExpr],
+            keyExpr: [group_lookups_by, lookupExpr],
             valueExpr: $s2e(`@[_id]`),
             query: {
-                startkeyExpr: inputRange.keyExpr.slice(0, -1),
-                endkeyExpr: inputRange.keyExpr.slice(0, -1).concat($s2e(`"\ufff0"`)),
+                startkeyExpr: [group_values_by],
+                endkeyExpr: [group_values_by, $s2e(`"\ufff0"`)],
                 inclusive_start: true,
                 inclusive_end: true,
             }
@@ -514,17 +542,11 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
     }
 }
 
-function VLOOKUP(fc: FuncCommon, entityRange, booleanExpr, resultExpr) {
-}
-
 export const MapReduceFunctions = {
-    SUM: SUM,
     SUMIF: SUMIF,
-    COUNT: COUNT,
     COUNTIF: COUNTIF,
     TEXTJOIN: TEXTJOIN,
     RANK: RANK,
-    VLOOKUP: VLOOKUP,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,13 +577,14 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
     };
 }
 
+functionSignature("AND", { types: [{name: "BooleanType"}]}, "returns true if both conditions are true", {name: 'condition1', types: [{name: "BooleanType"}]}, {name: 'condition2', types: [{name: "BooleanType"}]});
 function AND(fc: FuncCommon, leftExpr: BinaryExpression | BooleanCallExpression, rightExpr: BinaryExpression | BooleanCallExpression): CompiledScalar | MapReduceKeysAndQueries {
     if (fc.requestedRetType == CompiledScalarN) return compileScalarFunction.apply(null, arguments);
 
     let left: MapReduceKeysAndQueries | null = null;
     let right: MapReduceKeysAndQueries | null = null;
-    if (isLogicalOpBinaryExpression(leftExpr)) left = extractKeysAndQueriesFromBinaryExpression(leftExpr, fc.context);
-    if (isLogicalOpBinaryExpression(rightExpr)) right = extractKeysAndQueriesFromBinaryExpression(rightExpr, fc.context);
+    if (isBooleanBinaryExpression(leftExpr)) left = extractKeysAndQueriesFromBinaryExpression(leftExpr, fc.context);
+    if (isBooleanBinaryExpression(rightExpr)) right = extractKeysAndQueriesFromBinaryExpression(rightExpr, fc.context);
 
     if (left && right) {
 
@@ -614,29 +637,34 @@ function AND(fc: FuncCommon, leftExpr: BinaryExpression | BooleanCallExpression,
     } else return compileScalarFunction.apply(null, arguments);
 }
 
+functionSignature("OR", { types: [{name: "BooleanType"}]}, "returns true is one of the conditions is true", {name: 'condition1', types: [{name: "BooleanType"}]}, {name: 'conditin2', types: [{name: "BooleanType"}]});
 function OR(fc: FuncCommon, leftExpr: BinaryExpression | BooleanCallExpression, rightExpr: BinaryExpression | BooleanCallExpression): CompiledScalar | MapReduceKeysAndQueries {
+    if (fc.requestedRetType != CompiledScalarN) {
+        throw new FormulaCompilerError(fc.funcExpr, "OR is not currently supported in aggregations");
+    }
     return compileScalarFunction.apply(null, arguments);
 }
 
+functionSignature("NOT", { types: [{name: "BooleanType"}]}, "returns true is the condition is false", {name: 'condition', types: [{name: "BooleanType"}]});
 function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): CompiledScalar | MapReduceKeysAndQueries {
     if (fc.requestedRetType == CompiledScalarN) return compileScalarFunction.apply(null, arguments);
-    else if (isLogicalOpBinaryExpression(expr)) {
+    else if (isBooleanBinaryExpression(expr)) {
         let negatedExpr = _.cloneDeep(expr);
 
         switch (expr.operator) {
-            case '==':
+            case '=':
                 break;
             case '<':
-                negatedExpr.operator = '>=' as LogicalOperator;
+                negatedExpr.operator = '>=' as LogicalBinaryOperator;
                 break;
             case '<=':
-                negatedExpr.operator = '>' as LogicalOperator;
+                negatedExpr.operator = '>' as LogicalBinaryOperator;
                 break;
             case '>':
-                negatedExpr.operator = '<=' as LogicalOperator;
+                negatedExpr.operator = '<=' as LogicalBinaryOperator;
                 break;
             case '>=':
-                negatedExpr.operator = '<' as LogicalOperator;
+                negatedExpr.operator = '<' as LogicalBinaryOperator;
                 break;
             default: throw new FormulaCompilerError(expr, "Expected logical binary operator but found " + expr.operator);
         }
@@ -647,126 +675,112 @@ function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): Co
         return compileScalarFunction.apply(null, arguments);
     } else throw new FormulaCompilerError(fc.funcExpr, "Expected Logical BinaryExpression");
 }
-function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function ID(fc: FuncCommon, _id: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function CONCATENATE(fc: FuncCommon, expr: Expression, expr2: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function REGEXREPLACE(fc: FuncCommon, expr: Expression, regex: StringLiteral, replacement: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function SUBSTITUTE(fc: FuncCommon, expr: Expression, old_text: Expression, new_text: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function EOMONTH(fc: FuncCommon, expr: Expression, numMonths: NumberLiteral): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function SQRT(fc: FuncCommon, expr: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function ROUND(fc: FuncCommon, expr: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function FACT(fc: FuncCommon, expr: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function HLOOKUP(fc: FuncCommon, expr: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function FLOOR(fc: FuncCommon, expr: Expression, significance: NumberLiteral): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function DATEDIF(fc: FuncCommon, start_date: Expression, end_date: Expression, unit: StringLiteral): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function INTERSECTS(fc: FuncCommon, range_1: Expression, range_2: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function NUMRANGE(fc: FuncCommon, start: Expression, end: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
-function DATERANGE(fc: FuncCommon, start: Expression, end: Expression): CompiledScalar {
-    return compileScalarFunction.apply(null, arguments);
-}
 
-export const ScalarFunctions = {
+const ScalarFunctionInMapReduce = {
     AND: AND,
     OR: OR,
     NOT: NOT,
-    TEXT: TEXT,
-    ID: ID,
-    CONCATENATE: CONCATENATE,
-    REGEXREPLACE: REGEXREPLACE,
-    SUBSTITUTE: SUBSTITUTE,
-    EOMONTH: EOMONTH,
-    SQRT: SQRT,
-    ROUND: ROUND,
-    FACT: FACT,
-    HLOOKUP: HLOOKUP,
-    FLOOR: FLOOR,
-    DATEDIF: DATEDIF,
-    INTERSECTS: INTERSECTS,
-    NUMRANGE: NUMRANGE,
-    DATERANGE: NUMRANGE,
 }
 
-export const PropertyTypeFunctions = {
-    [Pn.NUMBER + '_COLUMN']: NUMBER_COLUMN,
-    [Pn.TEXT + '_COLUMN']: TEXT_COLUMN,
-    [Pn.IMAGE + '_COLUMN']: IMAGE_COLUMN,
-    [Pn.DATETIME + '_COLUMN']: DATETIME_COLUMN,
-    [Pn.REFERENCE_TO + '_COLUMN']: REFERENCE_TO_COLUMN,
-    [Pn.HLOOKUP + '_COLUMN']: HLOOKUP_COLUMN,
-    [Pn.KEY + '_COLUMN']: KEY_COLUMN,
+functionSignature("HLOOKUP", {types: TyScalarValues}, 
+    "lookup the value from a record in a different table referenced by the current record", 
+    { name: 'REFERENCE_TO_colum', types: [{name: "RefToColumnNameType"}] }, 
+    { name: 'referenced_column', types: [{name: "ReferencedTableColumnNameType"}]}
+);
+export const LookupFunctions = {
+    HLOOKUP: compileScalarFunction,
+    // VLOOKUP: compileScalarFunction,
 }
 
-export const FunctionsDict: { [x: string]: Function } = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
+export const ScalarFunctionNames = Object.getOwnPropertyNames(ScalarFunctionsImplementations)
+    .concat(Object.getOwnPropertyNames(Object.getPrototypeOf(ScalarFunctionsImplementations)))
+    .filter(x => x !== "constructor"); 
+export const ScalarFunctionsSignatures: FunctionSignature[] 
+    = ScalarFunctionNames.map(fN => getFunctionSignature(fN) || _throw<FunctionSignature>(`Cannot find signature for ${fN}`)) as any;
+export const LookupFunctionNames = Object.keys(LookupFunctions);
+export const LookupFunctionSignatures: FunctionSignature[] = LookupFunctionNames.map(n => getFunctionSignature(n) || _throw(`signature for ${n} not found`));
+export const MapReduceFunctionNames = Object.keys(MapReduceFunctions);
+export const MapReduceFunctionSignatures: FunctionSignature[] = Object.keys(MapReduceFunctions).map(n => getFunctionSignature(n) || _throw(`signature for ${n} not found`));
+    
+export const ScalarFunctions: {[K in keyof typeof ScalarFunctionsImplementations]: () => ExecPlanCompiledExpression} = 
+    Object.assign(
+        ScalarFunctionNames
+        .filter(k => !Object.keys(ScalarFunctionInMapReduce).includes(k))
+        .reduce((agg, fN) => {
+            agg[fN] = compileScalarFunction;
+            return agg;
+        }, {} as any),
+        ScalarFunctionInMapReduce
+    )
+;
+
+functionSignature("NUMBER_INPUT", {types: [{name: "InputColumnType"}]}, "input number values");
+functionSignature("TEXT_INPUT", {types: [{name: "InputColumnType"}]}, "input text values");
+functionSignature("RICH_TEXT_INPUT", {types: [{name: "InputColumnType"}]}, "input rich text values");
+functionSignature("DATETIME_INPUT", {types: [{name: "InputColumnType"}]}, "input date/time values");
+functionSignature("BOOLEAN_INPUT", {types: [{name: "InputColumnType"}]}, "input true/false logical values");
+functionSignature("MEDIA_INPUT", {types: [{name: "InputColumnType"}]}, "upload images values");
+functionSignature("REFERENCE_TO", {types: [{name: "TextType"}]}, "reference a record from another table", { name: 'referenced_table', types: [{name: "TableNameType"}] });
+functionSignature("KEY", {types: [{name: "TextType"}]}, "computed key value, uniquely identifying the record", { name: 'computed_key_formula', types: [{name: "TextType"}] });
+functionSignature("VALIDATE_RECORD", 
+    {types: [{name: "BooleanType"}]}, 
+    "validation formula, prevent invalid records from being saved", 
+    { name: 'condition', types: [{name: "BooleanType"}] }, 
+    { name: 'error_message', types: [{name: "TextType"}] }, 
+    { name: 'message_param_1', types: [{name: "TextType"}, {name: "NumberType"}, {name: "DatetimeType"}] }, 
+    { name: 'message_param_2', types: [{name: "TextType"}, {name: "NumberType"}, {name: "DatetimeType"}] }, 
+    { name: 'message_param_3', types: [{name: "TextType"}, {name: "NumberType"}, {name: "DatetimeType"}] }, 
+    { name: 'message_param_4', types: [{name: "TextType"}, {name: "NumberType"}, {name: "DatetimeType"}] }
+);
+functionSignature("AUTO_CORRECT", {types: [{name: "BooleanType"}]}, "auto-correction formula", 
+    { name: 'condition', types: [{name: "BooleanType"}] });
+functionSignature("COMPUTED_RECORD", {types: [{name: "ActionType"}]}, 
+    "evaluate id_formula in referenced table and create rows in the current table with the resulting _id",
+    { name: 'target_table_name', types: [{name: "TableNameType"}] },
+    { name: 'id_formula', types: [{name: "TextType"}] },
+);
+functionSignature("COMPUTED_RECORD_VALUE", {types: [{name: "ActionType"}]}, 
+    "use this function to create computed values for COMPUTED_RECORD(s)", 
+    { name: 'formula', types: [{name: "TextType"}] },
+);
+
+export enum PropertyTypeFunctionsNames {
+    NUMBER_INPUT = "NUMBER_INPUT",
+    TEXT_INPUT = "TEXT_INPUT",
+    RICH_TEXT_INPUT = "RICH_TEXT_INPUT",
+    MEDIA_INPUT = "MEDIA_INPUT",
+    BOOLEAN_INPUT = "BOOLEAN_INPUT",
+    DATETIME_INPUT = "DATETIME_INPUT",
+    REFERENCE_TO = "REFERENCE_TO",
+    KEY = "KEY",
+    VALIDATE_RECORD = "VALIDATE_RECORD",
+    AUTO_CORRECT = "AUTO_CORRECT",
+    COMPUTED_RECORD = "COMPUTED_RECORD",
+    COMPUTED_RECORD_VALUE = "COMPUTED_RECORD_VALUE",
+}
+export const PropertyTypeFunctions = Object.keys(PropertyTypeFunctionsNames)
+    .reduce((agg, fN) => {
+        agg[fN] = compileScalarFunction;
+        return agg;
+    }, {} as any)
+export const PropertyTypeFunctionsSignatures: FunctionSignature[] 
+    = Object.keys(PropertyTypeFunctionsNames).map(fN => getFunctionSignature(fN) || _throw<FunctionSignature>(`Cannot find signature for ${fN}`)) as any;
+
+export const FunctionsDict: { [x: string]: Function } = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions);
 export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapFunctions))
     .concat(Object.keys(MapReduceFunctions))
+    .concat(Object.keys(ScalarFunctionInMapReduce))
     .concat(Object.keys(PropertyTypeFunctions))
 ;
 
-//cat core/src/functions_compiler.ts | perl -ne 'if (/^function ([A-Z_]+)\(/) {my $f=$1; s!:[\w \|]+([,)])!$1!g; s!\).*!)!; chomp; print "$f: `$_`,\n"}'
-export const FunctionSignatures = {
-    _MAP_VALUE: `function _MAP_VALUE(fc, fullTableRange, valueExpr)`,
-    _MAP_KEY: `function _MAP_KEY(fc, fullTableRange, keyExpr)`,
-    _MAP: `function _MAP(fc, basicRange, keyExpr, valueExpr?)`,
-    GROUP_BY: `function GROUP_BY(fc, basicRange, ...groupExpr: Expression[])`,
-    IF: `function IF(fc, tableRange, logicalExpression)`,
-    __IF: `function __IF(fc, tableRange, logicalExpression)`,
-    _IF: `function _IF(fc, inputRange, compiledLogicalExpression)`,
-    _RANGE: `function _RANGE(fc, basicRange, startExpr, endExpr, inclusive_start?, inclusive_end?)`,
-    _REDUCE: `function _REDUCE(fc, inputRange, reduceFun)`,
-    SUM: `function SUM(fc, tableRange)`,
-    REFERENCE_TO_COLUMN: `function REFERENCE_TO_COLUMN(fc, tableRange, required)`,
-    HLOOKUP_COLUMN: `function HLOOKUP_COLUMN(fc, REFERENCE_TO_column_name, referenced_column_name, required)`,
-    NUMBER_COLUMN: `function NUMBER_COLUMN(fc, required)`,
-    IMAGE_COLUMN: `function IMAGE_COLUMN(fc, required)`,
-    BOOLEAN_COLUMN: `function BOOLEAN_COLUMN(fc, required)`,
-    DATETIME_COLUMN: `function DATETIME_COLUMN(fc, required)`,
-    KEY_COLUMN: `function KEY_COLUMN(fc, scalarFormula)`,
-    SUMIF: `function SUMIF(fc, tableRange, logicalExpression)`,
-    COUNT: `function COUNT(fc, tableRange)`,
-    COUNTIF: `function COUNTIF(fc, tableRange, logicalExpression)`,
-    TEXTJOIN: `function TEXTJOIN(fc, tableRange, delimiter)`,
-    RANK: `function RANK(fc, lookupExpr, tableRange)`,
-    VLOOKUP: `function VLOOKUP(fc, entityRange, booleanExpr, resultExpr)`,
-    TEXT: `function TEXT(fc, expr, format)`,
-    ID: `function ID(fc, _id)`,
-    CONCATENATE: `function CONCATENATE(fc, expr, expr2, expr3, expr4, expr5, expr6)`,
-    REGEXREPLACE: `function REGEXREPLACE(fc, expr, regex, replacement)`,
-    SUBSTITUTE: `function SUBSTITUTE(fc, expr, old_text, new_text)`,
-    EOMONTH: `function EOMONTH(fc, expr, numMonths)`,
-    SQRT: `function SQRT(fc, expr)`,
-    ROUND: `function ROUND(fc, expr)`,
-    FACT: `function FACT(fc, expr)`,
-    HLOOKUP: `function HLOOKUP(fc, expr)`,
-    FLOOR: `function FLOOR(fc, expr, significance)`,
-    DATEDIF: `function DATEDIF(fc, start_date, end_date, unit)`,
-    INTERSECTS: `function INTERSECTS(fc, start_date_1, end_date_1, start_date_2, end_date_2, max_interval)`,
+function f2s(fN: string, ...args): string {
+    if (args.length == 0) return fN;
+    return fN + '(' + args.join(', ') + ')';
 }
+console.log(FunctionsList);
+export const Fn: {[fN in keyof (typeof ScalarFunctions & typeof MapFunctions & typeof MapReduceFunctions)]: 
+    (fN: string, ...args) => string } = FunctionsList.reduce((agg, fN) => {
+        agg[fN] = (...args) => f2s(fN, ...args);
+        return agg;
+    }, {} as any);

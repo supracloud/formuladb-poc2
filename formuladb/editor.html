@@ -10,10 +10,11 @@
 
 <body>
     <div class="top-panel d-flex flex-column shadow-sm">
-        <frmdb-data-grid class="flex-grow-1" data-frmdb-attr="table-name:selectedTableId" expand-row="#edit-record-modal" no-floating-filters="true">
+        <frmdb-data-grid class="flex-grow-1" data-frmdb-attr="table-name:selectedTableId" expand-row="#edit-record-modal" no-floating-filters="true" apply-i18n="false"
+            data-frmdb-intro-step="10" aria-label="Data Table view. Here you can browse data in your Tables, filter data, sort data.">
         </frmdb-data-grid>
         <div class="button-bar flex-grow-0 d-flex">
-            <frmdb-formula-editor></frmdb-formula-editor>
+            <frmdb-formula-editor aria-label="Table Column/Formula editor. The definition/formula for the selected table column can be viewed and edited here." data-frmdb-intro-step="11"></frmdb-formula-editor>
 
             <div class="btn-group mr-3" role="group">
                 <button class="btn btn-light" title="Undo most recent change" id="undo-btn" data-frmdb-action="undo" data-vvveb-shortcut="ctrl+z">
@@ -23,11 +24,7 @@
                 <button class="btn btn-light" title="Redo change" id="redo-btn" data-frmdb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
                     <i class="frmdb-i-1841775-undo frmdb-i-flip-horizontal"></i>
                 </button>
-
-                <button class="btn btn-light" onclick="$FRMDB_EDITOR.addPageElement()" href="javascript:void(0)" title="Add Page Element">
-                    <i class="frmdb-i-plus-circle"></i>
-                </button>
-
+                
                 <button class="btn btn-light" onclick="$FRMDB_EDITOR.reloadCanvas()" href="javascript:void(0)" title="Reload Page">
                     <i class="frmdb-i-1651209-refresh"></i>
                 </button>
@@ -35,13 +32,9 @@
             </div>
 
             <div class="btn-group dropdown frmdb-dropdown-hover" data-frmdb-select="i" role="menu">
-                <button class="btn btn-light" title="Save Page">
+                <button id="save-btn" class="btn btn-light" title="Save Page">
                     <i class="frmdb-i-save"></i>
                 </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="screen-size-dropdown-toggle">
-                    <a id="save-btn" class="dropdown-item">Save Page & Update App default look & feel</a>
-                    <a id="save-btn-single-page" class="dropdown-item">Save Page with specific look & feel, not matching the app</a>
-                </div>
             </div>
 
             <div class="btn-group mr-3" role="group">
@@ -50,10 +43,10 @@
                 </a>
             </div>
 
-            <frmdb-theme-customizer></frmdb-theme-customizer>
-            <frmdb-i18n-customizer></frmdb-i18n-customizer>
+            <frmdb-theme-customizer data-frmdb-intro-step="7" title="Instantly customize the color palette, fonts/long and theme of your page."></frmdb-theme-customizer>
+            <frmdb-i18n-customizer data-frmdb-intro-step="8" title="Change language and auto-translate your page."></frmdb-i18n-customizer>
 
-            <div class="btn-group mr-3" role="group">
+            <div class="btn-group mr-3" role="group" data-frmdb-intro-step="9" title="Preview page, Enable Full Scren, Check how your page looks on mobile devices.">
                 <button class="btn btn-light" title="Preview" id="preview-btn" type="button" data-toggle="button" aria-pressed="false"
                     data-frmdb-action="preview">
                     <i class="frmdb-i-eye"></i>
@@ -81,110 +74,122 @@
                         <a class="dropdown-item" title="Desktop view" data-frmdb-action="viewport-laptop"><i class="frmdb-i-laptop"></i> Desktop</a>
                     </div>
                 </div>
+                    
+                <div class="btn-group dropdown frmdb-dropdown-hover px-2" data-frmdb-select="i" role="menu">
+                    <button class="btn btn-light px-2" title="Save Page">
+                        <i class="frmdb-i-ellipsis-v"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="screen-size-dropdown-toggle">
+                        <a id="save-btn-single-page" class="dropdown-item">Save Page with specific look & feel, not matching the app</a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
     <div class="left-panel border-right shadow">
-        <div class="d-flex justify-content-between"
-            style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
-            <img id="logo" src="/formuladb/img/logo.png" style="width: 90px; height: 28px;" />
-            <a class="btn btn-sm btn-outline-light m-2" href="javascript:void(0)" data-frmdb-action="showIntroVideoModal"><i class="frmdb-i-info"></i></a>
+        <div data-frmdb-intro-step="1" title="The main navigation for Apps, Tables and Pages.">
+            <div class="d-flex justify-content-between" data-frmdb-intro-step="12" title="Thank you for following the intro! Go ahead and build amazing websites or business apps."
+                style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
+                <a href="/"><img id="logo" src="/formuladb/img/logo.png" style="width: 90px; height: 28px;" /></a>
+                <a class="btn btn-sm btn-outline-light m-2" href="javascript:void(0)" data-toggle="intro"><i class="frmdb-i-info"></i></a>
+            </div>
+
+            <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;"  data-frmdb-intro-step="2" title="List of apps dropdown. Use it to navigate to any app in your environment.">
+                <li class="nav-item" title="list of apps">
+                    <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                        <i class="frmdb-i-sitemap"></i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1 m-w-0">
+                    <a href="javascript:void(0)" title="Apps List" class="nav-link overflow-hidden dropdown-toggle text-primary text-center" aria-haspopup="true"
+                        aria-expanded="false" data-frmdb-value="selectedAppName">
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0)" data-frmdb-table="$FRMDB.$App[]" data-frmdb-table-limit="50"
+                            data-frmdb-value=":ID(_id):$FRMDB.$App[]" data-frmdb-attr="data-frmdb-editor-change-app:ID(_id):$FRMDB.$App[]">app 1</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown frmdb-dropdown-hover px-2">
+                    <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
+                        <i class="frmdb-i-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="table-options">
+                        <a class="dropdown-item" id="new-app-btn" title="New App"><i class="frmdb-i-plus-circle"></i> New App</a>
+                        <a class="dropdown-item" id="edit-app-btn" title="Edit App Properties"><i class="frmdb-i-edit"></i> Edit App Properties</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" id="delete-app-btn" title="Delete App" data-frmdb-prop="pagePathToDelete::selectedAppName"><i
+                                class="frmdb-i-trash"></i> Delete App <span data-frmdb-value="selectedAppName"></span></a>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;" data-frmdb-intro-step="3" aria-label="List of tables dropdown. Use it to navigate to any table belonging to the selected app.">
+                <li class="nav-item" title="list of tables">
+                    <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                        <i class="frmdb-i-table"></i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1 m-w-0">
+                    <a href="javascript:void(0)" title="App Table List" class="nav-link overflow-hidden dropdown-toggle text-primary text-center" aria-haspopup="true"
+                        aria-expanded="false" data-frmdb-value="selectedTableId">
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" data-frmdb-table="$FRMDB.$Table[]" data-frmdb-table-limit="50" data-frmdb-value="$FRMDB.$Table[]._id"
+                            href="javascript:void(0)" onclick="$FRMDB_EDITOR.changeTable(this)">table 1</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown frmdb-dropdown-hover px-2">
+                    <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
+                        <i class="frmdb-i-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="table-options">
+                        <a class="dropdown-item" id="new-table-btn" title="New Table"><i class="frmdb-i-plus-circle"></i> New Table</a>
+                        <div class="dropdown-divider"></div>
+                        <frmdb-table-editor data-frmdb-attr="table-name:selectedTableId" allow-columns-editor="true" allow-rows-editor="true"></frmdb-table-editor>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" id="delete-table-btn" title="Delete Table" data-frmdb-prop="tableToDelete::selectedTableId"><i
+                                class="frmdb-i-trash"></i> Delete Table <br/><span data-frmdb-value="selectedTableId"></span></a>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="nav flex-row flex-nowrap pl-1" style="min-height: 28px;"  data-frmdb-intro-step="4" title="List of pages dropdown. Use it to navigate to any page of the selected app.">
+                <li class="nav-item" title="list of pages">
+                    <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                        <i class="frmdb-i-image"></i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown flex-grow-1 frmdb-dropdown-hover m-w-0">
+                    <a href="javascript:void(0)" title="App Page List" class="nav-link overflow-hidden dropdown-toggle text-center" role="button" aria-haspopup="true"
+                        aria-expanded="false" data-frmdb-value="selectedPageName">
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" data-frmdb-table="$FRMDB.$Page[]" data-frmdb-editor-link data-frmdb-value="$FRMDB.$Page[].name"
+                            data-frmdb-table-limit="50" data-frmdb-attr="href:IF(ISBLANK(template_url),CONCATENATE('/en/', ID(_id), '.html?frmdbRender=editor'),template_url):$FRMDB.$Page[]"></a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown frmdb-dropdown-hover px-2">
+                    <a class="nav-link px-1" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">
+                        <i class="frmdb-i-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="table-options">
+                        <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="frmdb-i-plus-circle"></i> New Page</a>
+                        <a class="dropdown-item" id="edit-page-btn" title="Edit Page"><i class="frmdb-i-edit"></i> Edit Page Properties</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" id="delete-page-btn" title="Delete Page"><i class="frmdb-i-trash"></i> Delete Page <br/><span data-frmdb-value="selectedPageName"></span></a>
+                    </div>
+                </li>
+            </ul>
         </div>
-
-        <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
-            <li class="nav-item" title="list of apps">
-                <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
-                    <i class="frmdb-i-sitemap"></i>
-                </a>
-            </li>
-            <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1 m-w-0">
-                <a href="javascript:void(0)" title="Apps List" class="nav-link overflow-hidden dropdown-toggle text-primary text-center" aria-haspopup="true"
-                    aria-expanded="false" data-frmdb-value="selectedAppName">
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0)" data-frmdb-table="$FRMDB.$App[]" data-frmdb-table-limit="50"
-                        data-frmdb-value=":ID(_id):$FRMDB.$App[]" data-frmdb-attr="data-frmdb-editor-change-app:ID(_id):$FRMDB.$App[]">app 1</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown frmdb-dropdown-hover">
-                <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
-                    <i class="frmdb-i-ellipsis-v"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
-                    <a class="dropdown-item" id="new-app-btn" title="New App"><i class="frmdb-i-plus-circle"></i> New App</a>
-                    <a class="dropdown-item" id="edit-app-btn" title="Edit App Properties"><i class="frmdb-i-edit"></i> Edit App Properties</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" id="delete-app-btn" title="Delete App" data-frmdb-prop="pagePathToDelete::selectedAppName"><i
-                            class="frmdb-i-trash"></i> Delete App <span data-frmdb-value="selectedAppName"></span></a>
-                </div>
-            </li>
-        </ul>
-
-        <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
-            <li class="nav-item" title="list of tables">
-                <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
-                    <i class="frmdb-i-table"></i>
-                </a>
-            </li>
-            <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1 m-w-0">
-                <a href="javascript:void(0)" title="App Table List" class="nav-link overflow-hidden dropdown-toggle text-primary text-center" aria-haspopup="true"
-                    aria-expanded="false" data-frmdb-value="selectedTableId">
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$Table[]" data-frmdb-table-limit="50" data-frmdb-value="$FRMDB.$Table[]._id"
-                        href="javascript:void(0)" onclick="$FRMDB_EDITOR.changeTable(this)">table 1</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown frmdb-dropdown-hover">
-                <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
-                    <i class="frmdb-i-ellipsis-v"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
-                    <a class="dropdown-item" id="new-table-btn" title="New Table"><i class="frmdb-i-plus-circle"></i> New Table</a>
-                    <div class="dropdown-divider"></div>
-                    <frmdb-table-editor data-frmdb-attr="table-name:selectedTableId"></frmdb-table-editor>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" id="delete-table-btn" title="Delete Table" data-frmdb-prop="tableToDelete::selectedTableId"><i
-                            class="frmdb-i-trash"></i> Delete Table <br/><span data-frmdb-value="selectedTableId"></span></a>
-                </div>
-            </li>
-        </ul>
-
-        <ul class="nav flex-row flex-nowrap pl-1" style="min-height: 28px;">
-            <li class="nav-item" title="list of pages">
-                <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
-                    <i class="frmdb-i-image"></i>
-                </a>
-            </li>
-            <li class="nav-item dropdown flex-grow-1 frmdb-dropdown-hover m-w-0">
-                <a href="javascript:void(0)" title="App Page List" class="nav-link overflow-hidden dropdown-toggle text-center" role="button" aria-haspopup="true"
-                    aria-expanded="false" data-frmdb-value="selectedPageName">
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$Page[]" data-frmdb-editor-link data-frmdb-value="$FRMDB.$Page[].name"
-                        data-frmdb-table-limit="50" data-frmdb-attr="href:IF(ISBLANK(template_url),CONCATENATE('/en/', ID(_id), '.html?frmdbRender=editor'),template_url):$FRMDB.$Page[]"></a>
-                </div>
-            </li>
-            <li class="nav-item dropdown frmdb-dropdown-hover">
-                <a class="nav-link px-1" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">
-                    <i class="frmdb-i-ellipsis-v"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
-                    <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="frmdb-i-plus-circle"></i> New Page</a>
-                    <a class="dropdown-item" id="edit-page-btn" title="Edit Page"><i class="frmdb-i-edit"></i> Edit Page Properties</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" id="delete-page-btn" title="Delete Page"><i class="frmdb-i-trash"></i> Delete Page <br/><span data-frmdb-value="selectedPageName"></span></a>
-                </div>
-            </li>
-        </ul>
 
         <div class="left-panel-tree border-top overflow-auto">
             <frmdb-element-tree></frmdb-element-tree>
         </div>
 
-        <frmdb-component-editor class="d-flex flex-column"></frmdb-component-editor>
+        <frmdb-component-editor class="d-flex flex-column" data-frmdb-intro-step="6" aria-label="Once a page element is selected, the component editor allows detailed configuration: Content, Styles, Data binding to Table rows/columns, Conditional formatting using Formulas."></frmdb-component-editor>
     </div>
-    <div id="canvas" class="position-relative overflow-hidden">
+    <div id="canvas" class="position-relative overflow-hidden" data-frmdb-intro-step="5" title="The current web page. Here you can select page elements, edit text, icons, images. Add, remove page elements.">
         <iframe id="app" src='about:blank'></iframe>
         <frmdb-element-editor></frmdb-element-editor>
     </div>
@@ -208,6 +213,17 @@
     <iframe src="/formuladb/editor-new-page-modal.html"
         onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);$UPDATEDOM(this.previousElementSibling);this.remove()"></iframe>
 
+    <style>
+        .introjs-helperLayer {
+            background-color: rgba(255, 255, 255, 0.05)
+        }
+        .introjs-helperNumberLayer {
+            transform: translateX(50%) translateY(50%);
+        }
+        .introjs-overlay {
+            background-color: rgba(240, 240, 240, 0.4) !important;
+        }
+    </style>
 </body>
 
 </html>

@@ -1,6 +1,0 @@
-- business model canvas
-- value proposition canvas
-- task planning
-- monitor expenses and marketing funnels, compute ROI/CLV/etc
-- Landing pages, blog posts
-- Extremely fast prototyping of software products

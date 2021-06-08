@@ -9,17 +9,19 @@ import {
     Expression, CallExpression, BinaryExpression, Identifier, isExpression, isIdentifier,
     ExpressionBase, LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLiteral
 } from "jsep";
-import * as jsep from 'jsep';
 
 import {
-    Entity, Schema, Pn, extendEntityProperties, queryEntityWithDeepPath,
-    FormulaProperty, FormulaExpression, isPropertyWithProperties, isFormulaProperty, EntityProperty, 
+    Entity, Schema, Pn, EntityProperty, isScalarFormulaProperty, isAggregateFormulaProperty, isComputedRecordProperty, isComputedRecordEntity, isComputedRecordValueProperty, 
 } from "@domain/metadata/entity";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { DataObjRelativePath } from "@domain/metadata/data_obj";
 import { compileFormula } from './formula_compiler';
 import { SchemaDAO } from "@domain/metadata/schema_dao";
 import { DAG } from "@domain/metadata/dag";
+import { FormulaStaticCheckerTokenizer } from "./formula_static_checker_tokenizer";
+import { astNodeReturnType } from "@domain/metadata/expressions";
+import { isAggregateValueTypes, isScalarValueTypes, AggregateValueTypeNames, ScalarValueTypeNames } from "@domain/metadata/types";
+import { compileFormulaWithStaticCheck, compileScalarFormula, compileAggregateFormula, compileComputedRecordEntity, compileComputedRecordValueProperty } from "./formula_compiler_with_static_checking";
 
 
 export class FormulaCompilerContextType {
@@ -48,7 +50,7 @@ export class SchemaCompiler {
         };
 
         let formulaDAG: DAG<{id: string, entityProp: EntityProperty}> = new DAG();
-        // this.createFormulaDAG(formulaDAG);
+        this.createFormulaDAG(formulaDAG);
 
         return new SchemaDAO(this.schema, formulaDAG);
     }
@@ -63,7 +65,8 @@ export class SchemaCompiler {
             //TODO: detect auto-corrections triggered by unrelated object validations; auto-corrections must be defined on an object property which depends on the current object
             //TODO: detect cycles in observables/observers
         } catch (ex) {
-            console.warn(ex, ex.stack);
+            console.error(ex, ex.stack);
+            throw ex;
         }
         return entity;
     }
@@ -73,10 +76,20 @@ export class SchemaCompiler {
     }
 
     public compileFormulas(entity: Entity): Entity {
+        if (isComputedRecordEntity(entity)) {
+            compileComputedRecordEntity(this.schema, entity);
+        }
         _.values(entity.props).forEach(pn => {
-            if (isFormulaProperty(pn)) {
-                pn.compiledFormula_ = compileFormula(entity._id, pn.name, pn.formula);
+            if (isScalarFormulaProperty(pn)) {
+                compileScalarFormula(this.schema, entity, pn);
             }
+            if (isAggregateFormulaProperty(pn)) {
+                compileAggregateFormula(this.schema, entity, pn);
+            }
+            if (isComputedRecordValueProperty(pn)) {
+                compileComputedRecordValueProperty(this.schema, entity, pn);
+            }
+            if (isComputedRecordProperty(pn) && pn.name != '_id') throw new Error(`COMPUTED_RECORD is allowed only for _id column, but was found for table ${entity._id} column ${pn.name}`);
         });
         return entity;
     }
@@ -142,7 +155,7 @@ export class SchemaCompiler {
     private createFormulaDAG(formulaDAG: DAG<{id: string, entityProp: EntityProperty}>) {
         _.values(this.schema.entities).forEach(en => {
             _.values(en.props).forEach(pr => {
-                if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+                if (Pn.SCALAR_FORMULA == pr.propType_ && null != pr.compiledFormula_ || Pn.AGGREGATE_FORMULA == pr.propType_ && null != pr.compiledFormula_) {
                     let compiledFormula: CompiledFormula = pr.compiledFormula_;
                     let childFormulaProperty = {
                         id: en._id + '.' + pr.name,
@@ -187,13 +200,7 @@ export class SchemaCompiler {
         throw new Error('addReferenceTables not implemented');
     }
     public static applyInheritanceTo(entity: Entity, entities: _.Dictionary<Entity>): Entity {
-        _.values(entity.props).forEach(pn => {
-            if (isPropertyWithProperties(pn) && pn.referencedEntityName != null) {
-                let referencedEntity: Entity = entities[pn.referencedEntityName];
-                if (referencedEntity == null) throw new Error("Cannot find entity for " + pn.referencedEntityName);
-                extendEntityProperties(pn, queryEntityWithDeepPath(referencedEntity, pn.referencedEntityName));
-            }
-        });
+        
         return entity;
     }
 }

@@ -17,7 +17,7 @@ import { elvis } from '@core/elvis';
 import { FORM_SERVICE } from '@fe/form.service';
 import { ImgEditorComponent } from '@fe/frmdb-editor/img-editor.component';
 import { isNewDataObjId, DataObj, entityNameFromDataObjId } from '@domain/metadata/data_obj';
-import { camelCaseProp2kebabCaseAttr, kebabCaseAttr2CamelCaseProp } from '@fe/frmdb-element-state';
+import { kebabCase2CamelCase, camelCase2kebabCase } from '@domain/text-utils';
 const LOG = new FrmdbLogger('frmdb-form');
 
 /** Component constants (loaded by webpack) **********************************/
@@ -50,15 +50,12 @@ const defaultState = {
 
 export class FormComponent extends HTMLElement {
     state: Partial<FormComponentState> = defaultState;
-    static observedAttributes = Object.keys(defaultAttr).map(k => camelCaseProp2kebabCaseAttr(k));
+    static observedAttributes = Object.keys(defaultAttr).map(k => camelCase2kebabCase(k));
     attributeChangedCallback(name: string, oldVal: string, newVal: string) {
-        this.state[kebabCaseAttr2CamelCaseProp(name)] = newVal;
+        this.state[kebabCase2CamelCase(name)] = newVal;
         this.debouncedRender();
     }
 
-    public setState(rowId: string) {
-        this.setAttribute('row-id', rowId);
-    }
     set rowId(val: string) {
         this.setAttribute('row-id', val);
     }
@@ -71,15 +68,15 @@ export class FormComponent extends HTMLElement {
             if (['_owner', '_role', '_rev'].includes(prop.name)) continue;
 
             let inputType: "text" | "datetime-local" | "date" | "number" = "text";
-            if (prop.propType_ === Pn.DATETIME) {
-                inputType = prop.timeMandatory ? "datetime-local" : "date";
-            } else if (prop.propType_ === Pn.NUMBER) {
+            if (prop.propType_ === Pn.INPUT && prop.actualType.name === "DatetimeType") {
+                inputType = prop.actualType.timeMandatory ? "datetime-local" : "date";
+            } else if (prop.propType_ === Pn.INPUT && prop.actualType.name === "NumberType") {
                 inputType = "number";
             }
             props.push({
                 ...prop,
                 isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
-                isImage: prop.propType_ == Pn.IMAGE, 
+                isImage: prop.propType_ == Pn.INPUT && prop.actualType.name === "MediaType", 
                 nameI18n: I18N.tt(prop.name),
                 disabled: this.getDisabled(this.entity, prop),
                 required: (prop as any).required === true,
@@ -115,7 +112,8 @@ export class FormComponent extends HTMLElement {
 
         let html: string[] = [];
 
-        html.push(`<form data-frmdb-record="${this.state.rowId}" data-frmdb-form-auto-save>`);
+        let tableName = entityNameFromDataObjId(this.state.rowId || '');
+        html.push(`<form data-frmdb-record="$FRMDB.${this.state.rowId}" data-frmdb-bind-to-record="$FRMDB.${this.state.rowId}" data-frmdb-form-auto-save>`);
         for (let prop of this.state.props||[]) {
             html.push(`<div class="form-group row ${prop.cssWidth}">`);
             html.push(`    <label for="${prop.name}" class="col-form-label col-3">${prop.nameI18n}</label>`);
@@ -123,9 +121,9 @@ export class FormComponent extends HTMLElement {
             html.push(`        <input class="form-control" `);
             html.push(`            value="${this.state.dataObj[prop.name]||''}" `);
             html.push(`            name="${prop.name}" `);
-            html.push(`            ${prop.disabled ? 'disabled' : ''}"`);
+            html.push(`            ${prop.disabled ? 'disabled' : ''}`);
             html.push(`            type="${prop.inputType}"`);
-            html.push(`            data-frmdb-value="${prop.name}"`);
+            html.push(`            data-frmdb-value="$FRMDB.${tableName}{}.${prop.name}"`);
             html.push(`            />`);
             if (prop.isAutocomplete) {
                 html.push(`    <frmdb-autocomplete `);
@@ -134,7 +132,7 @@ export class FormComponent extends HTMLElement {
                 html.push(`        ></frmdb-autocomplete>`);
             }
             if (prop.isImage) {
-                html.push(`    <frmdb-form-image`);
+                html.push(`    <frmdb-form-image style="display: block; max-width: 320px"`);
                 html.push(`        img-src="${this.state.dataObj[prop.name]}"`);
                 html.push(`        ></frmdb-form-image>`);
             }

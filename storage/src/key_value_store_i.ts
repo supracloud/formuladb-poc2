@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { KeyValueError, KeyValueObj } from "@domain/key_value_obj";
+import { KeyValueError, KeyValueObj, KeyValueObjIdType, _idAsStr } from "@domain/key_value_obj";
 import * as FormuladbCollate from '@storage/collator';
 import { Entity, Schema } from "@domain/metadata/entity";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
@@ -17,13 +17,13 @@ export interface SortModel {
 }
 
 export interface KeyValueStoreI<VALUET> {
-    get(_id: string): Promise<VALUET | null>;
+    get(_id: KeyValueObjIdType): Promise<VALUET | null>;
     /** The resulting rows are sorted by _id */
     rangeQuery(opts: RangeQueryOptsBaseI<string>): Promise<VALUET[]>;
     /** The resulting rows are sorted by _id */
-    rangeQueryWithKeys(opts: RangeQueryOptsBaseI<string>): Promise<{_id: string, val: VALUET}[]>;
-    set(_id: string, val: VALUET): Promise<VALUET>;
-    del(_id: string): Promise<VALUET>;
+    rangeQueryWithKeys(opts: RangeQueryOptsBaseI<string>): Promise<{_id: KeyValueObjIdType, val: VALUET}[]>;
+    set(_id: KeyValueObjIdType, val: VALUET): Promise<VALUET>;
+    del(_id: KeyValueObjIdType): Promise<VALUET>;
     clearDB(): Promise<any>;
     all(): Promise<VALUET[]>;
     close(): Promise<void>;
@@ -51,8 +51,8 @@ export interface KeyTableStoreI<OBJT extends KeyValueObj> extends KeyObjStoreI<O
 export function kvsKey2Str(_id: any): string {
     return FormuladbCollate.toIndexableString(_id);
 }
-export function kvsStr2Key(_id: string): any {
-    return FormuladbCollate.parseIndexableString(_id);
+export function kvsStr2Key(_id: KeyValueObjIdType): any {
+    return FormuladbCollate.parseIndexableString(_idAsStr(_id));
 }
 
 export function kvsReduceValues(values: ScalarType[], reduceFun: ReduceFun, viewHashCode: string, reReduce: boolean) {
@@ -81,7 +81,7 @@ class KeyValueStoreBase<KEYT, VALUET> {
         return kvsKey2Str(_id);
     }
 
-    public str2id(_id: string): KEYT {
+    public str2id(_id: KeyValueObjIdType): KEYT {
         return kvsStr2Key(_id);
     }
 
@@ -118,9 +118,10 @@ class KeyValueStoreBase<KEYT, VALUET> {
 
 export interface KeyValueStoreFactoryI {
     type: "KeyValueStoreFactoryMem" | "KeyValueStoreFactoryPostgres";
-    createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
+    createKeyValS<VALUET>(name: string, desc: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
-    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
+    createKeyTableS<OBJT extends KeyValueObj>(schema: Schema, entity: Entity): KeyTableStoreI<OBJT>;
+    executeBatch(callback: () => Promise<any>): Promise<void>;
     clearAllForTestingPurposes(): Promise<void>;
     metadataStore: MetadataStore;
     close(): Promise<void>;

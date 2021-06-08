@@ -3,12 +3,13 @@
         <i class="frmdb-i-table"></i>
     </a>
     <div class="dropdown-menu" aria-labelledby="table-options"> -->
-        <a href="javascript:void(0)" id="add-column-to-table-btn" class="dropdown-item"><i class="frmdb-i-plus-square"></i> Add Column</a>
-        <div class="dropdown-divider"></div>
-        <a href="javascript:void(0)" id="add-row-btn" class="dropdown-item add-row "><i class="frmdb-i-plus-circle"></i> Add Row</a>
+        <a href="javascript:void(0)" id="add-column-to-table-btn" data-frmdb-if="allowColumnsEditor" class="dropdown-item"><i class="frmdb-i-plus-square"></i> <span>Add Column</span></a>
+        <a href="javascript:void(0)" id="delete-column-from-table-btn" data-frmdb-if="allowColumnsEditor" class="dropdown-item"><i class="frmdb-i-trash-alt"></i> <span>Delete Column</span></a>
+        <div class="dropdown-divider" data-frmdb-if="allowColumnsEditor"></div>
+        <a href="javascript:void(0)" id="add-row-btn" data-frmdb-if="allowRowsEditor" class="dropdown-item add-row "><i class="frmdb-i-plus-circle"></i> <span>Add Row</span></a>
         <!-- <a href="javascript:void(0)" id="clone-row-btn" class="dropdown-item clone-row "><i class="frmdb-i-clone"></i> Clone Row</a> -->
-        <a href="javascript:void(0)" id="delete-row-btn" class="dropdown-item delete-row "><i class="frmdb-i-trash"></i> Delete Row</a>
-        <div class="dropdown-divider"></div>
-        <a href="javascript:void(0)" id="export-excel-btn" class="dropdown-item excel-export "><i class="frmdb-i-file-excel"></i> Export Excel</a>
+        <a href="javascript:void(0)" id="delete-row-btn" data-frmdb-if="allowRowsEditor" class="dropdown-item delete-row "><i class="frmdb-i-trash"></i> <span>Delete Row</span></a>
+        <div class="dropdown-divider" data-frmdb-if="allowRowsEditor"></div>
+        <a data-frmdb-attr="href:excelDownloadUrl" class="dropdown-item excel-export" onmouseover="$INCLUDE_FILTER_IN_LINK_URL(this)"><i class="frmdb-i-file-excel"></i> <span>Export Excel</span></a>
     <!-- </div>
 </div> -->

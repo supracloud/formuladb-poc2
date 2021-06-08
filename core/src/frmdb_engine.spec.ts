@@ -8,9 +8,9 @@ import { FrmdbEngineStore } from "./frmdb_engine_store";
 
 import { ServerEventModifiedFormData, ServerEventPreviewFormula, ServerEventDeletedFormData } from "@domain/event";
 import { FrmdbEngine } from "./frmdb_engine";
-import { Pn, Entity, FormulaProperty, Schema, EntityProperty, ChildTableProperty } from "@domain/metadata/entity";
+import { Pn, Entity, ScalarFormulaProperty, Schema, EntityProperty, ChildTableProperty, AggregateFormulaProperty } from "@domain/metadata/entity";
 import { DataObj } from "@domain/metadata/data_obj";
-import { KeyValueObj } from "@domain/key_value_obj";
+import { KeyValueObj, KeyValueObjIdType } from "@domain/key_value_obj";
 import { getFrmdbEngine, getFrmdbEngineStore, getTestFrmdbEngine } from '@storage/key_value_store_impl_selector';
 import { $s2e } from "@functions/s2e";
 
@@ -24,31 +24,31 @@ describe('FrmdbEngine', () => {
         entities: {
             A: {
                 _id: 'A', props: {
-                    _id: { name: "_id", propType_: Pn.TEXT },
-                    b: { name: "b", propType_: Pn.TEXT },
-                    val: { name: "val", propType_: Pn.NUMBER },
-                    err: { name: "err", propType_: Pn.NUMBER },
-                },
-                autoCorrectionsOnValidationFailed: {
-                    'B!positiveX': [
-                        {targetPropertyName: 'val', autoCorrectExpr: $s2e('MAX(0, val + $ROW$.x__)')},
-                        {targetPropertyName: 'err', autoCorrectExpr: $s2e('ABS($OLD$.val - val)')},
-                    ],
+                    _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                    b: { name: "b", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                    val: { name: "val", propType_: Pn.INPUT, actualType: {name: "NumberType"} },
+                    err: { name: "err", propType_: Pn.INPUT, actualType: {name: "NumberType"} },
+                    correct_val: { name: "correct_val", propType_: Pn.AUTO_CORRECT, 
+                        validationTableName: 'B', validationColName: 'positive_x',
+                        targetPropertyName: 'val', scalarFormula: 'MAX(0, val + $ROW$.x__)',
+                    },
+                    correct_err: { name: "correct_err", propType_: Pn.AUTO_CORRECT, 
+                        validationTableName: 'B', validationColName: 'positive_x',
+                        targetPropertyName: 'err', scalarFormula: 'ABS($OLD$.val - val)',
+                    },
                 },
             } as Entity,
             B: {
                 _id: 'B', props: {
-                    _id: { name: "_id", propType_: Pn.TEXT },
-                    sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val, b == @[_id])' } as FormulaProperty,
-                    x__: { name: "x__", propType_: Pn.FORMULA, formula: '100 - sum__' } as FormulaProperty,
-                },  
-                validations: {
-                    positiveX: { conditionExpr: $s2e('x__ >= 0') }
+                    _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                    sum__: { name: "sum__", propType_: Pn.AGGREGATE_FORMULA, formula: 'SUMIF(A.val, b = @[_id])' } as AggregateFormulaProperty,
+                    x__: { name: "x__", propType_: Pn.SCALAR_FORMULA, formula: '100 - sum__' } as ScalarFormulaProperty,
+                    positive_x: { name: "positive_x", propType_: Pn.VALIDATE_RECORD, scalarFormula: 'x__ >= 0' }
                 },
             } as Entity,
             C: {
                 _id: 'C', props: {
-                    _id: { name: "_id", propType_: Pn.TEXT },
+                    _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"} },
                     aaaa: {
                         name: 'aaaa',
                         propType_: Pn.CHILD_TABLE,
@@ -64,24 +64,28 @@ describe('FrmdbEngine', () => {
         entities: {
             Tr: {
                 _id: 'Tr', props: {
-                    _id: { name: "_id", propType_: Pn.TEXT },
-                    ac1: { name: "ac1", propType_: Pn.TEXT },
-                    ac2: { name: "ac2", propType_: Pn.TEXT },
-                    val: { name: "val", propType_: Pn.NUMBER },
+                    _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                    ac1: { name: "ac1", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                    ac2: { name: "ac2", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                    val: { name: "val", propType_: Pn.INPUT, actualType: {name: "NumberType"} },
+                    correct_val: { name: "correct_val", propType_: Pn.AUTO_CORRECT, 
+                        validationTableName: 'Ac', validationColName: 'positive_balance',
+                        targetPropertyName: 'val', scalarFormula: '0',
+                    },
+                    correct_val_max: { name: "correct_val_max", propType_: Pn.AUTO_CORRECT, 
+                        validationTableName: 'Ac', validationColName: 'max_balance',
+                        targetPropertyName: 'val', scalarFormula: '0',
+                    },
                 },
-                autoCorrectionsOnValidationFailed: {
-                    'Ac!positiveBalance': [{targetPropertyName: 'val', autoCorrectExpr: $s2e('0')}],
-                    'Ac!maxBalance': [{targetPropertyName: 'val', autoCorrectExpr: $s2e('0')}],
-                }
             } as Entity,
             Ac: {
                 _id: 'Ac', props: {
-                    _id: { name: "_id", propType_: Pn.TEXT },
-                    balance__: { name: "balance__", propType_: Pn.FORMULA, formula: '50 + SUMIF(Tr.val, ac2 == @[_id]) - SUMIF(Tr.val, ac1 == @[_id])' } as FormulaProperty,
-                },
-                validations: {
-                    positiveBalance: { conditionExpr: $s2e('balance__ >= 0') },
-                    maxBalance: { conditionExpr: $s2e('balance__ <= 250') },
+                    _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                    balance__: { name: "balance__", propType_: Pn.SCALAR_FORMULA, formula: '50 + credits - debits' } as ScalarFormulaProperty,
+                    credits: { name: "credits", propType_: Pn.AGGREGATE_FORMULA, formula: 'SUMIF(Tr.val, ac2 = @[_id])' } as AggregateFormulaProperty,
+                    debits: { name: "debits", propType_: Pn.AGGREGATE_FORMULA, formula: 'SUMIF(Tr.val, ac1 = @[_id])' } as AggregateFormulaProperty,
+                    positive_balance: { name: "positive_balance", propType_: Pn.VALIDATE_RECORD, scalarFormula: 'balance__ >= 0' },
+                    max_balance: { name: "max_balance", propType_: Pn.VALIDATE_RECORD, scalarFormula: 'balance__ <= 250' },
                 },
             } as Entity,
         }
@@ -112,12 +116,13 @@ describe('FrmdbEngine', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
         console.log("frmdbEngine.frmdbEngineStore.mapReduceViews.size=", (frmdbEngine.frmdbEngineStore as any).mapReduceViews.size);
         console.log("stockReservationSchema.entities.B.props.sum__.formula=", (stockReservationSchema as any).entities.B.props.sum__.formula);
-        console.log("stockReservationSchema.entities.B.props.sum__.compiledFormula_=", (stockReservationSchema as any).entities.B.props.sum__.compiledFormula_);
         console.log("stockReservationSchema.entities.B.props.x__.formula=", (stockReservationSchema as any).entities.B.props.x__.formula);
     });
 
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
-        return await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        let event = await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        if (event.error_) throw new Error(`Cound not save ${JSON.stringify(obj)}, ${event.reason_}, ${event.error_}`);
+        return event;
     }
     async function delObj(obj: KeyValueObj): Promise<ServerEventDeletedFormData> {
         return await frmdbEngine.processEventAnonymous(new ServerEventDeletedFormData(obj)) as ServerEventDeletedFormData;
@@ -127,11 +132,6 @@ describe('FrmdbEngine', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    
-    async function parallelWorker(workerId, val) {
-        await putObj({ _id: 'A~~', b: 'B~~1', val: val } as DataObj);
-    }
-
     it("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
         await frmdbEngine.init();
 
@@ -139,13 +139,13 @@ describe('FrmdbEngine', () => {
         let c = { _id: "C~~c"};
         await frmdbEngine.putDataObjAndUpdateViews(null, c);
 
-        let a3 = { _id: 'A~~c__', b: 'B~~1', val: 2 };
+        let a3 = { _id: 'A~~c__' as KeyValueObjIdType, b: 'B~~1', val: 2 };
         let ev = await putObj(a3);
         a3._id = ev.obj._id;
         let b1After: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        let a4 = { _id: 'A~~c__', b: 'B~~1', val: 3 };
+        let a4 = { _id: 'A~~c__' as KeyValueObjIdType, b: 'B~~1', val: 3 };
         ev = await putObj(a4);
         a4._id = ev.obj._id;
         b1After = await frmdbTStore.getDataObj('B~~1');
@@ -185,8 +185,8 @@ describe('FrmdbEngine', () => {
         
         await delObj(c);
         b1After = await frmdbTStore.getDataObj('B~~1');
-        let mapViewObjs = await (frmdbTStore as any).mapReduceViews.get("vaggs-A-SUMIF(A.val, b == @[_id])").mapKVS.kvs.all();
-        let reduceViewObjs = await (frmdbTStore as any).mapReduceViews.get("vaggs-A-SUMIF(A.val, b == @[_id])").reduceFunction.kvs.kvs.all();
+        let mapViewObjs = await (frmdbTStore as any).mapReduceViews.get("asum___A_SUMIF_A_val__b______id__").mapKVS.kvs.all();
+        let reduceViewObjs = await (frmdbTStore as any).mapReduceViews.get("asum___A_SUMIF_A_val__b______id__").reduceFunction.kvs.kvs.all();
         expect(mapViewObjs.length).toEqual(0);
         expect(reduceViewObjs.length).toEqual(0);
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 0, x__: 100}));
@@ -196,7 +196,7 @@ describe('FrmdbEngine', () => {
 
     it("Should allow change of _id when using KEY", async () => {
         let schema = _.cloneDeep(_stockReservationSchema);
-        schema.entities.A.props.idx = { name: "idx", propType_: Pn.NUMBER };
+        schema.entities.A.props.idx = { name: "idx", propType_: Pn.INPUT, actualType: {name: "NumberType"} };
         schema.entities.A.props._id = { name: "_id", propType_: Pn.KEY, 
             scalarFormula: `CONCATENATE(ID(b), "--", idx)`};
         frmdbTStore = await getFrmdbEngineStore(schema);
@@ -255,7 +255,7 @@ describe('FrmdbEngine', () => {
             type_: "ServerEventPreviewFormula",
             targetEntity: stockReservationSchema.entities['B'],
             targetPropertyName: 'sum__',
-            formula: 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])',
+            formula: 'SUMIF(A.val, b = @[_id]) + COUNTIF(A.val, b = @[_id])',
             currentDataObj: b1Get,
             state_: "BEGIN",
             clientId_: 'ABC'
@@ -282,9 +282,9 @@ describe('FrmdbEngine', () => {
             targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],
             property: {
                 name: 'x__',
-                propType_: Pn.FORMULA,
+                propType_: Pn.SCALAR_FORMULA,
                 formula: '200 - sum__',
-                returnType_: Pn.NUMBER,
+                returnType_: {name: "NumberType"},
             },
             state_: "BEGIN",
             clientId_: 'ABC'
@@ -298,25 +298,25 @@ describe('FrmdbEngine', () => {
             targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],
             property: {
                 name: 'sum__',
-                propType_: Pn.FORMULA,
-                formula: 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])',
-                returnType_: Pn.NUMBER,
+                propType_: Pn.AGGREGATE_FORMULA,
+                formula: 'COUNTIF(A.val, b = @[_id])',
+                returnType_: {name: "NumberAggType"},
             },
             state_: "BEGIN",
             clientId_: 'ABC'
         }) as ServerEventPreviewFormula;
         b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({
-            sum__: a1.val + a2.val + a3.val + 3, 
-            x__: 200 - (a1.val + a2.val + a3.val + 3)
+            sum__: /*a1.val + a2.val + a3.val + */ 3, 
+            x__: 200 - (/*a1.val + a2.val + a3.val +*/ 3)
         }));
 
         let a4 = { _id: 'A~~', b: 'B~~1', val: 10 };
         await putObj(a4 as DataObj);
         b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({
-            sum__: a1.val + a2.val + a3.val + 3 + a4.val + 1, 
-            x__: 200 - (a1.val + a2.val + a3.val + 3 + a4.val + 1)
+            sum__: /*a1.val + a2.val + a3.val +*/ 3 + /*a4.val + */ 1, 
+            x__: 200 - (/*a1.val + a2.val + a3.val + */ 3 + /*a4.val + */ 1)
         }));
 
         done();
@@ -324,7 +324,10 @@ describe('FrmdbEngine', () => {
     
     it("Should update views and compute new values of Observer when Observer field change", async () => {
         let schema = _.cloneDeep(stockReservationSchema);
-        (schema.entities.B.props.sum__ as FormulaProperty).formula = 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])';
+        schema.entities.B.props.sum = { name: "sum", propType_: Pn.AGGREGATE_FORMULA, formula: 'SUMIF(A.val, b = @[_id])' } as AggregateFormulaProperty,
+        schema.entities.B.props.cnt = { name: "cnt", propType_: Pn.AGGREGATE_FORMULA, formula: 'COUNTIF(A.val, b = @[_id])' } as AggregateFormulaProperty,
+        (schema.entities.B.props.sum__ as ScalarFormulaProperty).formula = 'sum + cnt';
+        (schema.entities.B.props.sum__ as ScalarFormulaProperty).propType_ = Pn.SCALAR_FORMULA;
         frmdbTStore = await getFrmdbEngineStore(schema);
         frmdbEngine = new FrmdbEngine(frmdbTStore);
         await frmdbEngine.init();

@@ -30,7 +30,14 @@ describe('DataBindingsMonitor', () => {
     beforeAll(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
-        fetchMock.post(/\/formuladb-api\/changes-feed/, []);
+
+        fetchMock.post(/\/formuladb-api\/changes-feed/, (url, req) => {
+            let body = JSON.parse(req.body);
+            expect(body instanceof Array).toEqual(true);
+            if (body.length > 0) {
+                expect(body).toEqual(['A~~1', 'A~~2']);
+            }
+        });
         fetchMock.get('/formuladb-api/kvsf-test-app-for-specs', {
             _id: "kvsf-test-app-for-specs", description: "kvsf-test-app-for-specs-desc",
             pages: [
@@ -43,9 +50,9 @@ describe('DataBindingsMonitor', () => {
                 A: {
                     _id: 'A',
                     props: {
-                        _id: { name: "_id", propType_: Pn.TEXT },
-                        f1: { name: "f1", propType_: Pn.TEXT },
-                        f2: { name: "f2", propType_: Pn.NUMBER },
+                        _id: { name: "_id", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                        f1: { name: "f1", propType_: Pn.INPUT, actualType: {name: "TextType"} },
+                        f2: { name: "f2", propType_: Pn.INPUT, actualType: {name: "NumberType"} },
                     },
                 } as Entity,
             }
@@ -63,6 +70,7 @@ describe('DataBindingsMonitor', () => {
 
         await waitUntil(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
         dataBindingMonitor = new DataBindingsService(document.body, new FormService(document.body));
+        dataBindingMonitor.init();
         fetchMock.post('/formuladb-api/kvsf-test-app-for-specs/A/SimpleAddHocQuery', [
             { _id: "A~~1", f1: "f1.1", f2: 101 },
             { _id: "A~~2", f1: "f1.2", f2: 102 },
@@ -101,7 +109,7 @@ describe('DataBindingsMonitor', () => {
         filterInputEl.value = ".2";
         filterInputEl.dispatchEvent(new Event('change', { bubbles: true }));
 
-        await new Promise(resolve => setTimeout(resolve, 250));
+        await new Promise(resolve => setTimeout(resolve, 550));
 
         let normalizedHtml = htmlTools.normalizeHTML(document.body.innerHTML);
         let expectedFilteredHtml = htmlTools.normalizeHTML(/*html*/`

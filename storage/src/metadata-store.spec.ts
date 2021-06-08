@@ -14,11 +14,14 @@ const jsdom = new JSDOM('', {}, {
 });
 const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
 
-import { getTestFrmdbEngineStore } from "./key_value_store_impl_selector";
+import { getTestFrmdbEngineStore, getTestFrmdbEngine } from "./key_value_store_impl_selector";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { parseFullPageUrl, FullPageOpts } from '@domain/url-utils';
 import { $DictionaryObjT } from '@domain/metadata/default-metadata.js';
 import { generateUUID } from '@domain/uuid';
+import { FrmdbEngine } from '@core/frmdb_engine';
+import { KeyValueObj } from '@domain/key_value_obj';
+import { ServerEventModifiedFormData } from '@domain/event';
 
 const templatePage =  /*html*/`
 <!DOCTYPE html>
@@ -33,7 +36,7 @@ const templatePage =  /*html*/`
 `;
 
 describe('MetadataStore', () => {
-    let frmdbEngineStore: FrmdbEngineStore;
+    let frmdbEngine: FrmdbEngine;
     let envDir;
     let dictionaryCache: Map<string, $DictionaryObjT> = new Map<string, $DictionaryObjT>()
         .set('main content', { 'fr': "contenu principal" } as $DictionaryObjT);
@@ -53,11 +56,15 @@ describe('MetadataStore', () => {
         fs.copyFileSync('./git/formuladb-env/css/lux-cb8670-363636.css', `${envDir}/css/lux-cb8670-363636.css`);
     }
     beforeAll(async () => {
-        frmdbEngineStore = await getTestFrmdbEngineStore({ _id: "FRMDB_SCHEMA", entities: {} });
-        envDir = frmdbEngineStore.kvsFactory.metadataStore.envDir;
+        frmdbEngine = await getTestFrmdbEngine({ _id: "FRMDB_SCHEMA", entities: {} });
+        envDir = frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.envDir;
         resetEnv();
     });
-
+    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
+        let event = await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        if (event.error_) throw new Error(`Cound not save ${JSON.stringify(obj)}, ${event.reason_}, ${event.error_}`);
+        return event;
+    }
     function expectSavedPageToEqual(pagePath: string, html: string) {
         let htmlFromFile = fs.readFileSync(pagePath, 'utf8');
         let savedHtmlNormalized = htmlTools.normalizeHTML(htmlFromFile);
@@ -93,7 +100,7 @@ describe('MetadataStore', () => {
     </html>`;
 
     it("Should save page without fragments/themes and default language", async () => {
-        await frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
+        await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
             parseFullPageUrl('/na-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html'),
             PageHtmlFromClientBrowser);
 
@@ -152,9 +159,10 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Clean theme and i18n", async () => {
         let fullPageOpts = parseFullPageUrl('/fr-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html');
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
-            await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
+            await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
                 fullPageOpts, fullPageOpts,
-                new Map().set('$Dictionary~~main content', { fr: 'contenu principal' })
+                new Map().set('$Dictionary~~main content', { fr: 'contenu principal' }), 
+                {}, {}
             ));
 
         let expectedHtmlWithCleanThemeAndFrenchLang = PageHtmlFromClientBrowser
@@ -185,8 +193,8 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Frames theme", async () => {
         let fullPageOpts = parseFullPageUrl('/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/test.html');
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
-            await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                fullPageOpts, fullPageOpts, new Map()));
+            await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
+                fullPageOpts, fullPageOpts, new Map(), {}, {}));
 
         let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="en">')
@@ -200,7 +208,7 @@ describe('MetadataStore', () => {
                 </head>`)
             .replace(
                 `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
-                `class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
+                `class="jumbotron min-h-50-v text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-h-50-v text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
             )
             .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1>main content</h1>')
             .replace('<footer>', '<footer class="pt-4 bg-dark frmdb-section-dark" data-frmdb-theme-classes="pt-4 bg-dark frmdb-section-dark">')
@@ -213,15 +221,15 @@ describe('MetadataStore', () => {
     it("Should read the correct look css", async () => {
         let [lang, look, primaryColor, secondaryColor, theme, appName] =
             ['en', 'basic', '1a1a1a', 'ffffff', 'Frames', 'kvsf-test-app-for-specs'];
-        let cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as FullPageOpts);
-        expect(cssStr.indexOf('--frmdb-look-name: basic')).toBeGreaterThan(0);
+        let cssStr = await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as FullPageOpts);
+        expect(cssStr.match(/--frmdb-look-name: .*basic-1a1a1a-ffffff.css/)).toBeTruthy();
         expect(cssStr.indexOf('--primary: #1a1a1a')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--secondary: #fff')).toBeGreaterThan(0);
 
         [lang, look, primaryColor, secondaryColor, theme, appName] =
             ['en', 'lux', 'cb8670', '363636', 'Clean', 'kvsf-test-app-for-specs'];
-        cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as FullPageOpts);
-        expect(cssStr.indexOf('--frmdb-look-name: lux')).toBeGreaterThan(0);
+        cssStr = await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, appName } as FullPageOpts);
+        expect(cssStr.match(/--frmdb-look-name: .*lux-cb8670-363636.css/)).toBeTruthy();
         expect(cssStr.indexOf('--primary: #cb8670')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--secondary: #363636')).toBeGreaterThan(0);
     });
@@ -243,7 +251,7 @@ describe('MetadataStore', () => {
             frmdb_theme: '',
             screenshot: '/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/static/new-page.png',
         };
-        await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
+        await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
             parseFullPageUrl(`/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/${page1Obj.name}.html`),
             page1Obj, "$LANDING-PAGE$");
 
@@ -264,7 +272,7 @@ describe('MetadataStore', () => {
         `);
         expect(expected).toEqual(htmlTools.normalizeHTMLDoc(savedPage));
 
-        let pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('kvsf-test-app-for-specs');
+        let pages = await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.getPages('kvsf-test-app-for-specs');
         expect(pages).toEqual([{
             ...page1Obj,
             _id: 'kvsf-test-app-for-specs/new-page',
@@ -284,11 +292,11 @@ describe('MetadataStore', () => {
             frmdb_theme: '',
             screenshot: '/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/static/new-page-2.png',
         };
-        await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
+        await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
             parseFullPageUrl(`/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/${page2Obj.name}.html`),
             page2Obj, "new-page");
 
-        pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('kvsf-test-app-for-specs');
+        pages = await frmdbEngine.frmdbEngineStore.kvsFactory.metadataStore.getPages('kvsf-test-app-for-specs');
         expect(pages).toEqual([{
             ...page2Obj,
             _id: 'kvsf-test-app-for-specs/new-page-2',

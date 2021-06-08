@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
       - name: check-db-ready
-        image: postgres:11
+        image: postgres@sha256:05580d6c8f7bb0566793c7c45ab276458c53c9c31300c046ba6fcbc66598c7b9
         command: ['sh', '-c', 'until pg_isready -h db -p 5432 -t 1; do echo waiting for database; sleep 2; done;']
       containers:
       - env:
@@ -35,6 +35,8 @@ spec:
           value: "true"
         - name: FRMDB_ENV_NAME
           value: $(NAMESPACE_NAME)
+        - name: ELASTICSEARCH_HOST
+          value: https://apmserver.formuladb.io
         image: registry.formuladb.io/formuladb/febe/formuladb-be
         name: be
         ports:

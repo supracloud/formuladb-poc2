@@ -1,0 +1,12 @@
+FROM node:12.18.2-stretch
+
+RUN apt-get update \
+  && apt-get install -y postgresql-client curl netcat less net-tools lsof sysstat psmisc strace rsync jq yq \
+  && apt-get clean \
+  && apt-get remove -y ${buildDependencies} \
+  && apt-get autoremove -y \
+  && rm -rf /tmp/build /var/lib/apt/lists/*
+
+RUN curl https://github.com/mikefarah/yq/releases/download/3.3.2/yq_linux_amd64
+
+ENV PAGER=less

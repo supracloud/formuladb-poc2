@@ -1,5 +1,6 @@
 import { DataObj } from "@domain/metadata/data_obj";
 import { Entity, EntityProperty } from "@domain/metadata/entity";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export interface UserModifiedFormData {
     type: 'UserModifiedFormData';
@@ -38,6 +39,11 @@ export interface UserModifiedTableUi {
     type: 'UserModifiedTableUi';
     // table: DataGrid;
 }
+export interface UserFilterTable {
+    type: 'UserFilterTable';
+    tableName: string;
+    filterModel: SimpleAddHocQuery['filterModel'];
+}
 export interface UserCollapsedNavItem {
     type: 'UserCollapsedNavItem';
     id: string;
@@ -49,10 +55,8 @@ export interface UserNavigation {
     path: string;
 }
 
-export interface UserDeleteColumn {
-    type: 'UserDeleteColumn';
-    tableName: string;
-    columnName: string;
+export interface FrmdbDeleteColumn {
+    type: 'FrmdbDeleteColumn';
 }
 
 export interface FrmdbSelectChange {
@@ -115,6 +119,13 @@ export interface FrmdbIconsCssChanged {
     type: 'FrmdbIconsCssChanged';
 }
 
+export interface FrmdbFormulaEditorOn {
+    type: 'FrmdbFormulaEditorOn';
+}
+export interface FrmdbFormulaEditorOff {
+    type: 'FrmdbFormulaEditorOff';
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -125,9 +136,10 @@ export type FrmdbUserEvent =
     | UserAddRow
     | UserDeleteRow
     | UserModifiedTableUi
+    | UserFilterTable
     | UserCollapsedNavItem
     | UserNavigation
-    | UserDeleteColumn
+    | FrmdbDeleteColumn
     | FrmdbSelectChange
     | FrmdbColumnChanged
     | FrmdbAddColumn
@@ -140,4 +152,6 @@ export type FrmdbUserEvent =
     | FrmdbIconsCssChanged
     | FrmdbAddPageElementStart
     | FrmdbMovePageElementStart
+    | FrmdbFormulaEditorOn
+    | FrmdbFormulaEditorOff
 ;

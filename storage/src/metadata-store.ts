@@ -2,7 +2,6 @@ const fetch = require('node-fetch')
 import * as puppeteer from 'puppeteer';
 import * as mergeImg from 'merge-img';
 const Jimp = require('jimp');
-import { App } from "@domain/app";
 import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/key_value_store_i";
 import * as _ from "lodash";
@@ -26,6 +25,7 @@ import { ServerEventSetPage } from "@domain/event";
 import { getPageProperties, setPageProperties, setPageLookAndTheme, removePageProperties, removePageLookAndTheme } from "@core/dom-utils";
 import { ThemeColors } from '@domain/uimetadata/theme';
 import { PickOmit } from '@domain/ts-utils';
+import { updateDOMForDoc } from '@core/live-dom-template/live-dom-template';
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -84,12 +84,12 @@ export class MetadataStore {
         });
     }
 
-    private toYaml(input: Entity | Schema | App | SchemaEntityList): string {
+    private toYaml(input: Entity | Schema | $AppObjT | SchemaEntityList): string {
         let obj = input;
         if (isEntity(input)) {
             let entity: Entity = _.cloneDeep(input);
             for (let p of Object.values(entity.props)) {
-                if (p.propType_ === Pn.FORMULA) {
+                if (Pn.SCALAR_FORMULA == p.propType_ || Pn.AGGREGATE_FORMULA == p.propType_) {
                     p.compiledFormula_ = undefined;
                 }
             }
@@ -102,7 +102,7 @@ export class MetadataStore {
         });
     }
 
-    private fromYaml<T extends Entity | Schema | App | SchemaEntityList>(str: string): T {
+    private fromYaml<T extends Entity | Schema | $AppObjT | SchemaEntityList>(str: string): T {
         //TODO add schema validation even if CPU intensive
         return jsyaml.safeLoad(str) as T;
     }
@@ -130,7 +130,7 @@ export class MetadataStore {
         });
     }
 
-    async putApp(appName: string, app: App): Promise<App> {
+    async putApp(appName: string, app: $AppObjT): Promise<$AppObjT> {
         await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`, this.toYaml(app));
 
         return app;
@@ -162,7 +162,7 @@ export class MetadataStore {
             schemaNoEntities = this.fromYaml(
                 await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`));
         }
-        let entitiesStr: (string|null)[] = await Promise.all(schemaNoEntities.entityIds
+        let entitiesStr: (string | null)[] = await Promise.all(schemaNoEntities.entityIds
             .filter(entityId => {
                 if (entityId.indexOf('$') >= 0) {
                     return false;
@@ -228,7 +228,7 @@ export class MetadataStore {
             schemaNoEntities.entityIds.push(entity._id);
             await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
         }
-        
+
         return entity;
     }
 
@@ -254,16 +254,16 @@ export class MetadataStore {
         return entity;
     }
 
-    async getApp(appName: string): Promise<App | null> {
-        let app: App = this.fromYaml(
+    async getApp(appName: string): Promise<$AppObjT | null> {
+        let app: $AppObjT = this.fromYaml(
             await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`)
         );
         app.name = appName;
         app._id = `$App~~${appName}`;
 
 
-        let htmlPages = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}`, /\.html$/);
-        app.pages = htmlPages.map(fName => fName.replace(/.*\//, ''));
+        // let htmlPages = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}`, /\.html$/);
+        // app.pages = htmlPages.map(fName => fName.replace(/.*\//, ''));
 
         return app;
     }
@@ -278,8 +278,8 @@ export class MetadataStore {
         return cssFiles;
     }
 
-    async setApp(appName: string, category: string, description: string, basedOnApp?: string): Promise<App | null> {
-        let app = await this.getApp(appName).catch(err => {if (err.code === 'ENOENT') return null; else throw err});
+    async setApp(appName: string, appObj: $AppObjT, basedOnApp?: string): Promise<$AppObjT | null> {
+        let app = await this.getApp(appName).catch(err => { if (err.code === 'ENOENT') return null; else throw err });
         if (!app) {
             if (basedOnApp) {
                 await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
@@ -293,8 +293,12 @@ export class MetadataStore {
         app = await this.getApp(appName);
         if (!app) throw new Error(`app ${appName} creation failed`);
         app._id = `$App~~${appName}`;
-        app.category = category;
-        app.description = description;
+        app.category = appObj.category;
+        app.description = appObj.description;
+        app.status = appObj.status;
+        app.default_page = appObj.default_page;
+        app.info = appObj.info;
+        if (appObj.is_default_app != null) app.is_default_app = appObj.is_default_app;
         await this.putApp(appName, app);
         await execShell(`mkdir -p ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
         return this.getApp(appName);
@@ -323,7 +327,7 @@ export class MetadataStore {
         let headEl = cleanedUpDOM.querySelector('head');
         if (!headEl) throw new Error(`could not find head elem for ${newPageObj._id} with html ${content}`);
         let newHeadEl = htmlTools.doc.createElement('head');
-        
+
         setPageProperties(newHeadEl, newPageObj);
         cleanedUpDOM.replaceChild(newHeadEl, headEl);
 
@@ -401,16 +405,8 @@ export class MetadataStore {
             }
         }
 
-        //cleanup runtime-only attributes and classes
-        {
-            for (let recordBindingEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-bind-to-record]'))) {
-                recordBindingEl.removeAttribute('data-frmdb-record');
-            }
-            for (let el of Array.from(cleanedUpDOM.querySelectorAll('form.was-validated'))) {
-                el.classList.remove('was-validated');
-            }
-        }
-
+        this.cleanupRuntimeOnlyAttributes(cleanedUpDOM);
+        
         //<head> is managed like a special type of fragment
         {
             let headEl = cleanedUpDOM.querySelector('head');
@@ -447,6 +443,39 @@ export class MetadataStore {
 
         let fullPageOpts: FullPageOpts = pageOpts.look ? pageOpts as FullPageOpts : await this.fullPageOptsFromMandatory(pageOpts);
         setTimeout(() => this.setPageScreenshot(fullPageOpts), 500);
+    }
+
+    cleanupRuntimeOnlyAttributes(cleanedUpDOM: HTMLElement) {
+        for (let recordBindingEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-bind-to-record]'))) {
+            recordBindingEl.removeAttribute('data-frmdb-record');
+        }
+        for (let el of Array.from(cleanedUpDOM.querySelectorAll('form.was-validated'))) {
+            el.classList.remove('was-validated');
+        }
+
+        for (let el of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-validation-title-bak]'))) {
+            (el as HTMLElement).title = el.getAttribute('data-frmdb-validation-title-bak')!;
+            el.removeAttribute('data-frmdb-validation-title-bak');
+        }
+        for (let el of Array.from(cleanedUpDOM.querySelectorAll('[title*="(frmdbv)"]'))) {
+            el.removeAttribute('title');//elements that had an initial title have data-frmdb-validation-title-bak
+        }
+
+        let scriptEl = cleanedUpDOM.querySelector('#FRMDB_VARS_SCRIPT_ELEMENT');
+        if (scriptEl) scriptEl.parentElement!.removeChild(scriptEl);
+
+        for (let el of Array.from(cleanedUpDOM.querySelectorAll('script[src^="chrome-extension:"]'))) {
+            el.parentElement?.removeChild(el);
+        }
+        for (let el of Array.from(cleanedUpDOM.querySelectorAll('[contenteditable]'))) {
+            el.removeAttribute('contenteditable');
+        }
+        for (let el of Array.from(cleanedUpDOM.querySelectorAll('[spellchecker]'))) {
+            el.removeAttribute('spellchecker');
+        }
+
+        cleanedUpDOM.querySelector('body')?.classList.remove('frmdb-editor-on', 'frmdb-editor-normal', 'frmdb-editor-preview');
+
     }
 
     async setPageScreenshot(pageOpts: FullPageOpts) {
@@ -538,7 +567,7 @@ export class MetadataStore {
         //     type: 'png'
         // });
         // await bodyHandle.dispose();
-        
+
         console.info("close browser ", url);
         await browser.close();
 
@@ -563,7 +592,7 @@ export class MetadataStore {
         return pdf;
     }
 
-    async getPageHtml(reqPageOpts: AllPageOpts, fullPageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>, flashMessages?: { [severity: string]: string[] }): Promise<string> {
+    async getPageHtml(reqPageOpts: AllPageOpts, fullPageOpts: FullPageOpts, dictionaryCache: Map<string, $DictionaryObjT>, variables: { [name: string]: string }, flashMessages: { [severity: string]: string[] }): Promise<string> {
         let { appName, pageName } = reqPageOpts;
         let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName + '.html' || 'index.html'}`);
 
@@ -604,7 +633,7 @@ export class MetadataStore {
             if (reqPageOpts.query?.frmdbRender === 'view' && '_scripts.html' === fragmentName) continue;
 
             let fragmentHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${fragmentName}`);
-            let fragmentDom = htmlTools.html2dom(fragmentHtml);
+            let fragmentDom = htmlTools.html2dom(fragmentHtml.replace(/(.|\n)+?<body>/, '').replace(/<\/body>(.|\n)+/, ''));
             if (isHTMLElement(fragmentDom)) {
                 let savedFragmentName = fragmentDom.getAttribute('data-frmdb-fragment');
                 if (savedFragmentName != fragmentName) throw new Error(`Fragment name mismatch: ${savedFragmentName} != ${fragmentName} //// ${fragmentEl.outerHTML} //// ${fragmentHtml} /// ${fragmentDom.outerHTML}`);
@@ -612,7 +641,7 @@ export class MetadataStore {
             }
         }
 
-        if ("_none_" != pageOpts.theme) {
+        if ("None" != pageOpts.theme) {
             let themeRulesJson = await this.readFile(`${FRMDB_ENV_DIR}/themes/${pageOpts.theme}.json`);
             let themeRules: ThemeRules = JSON.parse(themeRulesJson);
             await applyTheme(themeRules, pageDom);
@@ -620,25 +649,60 @@ export class MetadataStore {
         I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, reqPageOpts.lang as I18nLang, dictionaryCache);
         pageDom.lang = reqPageOpts.lang;
 
-        {
-            let notifContainer = pageDom.querySelector('frmdb-notification-container');
-            if (!notifContainer) {
-                notifContainer = htmlTools.doc.createElement('frmdb-notification-container')
-                htmlTools.doc.body.appendChild(notifContainer);
-            }
-            if (flashMessages) {
-                for (let [severity, messages] of Object.entries(flashMessages)) {
-                    if (messages && messages.length > 0) {
-                        notifContainer.append(/*html*/`
-                            <frmdb-alert severity="${severity}" event-title="" event-detail="${messages.join(', ')}"></frmdb-alert>
-                        `);
-                    }
-                }
-            }
-        }
+        this.applyServerSideLogic(appName, pageName, htmlTools, pageHtml, pageDom, variables, flashMessages);
+        this.cleanupRuntimeOnlyAttributes(pageDom);
 
         return htmlTools.document2html(pageDom);
     }
+
+    applyServerSideLogic(appName: string, pageName: string, htmlTools: HTMLTools, pageHtml: string, pageDom: HTMLElement, variables: { [name: string]: string }, flashMessages: { [severity: string]: string[] }) {
+        if (Object.keys(variables).length > 0) {
+            let bodyEl = pageDom.querySelector('body');
+            if (!bodyEl) throw new Error(`could not find body elem for ${appName}/${pageName} with html ${pageHtml}`);
+
+            // let scriptEl = htmlTools.doc.createElement('script');
+            // scriptEl.id = "FRMDB_VARS_SCRIPT_ELEMENT"
+            // scriptEl.innerHTML = `
+            //     var $FRMDB_SERVER_VARS = {
+            //         ${Object.entries(variables).map(([k, v]) => `'${k}': '${v}',\n`)}
+            //     };
+            // `;
+            // bodyEl.prepend(scriptEl);
+
+            //FIXME: move live-dom-template into @core and use it also for SSR
+            for (let [varName, varValue] of Object.entries(variables)) {
+                let attrSel = `[data-frmdb-value="$FRMDB_SERVER_VARS.${varName}"]`;
+                for (let inputEl of Array.from(pageDom.querySelectorAll(`input${attrSel}`))) {
+                    inputEl.setAttribute('value', varValue);
+                }
+                //TODO: select${attrSel},textarea${attrSel}
+            }
+
+            try {
+                updateDOMForDoc(htmlTools.doc, {
+                        $FRMDB_SERVER_VARS: variables,
+                    }, bodyEl);
+            } catch (err) {
+                console.error(`Error while applying server data binding`, err);
+            }
+        }
+
+        let notifContainer = pageDom.querySelector('frmdb-notification-container');
+        if (!notifContainer) {
+            notifContainer = htmlTools.doc.createElement('frmdb-notification-container')
+            htmlTools.doc.body.appendChild(notifContainer);
+        }
+        if (flashMessages) {
+            for (let [severity, messages] of Object.entries(flashMessages)) {
+                if (messages && messages.length > 0) {
+                    notifContainer.innerHTML = notifContainer.innerHTML + /*html*/`
+                    <frmdb-alert severity="${severity}" event-title="" event-detail="${messages.join(', ')}"></frmdb-alert>
+                `;
+                }
+            }
+        }
+    }
+
 
     async deletePage(deletedPagePath: string): Promise<void> {
         let { appName, pageName } = parseAllPageUrl(deletedPagePath);
@@ -670,7 +734,7 @@ export class MetadataStore {
         for (let app of apps.map(a => a._id)) {
             if (app === appName) continue;
             let imgsForApp = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${app}/static`)
-                .catch(err => {console.warn(err); return []});
+                .catch(err => { console.warn(err); return [] });
             images.push(...imgsForApp);
         }
         return images.map(i => ({ _id: i }));
@@ -681,14 +745,24 @@ export class MetadataStore {
         return iconNames.map(i => ({ _id: i.replace(/^.*\/svg\//, '').replace(/\.svg$/, '') }))
     }
 
-    async getApps(appName: string): Promise<$AppObjT[]> {
+    async getDefaultApp(): Promise<$AppObjT | null> {
+        let apps = await this.getApps();
+        let defaultApp: $AppObjT | null = null;
+        for (let app of apps) {
+            if (app.is_default_app) {
+                defaultApp = app;
+                break;
+            }
+        }
+        return defaultApp;
+    }
+    async getApps(appName?: string): Promise<$AppObjT[]> {
         let appDirs = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps`);
         let apps: $AppObjT[] = [];
         for (let appDir of appDirs) {
             let appName = appDir.replace(/\/?formuladb-env\/frmdb-apps\//, '');
-            let app: App = this.fromYaml(
-                await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`)
-            );
+            let appStr = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`);
+            let app: $AppObjT = this.fromYaml(appStr);
             apps.push({
                 ...app,
                 name: appName,
@@ -735,7 +809,7 @@ export class MetadataStore {
 
         return Object.values(schema.entities)
             // .filter(e => ! [$App._id, $Table._id, $Page._id, $Icon._id, $Image._id].includes(e._id))
-            ;
+        ;
     }
 
 }

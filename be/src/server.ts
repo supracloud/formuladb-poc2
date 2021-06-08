@@ -6,21 +6,21 @@
 require('source-map-support').install();
 require('module-alias/register');
 
-// // Add this to the VERY top of the first file loaded in your app
-// var apm = require('elastic-apm-node').start({
-//     // Override service name from package.json
-//     serviceName: 'formuladb-be',
-//     // Use if APM Server requires a token
-//     //secretToken: '',
-//     serverUrl: 'https://apmserver.formuladb.io',
-//     // for now send events for both dev and prod. Update in the future to disable dev
-//     active: true,
-//     environment: process.env.FRMDB_ENV_NAME || 'not-known',
-//     // captureBody: true,
-//     // transactionSampleRate: 1.0,
-//     verifyServerCert: false,//TODO: fix this
-//     logUncaughtExceptions: true,
-// })
+// Add this to the VERY top of the first file loaded in your app
+var apm = require('elastic-apm-node').start({
+    // Override service name from package.json
+    serviceName: 'formuladb-be',
+    // Use if APM Server requires a token
+    //secretToken: '',
+    serverUrl: process.env.ELASTICSEARCH_HOST,
+    // for now send events for both dev and prod. Update in the future to disable dev
+    active: true,
+    environment: process.env.FRMDB_ENV_NAME || 'not-known',
+    // captureBody: true,
+    // transactionSampleRate: 1.0,
+    verifyServerCert: false,//TODO: fix this
+    logUncaughtExceptions: true,
+})
 
 import * as http from 'http';
 
@@ -28,6 +28,7 @@ import * as http from 'http';
 import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 import { fixHtml } from './frmdb-cli/fix-html';
 import { initTestDb } from './frmdb-cli/init-test-db';
+import { autoUpgrade } from './frmdb-cli/auto-upgrade';
 
 require('yargs')
     .scriptName("frmdb-be")
@@ -61,12 +62,14 @@ async function startServer(port: number) {
     try {
         let kvsFactory = await getKeyValueStoreFactory();
 
-        if (process.env.BUILD_DEVELOPMENT) {
-            await kvsFactory.clearAllForTestingPurposes();
-            await initTestDb(kvsFactory);
-        }
+        // if (process.env.FRMDB_LOCALDEV_ENV) {
+        //     await kvsFactory.clearAllForTestingPurposes();
+        //     await initTestDb(kvsFactory);
+        // }
 
-        // Init the express application
+        // await autoUpgrade(kvsFactory);
+
+        console.log('Init the server api');
         const app = await require('./config/express').default(kvsFactory);
 
         const server: http.Server = http.createServer(app);
@@ -90,15 +93,15 @@ async function startServer(port: number) {
 function startGitSync() {
     console.log("Starting git-sync each 5 sec");
     setInterval(() => {
-        runCmd('bash', '/scripts/sync-git.sh');
-    }, 5000)
+        runCmd('timeout', '30', 'bash', '/scripts/sync-git.sh');
+    }, 30000)
 }
 
 function startBackupDb() {
-    console.log("Starting backup-db every hour");
+    console.log("Starting backup-db every day");
     setInterval(() => {
-        runCmd('bash', '/scripts/backup-db.sh');
-    }, 3600000)
+        runCmd('timeout', '600', 'bash', '/scripts/backup-db.sh');
+    }, 24 * 3600000)
 }
 
 var spawn = require('child_process').spawn;

@@ -7,7 +7,7 @@
 
 import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@storage/key_value_store_i";
 import * as _ from "lodash";
-import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
+import { KeyValueObj, KeyValueError, KeyValueObjIdType, _idAsStr } from "@domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
@@ -16,13 +16,12 @@ import { waitUntil } from "@domain/ts-utils";
 import { ReduceFun } from "@domain/metadata/reduce_functions";
 import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";
-import { App } from "@domain/app";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { Page } from "@domain/uimetadata/page";
 import { MetadataStore } from "@storage/metadata-store";
-import { GitStorage } from "@storage/git-storage";
-import { validateAndCovertObjPropertyType } from "@domain/metadata/types";
+import { validateAndCovertObjPropertyType } from "@core/validate-schema-types";
+import { getActualType } from "@core/formula_types_utils";
+import { isNumericColumnTypes } from "@domain/metadata/types";
 const calculateSlot = require('cluster-key-slot');
 const logger = new FrmdbLogger("kvs:pg");
 
@@ -39,7 +38,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     protected table_id: string;
     protected isJSONTable: boolean = true;
 
-    constructor(name: string) {
+    constructor(name: string, protected desc?: string) {
         dotenv.config();
         let config = {
             database: process.env.PGDATABASE || "postgres",
@@ -47,7 +46,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             port: parseInt(process.env.PGPORT || "5432"),
             user: process.env.PGUSER || "postgres",
             password: process.env.PGPASSWORD || "postgres",
-
+            max: (process.env.PG_MAX_CONNECTIONS||'').match(/^[0-9]+$/) ? 
+                parseInt(process.env.PG_MAX_CONNECTIONS!) : 20
         };
         if (KeyValueStorePostgres.db == null) {
             console.info("Connecting to", config);
@@ -70,7 +70,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     private getTableName(inputName: string) {
         if (inputName.length >= 62) {
-            return `f_${calculateSlot(inputName)}`;
+            let hash = (calculateSlot(inputName)).toString(16).padStart(4, '0');
+            return `${inputName.substr(0, 58)}${hash}`;
         } else {
             return 't' + inputName.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
         }
@@ -81,6 +82,11 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (_id VARCHAR COLLATE "C" NOT NULL PRIMARY KEY, val json)';
             console.log(query);
             await this.getDB().any(query);
+
+            if (this.desc) {
+                query = `COMMENT ON TABLE ${this.table_id} IS '${this.desc.replace(/'/g, "''")}';`;
+                await this.getDB().any(query);
+            }
         } catch (err) {
             // When 2 or more workers are trying to create table on the same session
             console.log(err);
@@ -116,11 +122,11 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         return 'SELECT val FROM ' + this.table_id + ' WHERE _id = $1';
     }
 
-    public async get(_id: string): Promise<VALUET> {
+    public async get(_id: KeyValueObjIdType): Promise<VALUET> {
         await this.initialize();
         try {
             let query: string = this.getSQL();
-            let res = await this.getDB().oneOrNone<VALUET>(query, [this.pgSpecialChars(_id)]);
+            let res = await this.getDB().oneOrNone<VALUET>(query, [this.pgSpecialChars(_idAsStr(_id))]);
             return res != null ? res['val'] : undefined;
         } catch (err) {
             console.error(err);
@@ -162,10 +168,10 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             .then(res => res.map(({ _id, val }) => val));
     }
 
-    public async set(_id: string, obj: VALUET): Promise<VALUET> {
+    public async set(_id: KeyValueObjIdType, obj: VALUET): Promise<VALUET> {
         await this.initialize();
         try {
-            let escapedId = this.pgSpecialChars(_id);
+            let escapedId = this.pgSpecialChars(_idAsStr(_id));
             let object_as_json = JSON.stringify(obj);
             let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (_id) DO UPDATE SET _id=$1, val=$2';
             await this.getDB().none(query, [escapedId, object_as_json]);
@@ -176,7 +182,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         }
     }
 
-    public async del(_id: string): Promise<VALUET> {
+    public async del(_id: KeyValueObjIdType): Promise<VALUET> {
 
         await this.initialize();
         try {
@@ -241,7 +247,7 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
 export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStorePostgres<OBJT> implements KeyTableStoreI<OBJT> {
     private sqlQueryCreator = new CreateSqlQuery();
 
-    constructor(public entity: Entity) {
+    constructor(private schema: Schema, public entity: Entity) {
         super(entity._id);
     }
 
@@ -266,7 +272,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         return Object.values(this.entity.props).filter(p => p.name !== '_id');
     }
 
-    public async set(_id: string, obj: OBJT): Promise<OBJT> {
+    public async set(_id: KeyValueObjIdType, obj: OBJT): Promise<OBJT> {
         await this.initialize();
         try {
             let props = Object.values(this.entity.props);
@@ -282,7 +288,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                         }
                 `;
             let values = Object.values(this.entity.props)
-                .map(p => p.name === '_id' ? this.pgSpecialChars(obj[p.name]) : obj[p.name])
+                .map(p => p.name === '_id' ? this.pgSpecialChars(_idAsStr(obj[p.name])) : obj[p.name])
                 .concat(this.propsNoId().map(p => obj[p.name]))
             ;
             await this.getDB().none(query, values)
@@ -296,22 +302,36 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     private prop2sqlCol(prop: EntityProperty): string {
         let type: string;
         switch (prop.propType_) {
-            case Pn.TEXT:
-                type = "varchar";
+            case Pn.INPUT:
+                if (!prop.actualType) throw new Error(`prop ${this.entity._id}.${prop.name} does not have actualType`);
+                switch(prop.actualType.name) {
+                    case "TextType":
+                        type = "varchar";
+                        break;
+                    case "NumberType":
+                        type = "numeric(12,5)";
+                        break;
+                    case "BooleanType":
+                        type = "boolean";
+                        break;
+                    default:
+                        type = "varchar";
+                        break;
+                }
                 break;
-            case Pn.NUMBER:
-                type = "numeric(12,5)";
-                break;
-            case Pn.HLOOKUP:
-                if (prop.actualPropType_ === Pn.NUMBER) {
+            case Pn.HLOOKUP: {
+                let actualType = getActualType(this.schema, this.entity._id, prop.name);
+                if (!actualType) throw new Error(`could not get actualType for prop ${this.entity._id}.${prop.name} HLOOKUP towards ${prop.referenceToPropertyName}->${prop.referencedPropertyName}`);
+                if (actualType.name === "NumberType") {
                     type = "numeric(12,5)";
                 } else {
                     type = "varchar";
                 }
                 break;
-            case Pn.FORMULA:
-                //FIXME: implement proper type system
-                if (prop.formula.match(/SUM|COUNT| [-+*\/] /) != null) {
+            }
+            case Pn.SCALAR_FORMULA:
+            case Pn.AGGREGATE_FORMULA:
+                if (isNumericColumnTypes(prop.returnType_)) {
                     type = "numeric(12,5)";
                 } else {
                     type = "varchar";
@@ -356,7 +376,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         for (let obj of res) {
             //TODO: numbers are returned as text, fix it from the pg driver
             for (let prop of Object.values(this.entity.props)) {
-                validateAndCovertObjPropertyType(obj, this.entity, prop.name, obj[prop.name]);
+                validateAndCovertObjPropertyType(obj, this.entity, prop.name, obj[prop.name], this.schema);
             }
         }
         return res;
@@ -394,7 +414,7 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryPostgres";
     metadataStore = new MetadataStore(process.env.FRMDB_ENV_NAME || 'env-not-known', this);
 
-    createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
+    createKeyValS<VALUET>(name: string, desc: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);
     }
 
@@ -402,8 +422,17 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
         return new KeyObjStorePostgres<OBJT>(name);
     }
 
-    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT> {
-        return new KeyTableStorePostgres<OBJT>(entity);
+    createKeyTableS<OBJT extends KeyValueObj>(schema: Schema, entity: Entity): KeyTableStoreI<OBJT> {
+        return new KeyTableStorePostgres<OBJT>(schema, entity);
+    }
+
+    async executeBatch(callback: () => Promise<any>): Promise<void> {
+        let db = KeyValueStorePostgres.db!;
+        if (!db) throw new Error(`not connected to DB yet`);
+        return db.tx(dbTransaction => {
+            throw new Error(`Cannot use KVS here, because the KVS does not use dbTransaction, 
+                it uses db and all operations will run outside the transaction`);
+        })
     }
 
     async clearAllForTestingPurposes() {

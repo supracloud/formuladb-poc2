@@ -39,18 +39,24 @@ export class TransactionManager {
         console.log(ll(transactionId, 0) + "|objIds: " + CircularJSON.stringify(objIds) + "|conflicts: " + 
             CircularJSON.stringify(Array.from(newTrans.conflictingTransactions.keys())));
 
-        if (newTrans.conflictingTransactions.size == 0) {
-            console.log(ll(transactionId, 0) + "|executing transaction no conflicts");
-            await commitCallback();
-        } else {
-            while (newTrans.conflictingTransactions.size > 0) {
-                await this.sleep(100);
-                //TODO: add timeout
-            }
+        let transactionErr: any | null = null;
+        try {
+            if (newTrans.conflictingTransactions.size == 0) {
+                console.log(ll(transactionId, 0) + "|executing transaction no conflicts");
+                await commitCallback();
+            } else {
+                while (newTrans.conflictingTransactions.size > 0) {
+                    await this.sleep(100);
+                    //TODO: add timeout
+                }
 
-            console.log(ll(transactionId, 0) + "|executing transaction");
-            await prepareCallback(1);//re-prepare the transaction after conflicts have been resolved
-            await commitCallback();
+                console.log(ll(transactionId, 0) + "|executing transaction");
+                await prepareCallback(1);//re-prepare the transaction after conflicts have been resolved
+                await commitCallback();
+            }
+        } catch (err) {
+            transactionErr = err;
+            console.info(`Transaction ${transactionId} failed`, err);
         }
 
         this.currentTransactions.forEach(trans => {
@@ -59,5 +65,7 @@ export class TransactionManager {
             }
         });
         this.currentTransactions.delete(newTrans.transactionId);
+        
+        if (transactionErr) throw transactionErr;
     }
 }

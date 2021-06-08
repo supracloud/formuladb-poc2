@@ -7,7 +7,7 @@ import { Entity, Schema, isEntity } from "@domain/metadata/entity";
 import { DataObj, parseDataObjId, parsePrefix } from "@domain/metadata/data_obj";
 import { MwzEvents } from "@domain/event";
 import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "@storage/key_value_store_i";
-import { KeyValueError } from "@domain/key_value_obj";
+import { KeyValueError, KeyValueObjIdType } from "@domain/key_value_obj";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
 import { evalExpression } from "@functions/map_reduce_utils";
 import * as _ from "lodash";
@@ -16,7 +16,6 @@ import { CircularJSON } from "@domain/json-stringify";
 import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { $User, $Dictionary, isMetadataEntity, getDefaultEntity } from "@domain/metadata/default-metadata";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
-import { I18nStore } from "./i18n-store";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
@@ -49,7 +48,7 @@ export class FrmdbStore {
                 throw new Error("getDataKvs unknown entity " + entityId);
             }
 
-            ret = await this.kvsFactory.createKeyTableS<DataObj>(entity);
+            ret = await this.kvsFactory.createKeyTableS<DataObj>(this.schema, entity);
             this.dataKVSMap.set(entityId, ret);
         }
         return ret;
@@ -63,7 +62,7 @@ export class FrmdbStore {
         return (await this.getTransactionsDB()).put(event);
     }
 
-    public async getDataObj(id: string): Promise<DataObj | null> {
+    public async getDataObj(id: KeyValueObjIdType): Promise<DataObj | null> {
         let entityId = parseDataObjId(id).entityId;
         return (await this.getDataKvs(entityId)).get(id);
     }
@@ -85,6 +84,11 @@ export class FrmdbStore {
         return (await this.getDataKvs(entityId)).put(existingObj);
     }
 
+    public async putBatch(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
+        let ret = await this.putBulk(objs);
+        return ret;
+    }
+
     public async putBulk(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
         let objsGroupedByEntity = _.groupBy(objs, (o) => parseDataObjId(o._id).entityId);
         let promises = Object.entries(objsGroupedByEntity).map(async ([entityId, objs]) => {
@@ -95,7 +99,7 @@ export class FrmdbStore {
             .then(results => _.flatMap(results));
     }
 
-    public async delDataObj(id: string) {
+    public async delDataObj(id: KeyValueObjIdType) {
         let entityId = parseDataObjId(id).entityId;
         return (await this.getDataKvs(entityId)).del(id);
     }

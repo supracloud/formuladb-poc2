@@ -10,8 +10,6 @@ import {
     Expression, CallExpression, BinaryExpression, isExpression, isIdentifier,
     LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression, UnaryExpression, isLiteral, Identifier, isCallExpression
 } from "jsep";
-import * as jsep from 'jsep';
-jsep.addLiteral('@', '@');
 
 import {
     FormulaExpression
@@ -33,17 +31,19 @@ import {
     isMapKeyAndQuery,
     includesMapFunctionAndQuery,
     CompiledScalar,
+    KeyExpression,
 } from "@domain/metadata/execution_plan";
-import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions } from "./functions_compiler";
+import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions, LookupFunctions } from "./functions_compiler";
 import { logCompileFormula } from "../../test/src/test_utils";
 import { parseFormula } from "./formula_parser";
 import { $s2e } from "@functions/s2e";
+import { isBooleanBinaryExpression, LogicalBinaryOperator } from "@domain/metadata/expressions";
 
 
 export class FormulaCompilerContextType {
     targetEntityName: string;
     targetPropertyName: string;
-    currentEntityName?: string;
+    referencedEntityName?: string;
 }
 
 export class FuncCommon {
@@ -64,55 +64,9 @@ function mergeBinaryNodes(node: BinaryExpression | LogicalExpression, left: Exec
     return combine2Nodes(node, 'left', left, 'right', right, context);
 }
 
-export enum LogicalOperator {
-    '==' = '==',
-    '!=' = '!=',
-    '<' = '<',
-    '<=' = '<=',
-    '>' = '>',
-    '>=' = '>=',
-}
-const logicalOperators = Object.values(LogicalOperator);
-export interface LogicalOpBinaryExpression extends BinaryExpression {
-    operator: LogicalOperator;
-}
-export function isLogicalOpBinaryExpression(expr: Expression): expr is LogicalOpBinaryExpression {
-    return isBinaryExpression(expr) && logicalOperators.includes(expr.operator as any);
-}
-
-enum LogicalFunctions {
-    AND= 'AND', 
-    OR ='OR', 
-    NOT = 'NOT',
-};
-export interface LogicalCallExpressionCallee extends Identifier {
-    type: 'Identifier';
-    name: LogicalFunctions;
-}
-export interface LogicalCallExpression extends CallExpression {
-    callee: LogicalCallExpressionCallee;
-}
-export function isLogicalCallExpression(expr: Expression): expr is LogicalCallExpression {
-    return isCallExpression(expr) && isIdentifier(expr.callee) && Object.values(LogicalFunctions).includes(expr.callee.name as any);
-}
-
-enum BooleanFunctions {
-    INTERSECTS = 'INTERSECTS', 
-};
-export interface BooleanCallExpressionCallee extends Identifier {
-    type: 'Identifier';
-    name: BooleanFunctions;
-}
-export interface BooleanCallExpression extends CallExpression {
-    callee: BooleanCallExpressionCallee;
-}
-export function isBooleanCallExpression(expr: Expression): expr is BooleanCallExpression {
-    return isCallExpression(expr) && isIdentifier(expr.callee) && Object.values(BooleanFunctions).includes(expr.callee.name as any);
-}
-
-export function getQueryKeys(op: string, node: Expression, reverse?: boolean): MapQuery {
-    switch (op) {
-        case '==':
+export function getQueryKeys(op: LogicalBinaryOperator, node: Expression, reverse?: boolean): MapQuery {
+    switch (op.toString()) {
+        case '=':
             return { startkeyExpr: [node], endkeyExpr: [node], inclusive_start: true, inclusive_end: true };
         case '<':
             return !reverse ?
@@ -136,7 +90,7 @@ export function getQueryKeys(op: string, node: Expression, reverse?: boolean): M
 
 export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: BinaryExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
     let node = logicalOpBinaryExpr;
-    if (!isLogicalOpBinaryExpression(logicalOpBinaryExpr)) throw new FormulaCompilerError(node, "Expected logical binary expression but found " + CircularJSON.stringify(logicalOpBinaryExpr, null, 4));
+    if (!isBooleanBinaryExpression(logicalOpBinaryExpr)) throw new FormulaCompilerError(node, "Expected logical binary expression but found " + CircularJSON.stringify(logicalOpBinaryExpr, null, 4));
     let left = compileExpression(logicalOpBinaryExpr.left, context, CompiledScalarN);
     let right = compileExpression(logicalOpBinaryExpr.right, context, CompiledScalarN);
     if (!isCompiledScalar(left) || !isCompiledScalar(right)) throw new FormulaCompilerError(node, "operands of logical BinaryExpression must be scalar expressions, at: " + CircularJSON.stringify(logicalOpBinaryExpr, null, 4));
@@ -167,15 +121,15 @@ export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalE
             If you need ||, please create 2 different properties and combine them with another formula. 
             For example SUMIF(..., x < @[someVal] || y > @[otherVal]) can be: p1=SUMIF(..., x < @[someVal]), p2=SUMIF(y > @[otherVal]), p3 = p1 + p2
             At ` + logicalExpr.origExpr);
-    if (!isLogicalOpBinaryExpression(logicalExpr.left))
+    if (!isBooleanBinaryExpression(logicalExpr.left))
         throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
         
-    if (!isLogicalOpBinaryExpression(logicalExpr.right)) 
+    if (!isBooleanBinaryExpression(logicalExpr.right)) 
         throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
     let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
     let right = extractKeysAndQueriesFromBinaryExpression(logicalExpr.right, context);
 
-    if (logicalExpr.left.operator !== '==') throw new FormulaCompilerError(node, `Currently first operator for a LogicalExpession must be "==", at ` + logicalExpr.origExpr);
+    if (logicalExpr.left.operator !== '=') throw new FormulaCompilerError(node, `Currently first operator for a LogicalExpession must be "=", at ` + logicalExpr.origExpr);
 
     return {
         type_: MapReduceKeysAndQueriesN,
@@ -214,14 +168,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     switch (node.type) {
 
         case 'ArrayExpression':
-            let has$Identifier = node.elements.map(x => x.origExpr.indexOf('@[') >= 0).reduce((acc, x) => acc || x), 
-                hasNon$Identifier = node.elements.map(x => x.origExpr.indexOf('@[') < 0).reduce((acc, x) => acc || x);
-
-            return {
-                type_: CompiledScalarN, rawExpr: node,
-                has$Identifier: has$Identifier,
-                hasNon$Identifier: hasNon$Identifier,
-            };
+            throw new FormulaCompilerError(node, "Arrays not supported: " + node.origExpr);
 
         case 'BinaryExpression':
             if (MapReduceKeysAndQueriesN === requestedRetType) {
@@ -235,7 +182,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
         case 'CallExpression':
             var fn: (...args) => ExecPlanCompiledExpression;
             if (!isIdentifier(node.callee)) throw new FormulaCompilerError(node, "Expected function name but found " + CircularJSON.stringify(node.callee, null, 4));
-            fn = ScalarFunctions[node.callee.name] || MapFunctions[node.callee.name] || MapReduceFunctions[node.callee.name] || PropertyTypeFunctions[node.callee.name];
+            fn = ScalarFunctions[node.callee.name] || MapFunctions[node.callee.name] || MapReduceFunctions[node.callee.name] || LookupFunctions[node.callee.name] || PropertyTypeFunctions[node.callee.name];
             if (fn != null) {
                 return fn.call(null, {
                     context: context,
@@ -248,7 +195,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             throw new FormulaCompilerError(node, "ConditionalExpression(s) are not supported (yet): " + node.origExpr);
 
         case 'Identifier':
-            node.belongsTo = context.currentEntityName;
+            node.belongsTo = context.referencedEntityName;
             return {
                 type_: CompiledScalarN, rawExpr: node,
                 has$Identifier: false,
@@ -351,8 +298,13 @@ export function compileFormulaForce(targetEntityName: string, propJsPath: string
     }
 }
 export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula {
-    let formulaAstNode = parseFormula(formula, false);
-    return compileFormulaExpression(targetEntityName, propJsPath, formulaAstNode);
+    try {
+        let formulaAstNode = parseFormula(formula, false);
+        return compileFormulaExpression(targetEntityName, propJsPath, formulaAstNode);
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }
 function compileFormulaExpression(targetEntityName: string, propJsPath: string, formulaAstNode: Expression): CompiledFormula {
     
@@ -388,22 +340,32 @@ function compileFormulaExpression(targetEntityName: string, propJsPath: string, 
 }
 
 function encodeViewNameURIComponent(str: string): string {
-    return encodeURIComponent(
-        str.replace(/ /g, "__")
-            .replace(/\//g, "_div_")
-            .replace(/[%]/g, "_mod_")
-            .replace(/&&/g, "_and_")
-            .replace(/\|\|/g, "_or_")
-            .replace(/[+]/g, "_plus_")
-            .replace(/>/g, "_gt_")
-            .replace(/</g, "_lt_")
-            .replace(/>=/g, "_ge_")
-            .replace(/<=/g, "_le_")
-    );
+    // return encodeURIComponent(
+    return str
+        .replace(/\//g, "_div_")
+        .replace(/[%]/g, "_mod_")
+        .replace(/&&/g, "_and_")
+        .replace(/\|\|/g, "_or_")
+        .replace(/[+]/g, "_plus_")
+        .replace(/>/g, "_gt_")
+        .replace(/</g, "_lt_")
+        .replace(/>=/g, "_ge_")
+        .replace(/<=/g, "_le_")
+        .replace(/[^a-zA-Z0-9_]/g, "_")
+    ;
+    // );
 }
-export function getViewName(isAggs: boolean, entityId, rawExpr: Expression): string {
-    let ret = (isAggs ? 'vaggs-' : 'vobs-') + entityId + '-' + encodeViewNameURIComponent(rawExpr.origExpr);
-    ret = (isAggs ? 'vaggs-' : 'vobs-') + entityId + '-' + rawExpr.origExpr;
+export function getViewName(isAggs: boolean, propertyName: string, rawExpr: Expression, entityId: string): string {
+    let ret = (isAggs ? 'a' : 'o') + propertyName + '_' + entityId + '_' + encodeViewNameURIComponent(rawExpr.origExpr);
+    return ret;
+}
+export function getViewDesc(isAggs: boolean, propertyName: string, rawExpr: Expression, 
+    map: {entityId: string, keyExpr: KeyExpression}
+): string {
+    let ret = (isAggs ? '[[agg]] ' : '[[obs]] ') + 
+        map.entityId + '.' + propertyName + ' = ' + 
+        rawExpr.origExpr +
+        ` [[${map.keyExpr.map(expr => expr.origExpr).join(' ,, ')}]]`;
     return ret;
 }
 
@@ -591,7 +553,7 @@ function combineTriggerWithScalar<T extends Expression>(
             rawExpr: expr,
             targetEntityName: context.targetEntityName,
             targetPropertyName: context.targetPropertyName,
-            triggers: [trg]
+            triggers: [trg],
         };
     } else return {
         ...trg,

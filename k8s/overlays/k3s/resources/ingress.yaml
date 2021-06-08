@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: formuladb
+  annotations:
+    # traefik.ingress.kubernetes.io/redirect-entry-point: https
+    # traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    # certmanager.k8s.io/cluster-issuer: "formuladb-staging"
+spec:
+  # tls:
+  # - hosts:
+  #   - $(NAMESPACE_NAME).formuladb.io
+  #   secretName: certificate-formuladb-staging
+  rules:
+  - host: new-sfa #TBD-REPLACE-WITH-ONPREM-HOSTNAME
+    http:
+      paths:
+      - path: /formuladb
+        backend:
+          serviceName: be
+          servicePort: 8084
+      - path: /en/
+        backend:
+          serviceName: be
+          servicePort: 8084
+      - path: /ro/
+        backend:
+          serviceName: be
+          servicePort: 8084

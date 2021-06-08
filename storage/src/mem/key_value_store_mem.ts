@@ -5,7 +5,7 @@
 
 import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@storage/key_value_store_i";
 import * as _ from "lodash";
-import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
+import { KeyValueObj, KeyValueError, KeyValueObjIdType, _idAsStr } from "@domain/key_value_obj";
 import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@domain/metadata/reduce_functions";
 import { Entity, Schema } from "@domain/metadata/entity";
 import { Expression } from "jsep";
@@ -34,12 +34,12 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
 
     public async close() {}
 
-    public get(_id: string): Promise<VALUET> {
-        return simulateIO(_.cloneDeep(this.db[_id]));
+    public get(_id: KeyValueObjIdType): Promise<VALUET> {
+        return simulateIO(_.cloneDeep(this.db[_idAsStr(_id)]));
     }
 
     /** querying a map-reduce view must return the results ordered by _id */
-    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ _id: string, val: VALUET }[]> {
+    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ _id: KeyValueObjIdType, val: VALUET }[]> {
         let ret = _.entries(this.db).filter(([_id, val]) =>
             (opts.startkey < _id && _id < opts.endkey)
             || (opts.inclusive_start && _id === opts.startkey)
@@ -59,14 +59,14 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
             .then(res => res.map(({ _id, val }) => val));
     }
 
-    public set(_id: string, obj: VALUET): Promise<VALUET> {
-        this.db[_id] = _.cloneDeep(obj);
+    public set(_id: KeyValueObjIdType, obj: VALUET): Promise<VALUET> {
+        this.db[_idAsStr(_id)] = _.cloneDeep(obj);
         return this.get(_id);
     }
 
-    public async del(_id: string): Promise<VALUET> {
+    public async del(_id: KeyValueObjIdType): Promise<VALUET> {
         let ret = await this.get(_id);
-        delete this.db[_id];
+        delete this.db[_idAsStr(_id)];
         return simulateIO(ret);
     }
 
@@ -104,7 +104,7 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
 
 export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<OBJT> implements KeyTableStoreI<OBJT> {
 
-    constructor(public entity: Entity) {
+    constructor(private schema: Schema, public entity: Entity) {
         super();
     }
 
@@ -150,7 +150,7 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryMem";
     metadataStore = new MetadataStore('mem', this);
 
-    createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
+    createKeyValS<VALUET>(name: string, desc: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();
     }
 
@@ -158,8 +158,11 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
         return new KeyObjStoreMem<OBJT>();
     }
 
-    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT> {
-        return new KeyTableStoreMem<OBJT>(entity);
+    createKeyTableS<OBJT extends KeyValueObj>(schema: Schema, entity: Entity): KeyTableStoreI<OBJT> {
+        return new KeyTableStoreMem<OBJT>(schema, entity);
+    }
+    async executeBatch(callback: () => Promise<any>): Promise<void>{
+        await callback();
     }
 
     async clearAllForTestingPurposes() {

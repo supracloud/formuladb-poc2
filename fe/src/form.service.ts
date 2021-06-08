@@ -3,12 +3,20 @@ import * as _ from 'lodash';
 import { DataObj, isNewDataObjId, parseDataObjId, entityNameFromDataObjId } from '@domain/metadata/data_obj';
 import { onEvent } from './delegated-events';
 import { BACKEND_SERVICE, postData } from './backend.service';
-import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem, getAllElemsWithDataBindingAttrs } from './live-dom-template/live-dom-template';
+import { serializeElemToObj, getEntityPropertyNameFromEl, isFormEl, InputElem, getAllElemsWithDataBindingAttrs } from './live-dom-template/live-dom-template';
 import { ServerEventModifiedFormData, ServerEventPreComputeFormData } from '@domain/event';
 import { Pn, ReferenceToProperty } from '@domain/metadata/entity';
 import { AlertComponent } from './alert/alert.component';
 import { ThemeColors } from '@domain/uimetadata/theme';
-import { validateAndCovertObjPropertyType } from '@domain/metadata/types';
+import { validateAndCovertObjPropertyType } from '@core/validate-schema-types';
+import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
+import { updateDOM } from '@fe/live-dom-template/live-dom-template';
+import { $FRMDB_RECORD, $FRMDB_RECORD_EL } from './fe-functions';
+import { DATA_FRMDB_ATTRS_Enum } from '@core/live-dom-template/dom-node';
+import { raiseSingletonNotification, removeSingletonNotification } from './notifications.service';
+import { I18N } from './i18n.service';
+import { FailedValidation, getUserError } from '@domain/errors';
+import { _idAsStr, KeyValueObjIdType } from '@domain/key_value_obj';
 
 function currentTimestamp() {
     let d = new Date();
@@ -40,8 +48,10 @@ export class FormService {
             if (!appRootEl.contains(event.target)) return;
             let inputEl = event.target;
             if (!isFormEl(inputEl)) return;
+            if (!Object.keys(DATA_FRMDB_ATTRS_Enum).find(k => inputEl.getAttribute(k))) {return}
 
-            let pObj = this.getParentObj(inputEl);
+            this.applyClientSideFormulasOnForm(inputEl);
+            let pObj = $FRMDB_RECORD(inputEl);
             if (!pObj) return;
             let {parentEl, parentObj} = pObj;
             if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
@@ -67,39 +77,18 @@ export class FormService {
             let inputEl: InputElem | null = form.querySelector('input,select,textarea');
             if (!inputEl) throw new Error("No input found for form " + form.outerHTML);
 
-            let pObj = this.getParentObj(inputEl);
+            let pObj = $FRMDB_RECORD(inputEl);
             if (!pObj) return;
             event.preventDefault();
 
-            let alertEl: AlertComponent = form.querySelector('frmdb-alert[data-frmdb-submit-status]') as AlertComponent;
-            if (!alertEl) {
-                alertEl = document.createElement('frmdb-alert') as AlertComponent;
-                alertEl.setAttribute('data-frmdb-submit-status', '');
-                alertEl.style.position = 'fixed';
-                alertEl.style.top = '0';
-                alertEl.style.right = '0';
-                alertEl.style.padding = '5px';
-                form.appendChild(alertEl);
-            } 
-    
             this.manageInput(inputEl as InputElem, true)
             .then(event => {
                 if (event) {
-                    alertEl!.classList.remove('d-none');
                     if (event.state_ === "ABORT") {
-                        alertEl.change({
-                            severity: ThemeColors.warning,
-                            visible: "show",
-                            eventTitle: "Error saving form !",
-                            eventDetail: event.error_ || '500 -> Internal Server Error',
-                        });
+                        let i18nErrMsg = event.error_ ? I18N.terr(event.error_) : I18N.tt('Internal Server Err');
+                        raiseSingletonNotification('form', ThemeColors.danger, "", i18nErrMsg);
                     } else {
-                        alertEl.change({
-                            severity: ThemeColors.success,
-                            visible: "show",
-                            eventTitle: "Changes Saved.",
-                            eventDetail: '',
-                        });
+                        raiseSingletonNotification('form', ThemeColors.success, "", 'Changes Saved.');
                     }
                 }
             });
@@ -110,25 +99,38 @@ export class FormService {
     private debounced_manageInput = _.debounce((inputEl: InputElem) => this.manageInput(inputEl), 350);
     private debounced_newRecordCache = _.debounce((inputEl: InputElem) => this.putObjInNewRecordCache(inputEl), 100);
 
-    async manageInput(inputEl: InputElem, isSubmit?: boolean): Promise<ServerEventModifiedFormData|void> {
-        let pObj = this.getParentObj(inputEl);
+    async manageInput(inputEl: InputElem, isSubmit?: boolean): Promise<ServerEventModifiedFormData|ServerEventPreComputeFormData|void> {
+        let pObj = $FRMDB_RECORD(inputEl);
         if (!pObj) return;
         let {parentEl, parentObj} = pObj;
         if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
 
-        if (this.validateOnClient(parentEl, parentObj)) {
+        let err = this.validateOnClient(parentEl, parentObj);
+        if (err.length == 0) {
+            removeSingletonNotification('form');
             for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
                 control.dataset.frmdbPending = "";//TODO: set this only on dirty controls
             }
 
-            if (inputEl.closest('[data-frmdb-form-auto-save]') || isSubmit) {
-                let event: ServerEventModifiedFormData = await BACKEND_SERVICE().putEvent(
-                    new ServerEventModifiedFormData(parentObj)) as ServerEventModifiedFormData;
+            let event: ServerEventModifiedFormData | ServerEventPreComputeFormData;
+            let userError: string | null = null;
+            try {
+                if (inputEl.closest('[data-frmdb-form-auto-save]') || isSubmit) {
+                    event = await BACKEND_SERVICE().putEvent(
+                        new ServerEventModifiedFormData(parentObj)) as ServerEventModifiedFormData;
+                } else {
+                    event = await BACKEND_SERVICE().putEvent(
+                        new ServerEventPreComputeFormData(parentObj)) as ServerEventPreComputeFormData;
+
+                }
+
                 for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
                     control.dataset.frmdbPending = undefined;
                 }
                 if (event.state_ === "ABORT") {
-                    this.markInvalid(inputEl, event.error_ || 'Internal Server Err');
+                    let i18nErrMsg = event.error_ ? I18N.terr(event.error_) : I18N.tt('Internal Server Err');
+                    this.markInvalid(inputEl, i18nErrMsg);
+                    raiseSingletonNotification('form', ThemeColors.danger, "", i18nErrMsg);
                     return;
                 } else {
                     let entityId = entityNameFromDataObjId(event.obj._id);
@@ -144,30 +146,43 @@ export class FormService {
                     }, parentEl);
                     if (parentObj._id != event.obj._id) {
                         parentObj._id = event.obj._id;
-                        parentEl.setAttribute('data-frmdb-record', parentObj._id);
+                        parentEl.setAttribute('data-frmdb-record', _idAsStr(parentObj._id));
+                    }
+                    if (event.type_ === "ServerEventModifiedFormData") {
+                        raiseSingletonNotification('form', ThemeColors.success, "", 'Changes Saved.', true);
                     }
                 }
                 return event;
-            } else {
-                let entityId = entityNameFromDataObjId(parentObj._id);
-                let entity = BACKEND_SERVICE().getCurrentSchema()?.entities?.[entityId];
-                if (!entity) {console.warn(entityId, "not found"); return}
-                let references: {[aliasName: string]: {refs: ReferenceToProperty[], entityName: string}} = {};
-                for (let prop of Object.values(entity.props)) {
-                    if (prop.propType_ === Pn.REFERENCE_TO) {
-                        let ref = references[prop.referencedEntityName];
-                        if (!ref) {
-                            ref = {refs: [], entityName: prop.referencedEntityName};
-                            references[prop.referencedEntityName] = ref;
-                        }
-                        ref.refs.push(prop);
-                    }
-                }
-            
-                for (let [aliasName, refsForEntity] of Object.entries(references)) {   
-                    await this.updateDomForReference(aliasName, parentEl, parentObj);
-                }
+            } catch (err) {
+                userError = getUserError(err + '');
+                let i18nErrMsg = userError ? I18N.terr(userError) : I18N.tt('Internal Server Error!');
+                this.markInvalid(inputEl, i18nErrMsg);
+                raiseSingletonNotification('form', ThemeColors.danger, "", i18nErrMsg);
+                return;
             }
+
+            // {
+            //     let entityId = entityNameFromDataObjId(parentObj._id);
+            //     let entity = BACKEND_SERVICE().getCurrentSchema()?.entities?.[entityId];
+            //     if (!entity) {console.warn(entityId, "not found"); return}
+            //     let references: {[aliasName: string]: {refs: ReferenceToProperty[], entityName: string}} = {};
+            //     for (let prop of Object.values(entity.props)) {
+            //         if (prop.propType_ === Pn.REFERENCE_TO) {
+            //             let ref = references[prop.referencedEntityName];
+            //             if (!ref) {
+            //                 ref = {refs: [], entityName: prop.referencedEntityName};
+            //                 references[prop.referencedEntityName] = ref;
+            //             }
+            //             ref.refs.push(prop);
+            //         }
+            //     }
+            
+            //     for (let [aliasName, refsForEntity] of Object.entries(references)) {   
+            //         await this.updateDomForReference(aliasName, parentEl, parentObj);
+            //     }
+            // }
+        } else {
+            raiseSingletonNotification('form', ThemeColors.warning, "", I18N.terr(err));
         }
     }
 
@@ -192,28 +207,28 @@ export class FormService {
         let attr = el.getAttribute('data-frmdb-table');
         if (!attr) {console.warn("data-frmdb-table attribute not found for ", el); return;}
         let tableAlias = attr.replace(/^\$FRMDB\.\$REFERENCE_TO_OPTIONS\./, '').replace(/\[\]$/, '');
-        let pObj = this.getParentObj(el);
+        let pObj = $FRMDB_RECORD(el);
         if (!pObj?.parentObj) {console.warn("parent record not found for ", el); return;}
         await this.updateDomForReference(tableAlias, el, pObj?.parentObj);
     }
 
     private putObjInNewRecordCache(inputEl: InputElem) {
-        let parentEl = this.getParentEl(inputEl);
+        let parentEl = $FRMDB_RECORD_EL(inputEl);
         if (!parentEl) return;
         let parentObjId = parentEl.getAttribute('data-frmdb-record');
         if (parentObjId && isNewDataObjId(parentObjId)) {
             let parentObj = serializeElemToObj(parentEl) as DataObj;
 
             localStorage.setItem(parentObjId, JSON.stringify({
-                _id: parentObjId,
                 ...parentObj,
+                _id: parentObjId,
                 formNewRecordCacheTimestamp: new Date().getTime()
             }));
         }
     }
 
-    private getObjFromNewRecordCache(objId: string): {_id: string, formNewRecordCacheTimestamp: number} | null {
-        let objStr = localStorage.getItem(objId);
+    private getObjFromNewRecordCache(objId: KeyValueObjIdType): {_id: string, formNewRecordCacheTimestamp: number} | null {
+        let objStr = localStorage.getItem(_idAsStr(objId));
         if (!objStr) return null;
         let obj = JSON.parse(objStr);
         if (obj.formNewRecordCacheTimestamp < new Date().getTime() - 20000) return null; 
@@ -230,72 +245,101 @@ export class FormService {
             }
         })
     }
-    
-    public updateRecordDOM<T extends DataObj>(obj: T) {
-        let recordEls = this.appRootEl.querySelectorAll(`[data-frmdb-record="${obj._id}"]`);
-        recordEls.forEach(el => {
-            updateDOM(obj, el as HTMLElement);
-        })
-    }
 
-    private getParentEl(control: HTMLElement): HTMLElement | null {
-        let parentEl: HTMLElement = control.closest('[data-frmdb-record],[data-frmdb-bind-to-record]') as HTMLElement;
-        if (!parentEl) return null;
-        return parentEl;
+    private applyClientSideFormulasOnForm(control: HTMLElement) {
+        if (control.closest('frmdb-component-editor')) return;
+        let formEl: HTMLElement | null = control.closest('form');
+        if (!formEl) return;
+        let formObj = this.serializeForm(formEl);
+        updateDOM(formObj, formEl);
+        this.validateForm(formEl, formObj);
+        formEl.classList.add('was-validated');
     }
-
-    public getParentObj(control: HTMLElement): {parentEl: HTMLElement, parentObj: DataObj} | null {
-        let parentEl = this.getParentEl(control);
-        if (!parentEl) return null;
-        let parentObj = serializeElemToObj(parentEl) as DataObj;
-        let recordId = parentEl.getAttribute('data-frmdb-record') || parentEl.getAttribute('data-frmdb-bind-to-record')?.replace(/^\$FRMDB\./, '') || '';
-        if (!isNewDataObjId(recordId) && isNewDataObjId(parentObj._id)) {
-            parentObj._id = recordId;
+    private serializeForm(el: HTMLElement) {
+        let obj: {} = {};
+        for (let inputEl of Array.from(el.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(`input,select,textarea`))) {
+            if (inputEl.name) {
+                obj[inputEl.name] = inputEl.value;
+            }
         }
-        if (!parentObj._id) throw new Error("Cannot find obj id for " + control);
-        return {parentEl, parentObj};
+        return obj;
     }
+    private validateForm(el: HTMLElement, formObj: {}) {
+        for (let inputEl of Array.from(el.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(`input,select,textarea`))) {
+            if (inputEl.hasAttribute('data-frmdb-validation')) {
+                let validationExpr = inputEl.getAttribute('data-frmdb-validation')!;
+                let isValid = true;
+                try {
+                    isValid = scalarFormulaEvaluate(formObj, validationExpr);
+                } catch (err) {
+                    console.warn('Error during client side vaidation', inputEl.outerHTML, formObj);
+                }
+                if (!isValid) this.markInvalid(inputEl, inputEl.getAttribute('data-frmdb-validation-msg') || `failed check ${validationExpr}`);
+                else this.markValid(inputEl);
+            }
+        }
+    }
+
 
     private markInvalid(el: InputElem, err: string) {
         el.setCustomValidity(err);
-        el.title = el.title + "VALIDATION-ERRORS: " + err;
+        if (el.title && !el.hasAttribute('data-frmdb-validation-title-bak')) {
+            el.setAttribute('data-frmdb-validation-title-bak', el.title);
+        }
+        el.title = "Invalid: " + err + '   (frmdbv)';
     }
 
     private markValid(el: InputElem) {
         el.setCustomValidity("");
-        el.title = el.title.replace(/VALIDATION-ERRORS: .*/, '');
+        if (el.title?.indexOf("(frmdbv)") >= 0) {
+            if (el.hasAttribute('data-frmdb-validation-title-bak')) {
+                el.title = el.getAttribute('data-frmdb-validation-title-bak')!
+            } else el.removeAttribute('title');
+        }
     }
 
-    public validateOnClient(parentEl: HTMLElement, parentObj: DataObj): boolean {
-        const tools = BACKEND_SERVICE().getFrmdbEngineTools();
-        
-        let formEl: HTMLElement | null = parentEl;
-        if (formEl.tagName !== 'FORM') formEl = parentEl.querySelector('form');
-        if (formEl) {
-            formEl.classList.add('was-validated');
-            let alertEl: HTMLElement | null = formEl.querySelector('[data-frmdb-submit-status]');
-            if (alertEl) {
-                alertEl.classList.add('d-none');
-            }
-        }
-
-
-        let entityId = entityNameFromDataObjId(parentObj._id);
-        let entity = tools.schemaDAO.schema.entities[entityId];
-        for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
-            if (!isFormEl(control)) { console.log("Only form elements are sent to the server ", control.outerHTML); continue };
-            let propertyName = getEntityPropertyNameFromEl(control);
-            let err = validateAndCovertObjPropertyType(parentObj, entity, propertyName, control.value);
-            if (err) { this.markInvalid(control, err); return false;}
-            else this.markValid(control);
-
-            if (!control.validity.valid) return false;
+    public validateOnClient(parentEl: HTMLElement, parentObj: DataObj): FailedValidation[] {
+        try {
+            const tools = BACKEND_SERVICE().getFrmdbEngineTools();
             
-            err = tools.validateObj(parentObj);
-            if (err) { control.setCustomValidity(err); return false;}
-        }
+            let formEl: HTMLElement | null = parentEl;
+            if (formEl.tagName !== 'FORM') formEl = parentEl.querySelector('form');
+            if (formEl) {
+                formEl.classList.add('was-validated');
+            }
 
-        return true;
+            let entityId = entityNameFromDataObjId(parentObj._id);
+            let entity = tools.schemaDAO.schema.entities[entityId];
+            for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
+                if (!isFormEl(control)) { console.log("Only form elements are sent to the server ", control.outerHTML); continue };
+                let propertyName = getEntityPropertyNameFromEl(control).replace(new RegExp(`^\\$FRMDB\\.${entityId}(\\[\\]|\\{\\})\\.`), '');
+                let err = validateAndCovertObjPropertyType(parentObj, entity, propertyName, control.value, tools.schemaDAO.schema);
+                if (err.length > 0) { this.markInvalid(control, I18N.terr(err)); return err;}
+                else this.markValid(control);
+
+                if (!control.validity.valid) {
+                    return [{
+                        tableName: entityId,
+                        obj: parentObj,
+                        invalidColName: propertyName,
+                        errorMessage: "Invalid Input",
+                    }];
+                }
+                
+                //call only on server side fow now...
+                // err = tools.validateObj(parentObj);
+                // if (err.length > 0) { control.setCustomValidity(I18N.terr(err)); return err;}
+            }
+
+            return [];
+        } catch (err) {
+            console.error(err);
+            return [{
+                tableName: entityNameFromDataObjId(parentObj._id),
+                obj: parentObj,
+                errorMessage: `Internal Error validating ${parentObj._id}: ${err}`,
+            }];
+        }
     }
 }
 

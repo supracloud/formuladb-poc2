@@ -41,10 +41,8 @@ export function evalExpression(doc: {}, expr: Expression | Expression[]) {
         '|': function (a, b) { return a | b; },
         '^': function (a, b) { return a ^ b; },
         '&': function (a, b) { return a & b; },
-        '==': function (a, b) { return a == b; }, // jshint ignore:line
+        '=': function (a, b) { return a == b; }, // jshint ignore:line
         '!=': function (a, b) { return a != b; }, // jshint ignore:line
-        '===': function (a, b) { return a === b; },
-        '!==': function (a, b) { return a !== b; },
         '<': function (a, b) { return a < b; },
         '>': function (a, b) { return a > b; },
         '<=': function (a, b) { return a <= b; },
@@ -192,6 +190,7 @@ function compareKeysES5(k1, k2) {
         i = 1;
     while (0 === ret && i < k1.length && i < k2.length) {
         ret = compareStringsES5(k1[i], k2[i]);
+        i++;
     }
     if (0 === ret) {
         if (k1.length > k2.length) ret = 1

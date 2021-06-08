@@ -1,5 +1,0 @@
-_id,product_id,quantity,price,units,_owner,_role,_rev
-ReceiptItem~~1__1,ProductLocation~~1__1,15.00000,123.5,"",AnounymousUserId,$ANONYMOUS,""
-ReceiptItem~~1__2,ProductLocation~~1__1a,5.00000,1.5,"",AnounymousUserId,$ANONYMOUS,""
-ReceiptItem~~2__1,ProductLocation~~1__1,10.00000,123.5,"",AnounymousUserId,$ANONYMOUS,""
-ReceiptItem~~2__2,ProductLocation~~1__1a,5.00000,1.5,"",AnounymousUserId,$ANONYMOUS,""

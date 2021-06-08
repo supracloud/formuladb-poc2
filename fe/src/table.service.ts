@@ -5,16 +5,33 @@ import * as _ from "lodash";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { PickOmit } from '@domain/ts-utils';
 import { BACKEND_SERVICE } from './backend.service';
-import { TableColumn } from '@domain/uimetadata/node-elements';
+import { Pn, EntityProperty } from '@domain/metadata/entity';
+import { ColumnTypes } from '@domain/metadata/types';
+import { DataObj } from '@domain/metadata/data_obj';
+import { getDATA_BINDING_MONITOR } from './init';
 
+
+export interface ColumnFilter {
+    operator: string;
+    value: string;
+}
+export interface TableColumn {
+    _id: string;
+    width?: number;
+    sort?: string;
+    filter?: ColumnFilter;
+    skipExportExcel?: boolean;
+    name: string;
+    entityProperty: EntityProperty;
+}
 
 export class TableService {
 
     public getDatasource(entityId: string): IDatasource {
         return {
             getRows: async (params: IGetRowsParams): Promise<void> =>
-                        this.getTableRows(entityId, params)
-        }        
+                this.getTableRows(entityId, params)
+        }
     }
 
     public async getColumns(entityId: string): Promise<TableColumn[]> {
@@ -22,21 +39,22 @@ export class TableService {
         if (!entity) throw new Error("Entity " + entityId + " not found!");
         return _.values(entity.props).filter(pn => !['_owner', '_role', '_rev'].includes(pn.name)).map(pn => ({
             _id: entityId + "." + pn.name,
-            name: pn.name, 
-            type: pn.propType_
+            name: pn.name,
+            entityProperty: pn
         } as TableColumn));
-    } 
+    }
 
-    public getTableRows(entityId: string, params: IGetRowsParams) {
+    public async getTableRows(entityId: string, params: IGetRowsParams) {
         let req = params;
-        BACKEND_SERVICE().simpleAdHocQuery(entityId, {
-                    ...req,
-                    rowGroupCols: [],
-                    valueCols: [],
-                    pivotCols: [],
-                    pivotMode: false,
-                    groupKeys: [],                
-                } as SimpleAddHocQuery)
+        let dataBindingMonitor = await getDATA_BINDING_MONITOR();
+        dataBindingMonitor.queryTableRecords(entityId, {
+            ...req,
+            rowGroupCols: [],
+            valueCols: [],
+            pivotCols: [],
+            pivotMode: false,
+            groupKeys: [],
+        } as SimpleAddHocQuery)
             .then((data: any[]) => {
                 console.log("%c <---- simpleAdHocQuery: ",
                     "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", data);

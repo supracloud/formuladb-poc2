@@ -1,24 +1,22 @@
-if [ -n "$BUILD_DEVELOPMENT" -o "staging" = "${FRMDB_ENV_NAME}" ]; then
-    pg_dump --schema-only -h ${PGHOST:-db} -U postgres -w > /wwwroot/git/formuladb-env/db/pg_dump.schema.sql
-    psql -h ${PGHOST:-db} -U postgres -Atc "select tablename from pg_tables where schemaname='public'" | 
-    while read t; do 
-        psql -h ${PGHOST:-db} -U postgres -c "COPY (SELECT * FROM public.${t} ORDER BY _id) TO STDOUT WITH CSV HEADER DELIMITER ',' QUOTE '\"' ESCAPE '\\'" > /wwwroot/git/formuladb-env/db/$t.csv
-    done
-    bash /scripts/backup-db.sh
-fi
+if [ -n "$FRMDB_LOCALDEV_ENV" ]; then exit 0; fi
 
-if [ -n "$BUILD_DEVELOPMENT" ]; then exit 0; fi
-
+set -ex
 cd /wwwroot/git/formuladb-env
-git config user.email "git.bot@formuladb.io"
-git config user.name "Git Bot"
+
+# git log --name-status -20|cat
 
 if [ -n "$(git status --porcelain)" ]; then
   git add .
+  git config user.email "git.bot@formuladb.io"
+  git config user.name "Git Bot"
   git commit -m "changes from git sync"
-  git pull -Xtheirs
-  #TODO make better conflict handling here!
-  git push --set-upstream origin "${FRMDB_ENV_NAME}"
-else
-  git pull -Xtheirs
+fi
+
+git pull -Xtheirs --no-edit origin "${FRMDB_ENV_NAME}"
+#TODO make better conflict handling here!
+git push --set-upstream origin "${FRMDB_ENV_NAME}"
+
+if [ -f '.git/index.lock' -a -n "$(find .git/index.lock -mmin +10 -print)" ]; then
+  echo "zombie git lock file found, removing it"
+  rm -f .git/index.lock
 fi

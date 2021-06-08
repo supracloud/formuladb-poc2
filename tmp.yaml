@@ -1,0 +1,149 @@
+apiVersion: v1
+data:
+  sa_json: ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAic2Vpc21pYy1wbGV4dXMtMjMyNTA2IiwKICAicHJpdmF0ZV9rZXlfaWQiOiAiYjRjOWM3YTBmYWE3ZDE1NWNlMTgxMWEyMmZkZjgyNGQ3MzBlY2Q2OCIsCiAgInByaXZhdGVfa2V5IjogIi0tLS0tQkVHSU4gUFJJVkFURSBLRVktLS0tLVxuTUlJRXZnSUJBREFOQmdrcWhraUc5dzBCQVFFRkFBU0NCS2d3Z2dTa0FnRUFBb0lCQVFEQ0ZUOVdKaVZIb3N4QVxuc2QvdmNCTjVuTU5PK004ZU9tSjFmbDNvUXNENTNTazUyUDhkTzVwS1pYM3lSam91djBGV2lwRVV2NDdYUUlzTlxuQzhtaGY1czRiKzZveGdjdTQ4Q2UvaEpJUS9UQ0JodElRd3M3Y3Z2WklNNVRZZkNnYWxiZkN4YXVOL25WMEIrRVxuSDBTTG5ZRTJaeW9uS1hRcjd4dWtOU2llWi81YWxiVTh0eXlmeWtYZjYvOTk1eGFoZnBRa0RDVjcrQ3dMVk9GOVxubThhREZCM1dobTBZemR3cEwzV1NEeDZRRFRwMHVONWd2YngrRHJyQXBwa0EwNzlCVkNKZ2FXS1RQN2lpN1RTL1xuQW5Jck52czA1SjMrWjNZcUlYRlR3OFlKR1AyOW9NSjV0a3lpMWM0c3dFOVJCYWYxSlcvMndVMDJCUVRyZ1JVZlxuR0ZRejAxMi9BZ01CQUFFQ2dnRUFBNFlyUGo4M0VoUHNyWWdOVHVXMEZOTTU0S2MzNjQ2WDF4WlNVak5VR2JWZ1xuV0VLT2IxTnp1OElZQlZ3dEZrZzJ3WUdHbk4vVmtpY0QzMXJGY0g5R3JFR3NEYmg2ek9rcHlEbEl6N01jTUtHM1xud1JvbWpBL01idWJmbURnQkRJaWh4eThHWEdkN3k5d1psbWFTOGc0TUdKYks5eWNUaXZDdWljN0ZUQXNMWFUydVxuZ0IrYlhYNGVFQTFXVE5BU3VzdnNhK25NbWpvVTJBOHEvaWg1QkR2Q2JaUDJiL0VnY0tzdGxKT2JEcmxyYVBzVlxuMXYyS1JPWm5kdHl6dGdVMG81akFKRjJUZXc3TEx3SWJpcHltREEyTUNNdlcrWWliTm5qMEhBZDZXNHdXd2tlUlxuZFVOL0VqaW93WGJTbkt4SVNYaVVOTFpFZkowR1FVRmRFL1ZCYUJkNTBRS0JnUURwMURaU2ZpNENIOHlZNlpmMlxuR0s1WHg4MXFja1ZJWUx5QWpuOW5HYk1YdkcyU3hIRE9ncEp4NE1WSmczblNUWm9NUlUzSEp3MjNwNHhWQ1k0VVxuWGF1SFVJREV0RTFTVTlNbVp0b2dIUFgzU3J1UjV4T0pXYXJpSFJWSVNLcUxZb2I3RTBPemxIbVB3d3JzYlZndFxuendrSmF0WmNLSlBEY0oveGVXQ2xVL2M3TFFLQmdRRFVmRVdXV0YwYy9jY2ZqalNNeFZha2hEWUR2ckFUMHdsUFxuQWlncXhOc1N1TWFyNGdLZVFuSmRxd0o5Tk9xNEYvUjZ2KzFTTGZ3emNiTGh0b21CYVprc1Awd0p1bEVBeitaT1xudWpiT3JZalpQdkowV05EM3hNOS9GVFh2K210ZWZDams2SnZVZmRxSEdWZVRMNlBPR2VDcVA2bEpFSTh2eDR2Z1xuckllaHJWU2dHd0tCZ1FDOE12MTE3L0QvN0xBejh1OUlPQjA2c2FuM252bDhnNyswaVB5cDh0bGVwVjViM3BnY1xuM3FNWDNSMXRTZERuSDJaNXNkNGtDSjdWenBqNGFMUmVWL1lTOXd4dFJlRmwvZW5ZNHJkMVdWbnZLOHRFWjRRbFxuN0hISmhEYjQ4dU94UkIvNFBVMGtZTUJtb1VsTmVjU2JPaU8vM0ttamkxVkMzSWNmUjk0dHN5TXVFUUtCZ1FDblxuWERabkk3UTdXSHVWRkNtNTB0amFmYlFab1FFSXJFa0JyUDQ4S1k4dm9OQUNvK0pTQ3A0UHZ0a1lDeXp3MFJWalxuOVhXVUs5b2dIdWE1TjAvNDJWYW03amdTMVdobHpscGxHZkIvTzFtMVd3b1dyN252M1ZsZGpEUk9qeHd3Y0hTNVxuVDZrbFpmZFFQNXFsdUhrNXBWSTZaaWdNLzNqNE5pQ3JWdGtCZEFkYWp3S0JnRzUwZzNDRkxaVERsWUUvSWlnTFxub0UvSFNjbWt6RFozKzVQMFBtWkloWmFnaTA3YVgycDBGcDJJQUJPaWxNalg1bzhOc0IvRUU2MUpDdlBHckVvTFxuMUliS0VGbnhpSy96VWRPelE0eXRuRzBNQVZWODNTVStETzNkcW1ISUo1N09DVjdjQzdyY0FwTnhla3dWak9OWFxuZERrei95YytmbDFlekVHNGpOOXhPellMXG4tLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tXG4iLAogICJjbGllbnRfZW1haWwiOiAiZm9ybXVsYWRiLXN0YXRpYy1hc3NldHNAc2Vpc21pYy1wbGV4dXMtMjMyNTA2LmlhbS5nc2VydmljZWFjY291bnQuY29tIiwKICAiY2xpZW50X2lkIjogIjEwNjYyMzI2OTk4MDAwNzE5NDIwMSIsCiAgImF1dGhfdXJpIjogImh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbS9vL29hdXRoMi9hdXRoIiwKICAidG9rZW5fdXJpIjogImh0dHBzOi8vb2F1dGgyLmdvb2dsZWFwaXMuY29tL3Rva2VuIiwKICAiYXV0aF9wcm92aWRlcl94NTA5X2NlcnRfdXJsIjogImh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL29hdXRoMi92MS9jZXJ0cyIsCiAgImNsaWVudF94NTA5X2NlcnRfdXJsIjogImh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL3JvYm90L3YxL21ldGFkYXRhL3g1MDkvZm9ybXVsYWRiLXN0YXRpYy1hc3NldHMlNDBzZWlzbWljLXBsZXh1cy0yMzI1MDYuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iCn0K
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: skaffold
+    skaffold.dev/builder: local
+    skaffold.dev/cleanup: "true"
+    skaffold.dev/deployer: kustomize
+    skaffold.dev/docker-api-version: "1.40"
+    skaffold.dev/namespace: orbicobeautyro
+    skaffold.dev/profile.0: k3s
+    skaffold.dev/run-id: static
+    skaffold.dev/tag-policy: git-commit
+  name: service-account-credentials
+  namespace: orbicobeautyro
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: skaffold
+    skaffold.dev/builder: local
+    skaffold.dev/cleanup: "true"
+    skaffold.dev/deployer: kustomize
+    skaffold.dev/docker-api-version: "1.40"
+    skaffold.dev/namespace: orbicobeautyro
+    skaffold.dev/profile.0: k3s
+    skaffold.dev/run-id: static
+    skaffold.dev/tag-policy: git-commit
+  name: be
+  namespace: orbicobeautyro
+spec:
+  ports:
+  - name: api
+    port: 8084
+    targetPort: 3000
+  - name: inspector
+    port: 9231
+    targetPort: 9231
+  selector:
+    service: be
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: skaffold
+    skaffold.dev/builder: local
+    skaffold.dev/cleanup: "true"
+    skaffold.dev/deployer: kustomize
+    skaffold.dev/docker-api-version: "1.40"
+    skaffold.dev/namespace: orbicobeautyro
+    skaffold.dev/profile.0: k3s
+    skaffold.dev/run-id: static
+    skaffold.dev/tag-policy: git-commit
+  name: be
+  namespace: orbicobeautyro
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: be
+  serviceName: be
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/managed-by: skaffold
+        service: be
+        skaffold.dev/builder: local
+        skaffold.dev/cleanup: "true"
+        skaffold.dev/deployer: kustomize
+        skaffold.dev/docker-api-version: "1.40"
+        skaffold.dev/namespace: orbicobeautyro
+        skaffold.dev/profile.0: k3s
+        skaffold.dev/run-id: static
+        skaffold.dev/tag-policy: git-commit
+    spec:
+      containers:
+      - env:
+        - name: DEFAULT_USER
+        - name: DEV_MODE
+        - name: FRMDB_STORAGE
+          value: postgres
+        - name: PGHOST
+          value: db
+        - name: GITHOST
+          value: git
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/gcp/sa_credentials.json
+        - name: FRMDB_AUTH_ENABLED
+          value: "true"
+        - name: FRMDB_ENV_NAME
+          value: $(NAMESPACE_NAME)
+        - name: ELASTICSEARCH_HOST
+          value: https://apmserver.formuladb.io
+        image: registry.formuladb.io/formuladb/febe/formuladb-be:fd97b67e7481e15cdf55a4e3f0343b9daa8a21ba485a59fdc407fd1418495875
+        name: be
+        ports:
+        - containerPort: 3000
+        - containerPort: 9231
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/gcp
+          name: service-account-credentials
+          readOnly: true
+        - mountPath: /wwwroot/git
+          name: git-persistence
+      imagePullSecrets:
+      - name: regcred
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - until pg_isready -h db -p 5432 -t 1; do echo waiting for database; sleep
+          2; done;
+        image: postgres@sha256:05580d6c8f7bb0566793c7c45ab276458c53c9c31300c046ba6fcbc66598c7b9
+        name: check-db-ready
+      restartPolicy: Always
+      volumes:
+      - name: service-account-credentials
+        secret:
+          items:
+          - key: sa_json
+            path: sa_credentials.json
+          secretName: service-account-credentials
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app.kubernetes.io/managed-by: skaffold
+        skaffold.dev/builder: local
+        skaffold.dev/cleanup: "true"
+        skaffold.dev/deployer: kustomize
+        skaffold.dev/docker-api-version: "1.40"
+        skaffold.dev/namespace: orbicobeautyro
+        skaffold.dev/profile.0: k3s
+        skaffold.dev/run-id: static
+        skaffold.dev/tag-policy: git-commit
+      name: git-persistence
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi

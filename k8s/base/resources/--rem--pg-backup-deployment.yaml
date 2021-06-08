@@ -4,7 +4,8 @@ metadata:
   name: postgresql-cloud-dump
 spec:
   schedule: "0 0 * * *"
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 100
+  failedJobsHistoryLimit: 20
   jobTemplate:
     spec:
       template:

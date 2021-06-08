@@ -6,9 +6,9 @@
 import { KeyValueObj } from "./key_value_obj";
 import { DataObj } from "./metadata/data_obj";
 import { Entity, EntityProperty } from "./metadata/entity";
-import { generateUUID } from "./uuid";
 import { FullPageOpts, MandatoryPageOpts, AllPageOpts } from "./url-utils";
-import { $PageObjT } from "./metadata/default-metadata";
+import { $PageObjT, $AppObjT } from "./metadata/default-metadata";
+import { FailedValidation, FrmdbError } from "./errors";
 
 /**
  * The events sent by the clients become transactions on the back-end
@@ -20,7 +20,7 @@ export class MwzEvent implements KeyValueObj {
     type_: string;
     state_: 'BEGIN' | 'PRECOMMIT' | 'COMMIT' | 'FINALIZED' | 'ABORT';
     reason_?: 'ABORTED_FAILED_VALIDATIONS_RETRIES_EXCEEDED' | 'ABORTED_CONFLICT_RETRIES_EXCEEDED' | 'ABORT_ON_ERROR';
-    error_?: string;
+    error_?: FrmdbError;
     updatedIds_?: string[];
     notifMsg_?: string;
     updatedObjs?: DataObj[];
@@ -45,6 +45,14 @@ export class ServerEventModifiedFormData extends MwzEvent {
     }
 }
 
+export class ServerEventNewDataObj extends MwzEvent {
+    readonly type_ = "ServerEventNewDataObj";
+
+    constructor(public obj: DataObj) {
+        super();
+    }
+}
+
 export class ServerEventPreComputeFormData extends MwzEvent {
     readonly type_ = "ServerEventPreComputeFormData";
 
@@ -64,7 +72,10 @@ export class ServerEventDeletedFormData extends MwzEvent {
 export class ServerEventSetApp extends MwzEvent {
     readonly type_ = "ServerEventSetApp";
 
-    constructor(public appName: string, public category: string, public description: string, public basedOnApp?: string) {
+    constructor(
+        public appName: string, 
+        public app: $AppObjT, 
+        public basedOnApp?: string) {
         super();
     }
 }
@@ -154,6 +165,7 @@ export class ServerEventDeleteProperty extends MwzEvent {
 
 export type MwzEvents = 
     | ServerEventModifiedFormData
+    | ServerEventNewDataObj
     | ServerEventPreComputeFormData
     | ServerEventDeletedFormData
     | ServerEventNewEntity

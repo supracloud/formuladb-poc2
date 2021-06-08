@@ -19,7 +19,7 @@ import { CompiledFormula, MapReduceTrigger, ExecPlanN,
     CompiledFormulaN,
 } from "@domain/metadata/execution_plan";
 import { matchesTypeES5, evalExpression, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from "@functions/map_reduce_utils";
-import { Fn } from "@domain/metadata/functions";
+import { Fn } from "@core/functions_compiler";
 import { SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 import { $s2e } from '@functions/s2e';
 
@@ -42,9 +42,9 @@ describe('FormulaCompiler', () => {
 
     it('should extract keys from binary expressions operand', () => {
         let test_getQuery;
-        expect($ee2s(getQueryKeys('==', $s2e(`X`))))
+        expect($ee2s(getQueryKeys('=', $s2e(`X`))))
             .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`X`], inclusive_start: true, inclusive_end: true });
-        expect($ee2s(getQueryKeys('==', $s2e(`X`), true)))
+        expect($ee2s(getQueryKeys('=', $s2e(`X`), true)))
             .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`X`], inclusive_start: true, inclusive_end: true });
 
         expect($ee2s(getQueryKeys('<', $s2e(`X`), false)))
@@ -191,7 +191,7 @@ describe('FormulaCompiler', () => {
         }).toThrow();
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "SQRT(@[bX1])==cX && cY <= FACT(@[bY2])",
+            "rawExpr": "SQRT(@[bX1])=cX && cY <= FACT(@[bY2])",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cT"],
@@ -213,11 +213,11 @@ describe('FormulaCompiler', () => {
         }
         // expect(expectedCompiledExpr).toThrow();
 
-        test_logicalExpression = Fn.SQRT(`@[bX1]`) + `== cX && cY <= ` + Fn.FACT(`@[bY2]`);
+        test_logicalExpression = Fn.SQRT(`@[bX1]`) + `= cX && cY <= ` + Fn.FACT(`@[bY2]`);
         compiledExpr = $ee2s(extractKeysAndQueriesFromLogicalExpression($s2e(test_logicalExpression) as LogicalExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "SQRT(@[bX1])== cX && cY <= FACT(@[bY2])",
+            "rawExpr": "SQRT(@[bX1])= cX && cY <= FACT(@[bY2])",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cX", "cY"],
@@ -244,12 +244,13 @@ describe('FormulaCompiler', () => {
 
     console.log('should compile test complex formula', () => {
         let test_subFormula1 =
-            Fn.SUMIF(`R_A.num`, `a_y == @[b_y] && ` + Fn.FACT(`aZ`) + ` < ` + Fn.ROUND(Fn.SQRT(`@[bZ]`) + ` + 1`));
+            Fn.SUMIF(`R_A.num`, `a_y = @[b_y] && ` + Fn.FACT(`aZ`) + ` < ` + Fn.ROUND(Fn.SQRT(`@[bZ]`) + ` + 1`));
         trigger1 = {
             type_: MapReduceTriggerN,
             rawExpr: $s2e(`'V1'`),
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
                 aggsViewName: 'bla',
+                aggsViewDescription: '',
                 map: {
                     entityId: 'R_A',
                     keyExpr: [$s2e(`a_y`), $s2e(Fn.FACT(`aZ`))],
@@ -265,6 +266,7 @@ describe('FormulaCompiler', () => {
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: 'blu',
+                obsViewDescription: '',
                 entityId: 'R_B',
                 keyExpr: [$s2e(`@[b_y]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
                 valueExpr: $s2e(`_id`),
@@ -286,6 +288,7 @@ describe('FormulaCompiler', () => {
             rawExpr: $s2e(`'V2'`),
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
                 aggsViewName: '',
+                aggsViewDescription: '',
                 map: {
                     entityId: 'R_C',
                     keyExpr: [$s2e(Fn.EOMONTH(`cT`, `-1`))],
@@ -301,6 +304,7 @@ describe('FormulaCompiler', () => {
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: '',
+                obsViewDescription: '',
                 entityId: 'R_B',
                 keyExpr: [$s2e(Fn.EOMONTH(`@[bT]`, `-1`))],
                 valueExpr: $s2e(`_id`),
@@ -315,7 +319,7 @@ describe('FormulaCompiler', () => {
 
         let test_complexFormulaExpr = `bX + ` + test_subFormula1 + ` + ` + Fn.TEXT(test_subFormula2, `"00000"`)
         expect(test_complexFormulaExpr)
-            .toEqual(`bX + SUMIF(R_A.num,a_y == @[b_y] && FACT(aZ) < ROUND(SQRT(@[bZ]) + 1)) + TEXT(RANK(GROUP_BY(R_C,EOMONTH(cT,-1)),@[bT]),"00000")`);
+            .toEqual(`bX + SUMIF(R_A.num,a_y = @[b_y] && FACT(aZ) < ROUND(SQRT(@[bZ]) + 1)) + TEXT(RANK(GROUP_BY(R_C,EOMONTH(cT,-1)),@[bT]),"00000")`);
 
         compiledFormula = compileFormula('R_B', 'sum__', test_complexFormulaExpr);
 

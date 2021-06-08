@@ -20,16 +20,16 @@ import * as _ from 'lodash';
 import { waitUntil } from '@domain/ts-utils';
 
 import { elvis } from '@core/elvis';
-import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
 import { ExcelStyles } from './excel-styles';
 import { I18N } from '@fe/i18n.service';
-import { TABLE_SERVICE } from '@fe/table.service';
-import { Pn } from '@domain/metadata/entity';
+import { TABLE_SERVICE, TableColumn } from '@fe/table.service';
+import { Pn, EntityProperty } from '@domain/metadata/entity';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
 import { DataGridComponentI } from './data-grid.component.i';
 import { emit, getTarget } from '@fe/delegated-events';
+import { SimpleAddHocQueryFilterItem, SimpleAddHocQuery } from '@domain/metadata/simple-add-hoc-query';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
@@ -63,6 +63,9 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     }
     get expandRow() {
         return this.getAttribute("expand-row") || undefined;
+    }
+    get applyI18n(): boolean {
+        return this.hasAttribute("apply-i18n") ? this.getAttribute("apply-i18n")?.toUpperCase() === "TRUE" : true;
     }
 
     constructor() {
@@ -118,28 +121,15 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     private sort: any = {};
     private columns: TableColumn[] = [];
     private selectedRowIdx: number;
+    
+    getFilterModel(): SimpleAddHocQuery['filterModel'] {
+        return this.gridApi.getFilterModel();
+    }
 
     private gridOptions: GridOptions = {
 
         headerHeight: 28,
         suppressContextMenu: true,
-        getMainMenuItems: (params: GetMainMenuItemsParams) => {
-            let defaults: (string | MenuItemDef)[] = params.defaultItems.slice(0);
-            defaults.push('separator')
-            defaults.push({
-                name: 'Delete Column',
-                action: () => {
-                    emit(this, {
-                        type: "UserDeleteColumn",
-                        tableName: this.tableName || 'n/a/tbl',
-                        columnName: params.column.getColDef().field || 'n/a/col',
-                    });
-                },
-                icon: '<i class="frmdb-i-fa-minus-circle"></i>'
-            });
-
-            return defaults;
-        },
         onGridSizeChanged: this.onGridSizeChanged.bind(this),
         components: {
             // agColumnHeader: TableHeaderComponent,
@@ -215,6 +205,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
                     }
                 });
                 // this.emit({ type: "UserModifiedTableUi", table: this.dataGrid });
+                emit(this, { type: "UserFilterTable", tableName: this.tableName || '' , filterModel: this.getFilterModel() });
             }
             this.filters = this.gridApi.getFilterModel();
         },
@@ -318,15 +309,19 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         return { ...backgroundStyles, ...borderStyles };
     }
 
-    agFilter(ctype: string) {
-        switch (ctype) {
-            case 'TEXT':
-                return 'agTextColumnFilter';
-            case 'NUMBER':
-                return 'agNumberColumnFilter';
-            case 'DATE':
-                return 'agDateColumnFilter';
-            case 'FORMULA':
+    agFilter(prop: EntityProperty) {
+        switch (prop.propType_) {
+            case Pn.INPUT:
+                switch (prop.actualType.name) {
+                case 'NumberType':
+                    return 'agNumberColumnFilter';
+                case 'DatetimeType':
+                    return 'agDateColumnFilter';
+                    default:
+                        return 'agTextColumnFilter';
+                }
+            case Pn.SCALAR_FORMULA://TODO: get actual type
+            case Pn.AGGREGATE_FORMULA://TODO: get actual type
                 return 'agTextColumnFilter';
             default:
                 return 'agTextColumnFilter';
@@ -361,11 +356,12 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             }
             let cols = this.columns || [];
 
+            await I18N.waitForDictionary();
             this.agGridColumns = cols.filter(c => !['_owner', '_role', '_rev'].includes(c.name)).map(c => <ColDef>{
-                headerName: I18N.tt(c.name),
+                headerName: this.applyI18n ? I18N.tt(c.name) : c.name,
                 field: c.name,
                 width: c.width ? c.width : 100,
-                filter: this.agFilter(c.type || Pn.TEXT),
+                filter: this.agFilter(c.entityProperty),
                 filterParams: {
                     newRowsAction: 'keep',
                 },
@@ -420,7 +416,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             return (params) => {
                 return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); f=m.querySelector('frmdb-form'); f.rowId='${params.value}'; $FRMDB_MODAL(m)"><i class="frmdb-i-edit"></i></a> ${this.valueFormatter(params)}`;
             }
-        } else if (this.columns.find(c => c.name === col.name)?.type === Pn.REFERENCE_TO) {
+        } else if (this.columns.find(c => c.name === col.name)?.entityProperty.propType_ === Pn.REFERENCE_TO) {
             return (params) => {
                 return `<a href="javascript:void(0)" onclick="$FRMDB_EDITOR.HDGR('${params.value}', '_id')"><i class="frmdb-i-1630227-link"></i></a> ${params?.value?.replace(/^.*~~/, '')}`;
             }

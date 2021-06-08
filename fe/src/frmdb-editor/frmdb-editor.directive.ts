@@ -6,8 +6,8 @@ import { ServerEventNewEntity, ServerEventSetPage, ServerEventPutPageHtml, Serve
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
 import { queryTableEditor, TableEditorComponent } from "@fe/table-editor/table-editor.component";
-import { UserDeleteColumn, FrmdbAddPageElementStart } from "@fe/frmdb-user-events";
-import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
+import { FrmdbDeleteColumn, FrmdbAddPageElementStart } from "@fe/frmdb-user-events";
+import { DATA_FRMDB_ATTRS_Enum } from "@core/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
 import { entityNameFromDataObjId, parseDataObjId } from "@domain/metadata/data_obj";
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
@@ -16,7 +16,6 @@ import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import '../directives/data-toggle-tab.directive';
 import '../directives/data-toggle-modal.directive';
 
-import { App } from "@domain/app";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
@@ -50,18 +49,19 @@ import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
 import { parseAllPageUrl, AllPageOpts, makeUrlPath, makeSeoFriendlyUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage, navigateTo } from "./frmdb-editor-router";
-import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 import { DATA_BINDING_MONITOR } from "@fe/init";
 import { $Table, $PageObjT, $Page, $AppObjT } from "@domain/metadata/default-metadata";
 import { waitUntil } from "@domain/ts-utils";
 import { FrmdbElementState } from "@fe/frmdb-element-state";
-import { serializeElemToObj, updateDOM } from "@fe/live-dom-template/live-dom-template";
+import { updateDOM } from "@fe/live-dom-template/live-dom-template";
+import { serializeElemToObj } from "@fe/live-dom-template/live-dom-template";
 import { isHTMLElement } from "@core/html-tools";
 import { getPageProperties } from "@core/dom-utils";
 import * as events from "@domain/event";
 import { raiseNotification } from "@fe/notifications.service";
 import { ThemeColors } from "@domain/uimetadata/theme";
+import { I18N } from "@fe/i18n.service";
 
 declare var $: null, jQuery: null;
 
@@ -101,6 +101,7 @@ export class FrmdbEditorDirective {
         if (newUrl.search) {
             let p = new URLSearchParams(newUrl.search);
             p.delete('frmdbRender');
+            p.delete('frmdbIntro');
             searchStr = '?' + p.toString();
         }
         
@@ -110,28 +111,32 @@ export class FrmdbEditorDirective {
 
     }
 
-    updateStateFromUrl(newPageOpts: AllPageOpts, newUrl: URL) {
+    async updateStateFromUrl(newPageOpts: AllPageOpts, newUrl: URL) {
         let { appName } = newPageOpts;
 
         this.setIframeSrc(newUrl);
 
+        let newTableId: string | null = null;
         if (this.state.data.selectedAppName != appName) {
             RESET_BACKEND_SERVICE();
-            BACKEND_SERVICE().waitSchema()
-                .then(async () => {
-                    await DATA_BINDING_MONITOR?.updateDOMForRoot();
-                });
+            await BACKEND_SERVICE().waitSchema();
+            await waitUntil(() => DATA_BINDING_MONITOR);
+            await DATA_BINDING_MONITOR?.updateDOMForRoot();
+            if (!BACKEND_SERVICE().getCurrentSchema().entities[this.state.data.selectedTableId]) {
+                newTableId = Object.keys(BACKEND_SERVICE().getCurrentSchema().entities)[0];
+            }
         }
 
-        waitUntil(() => DATA_BINDING_MONITOR)
-            .then(() => {
-                DATA_BINDING_MONITOR!.updateDOMForRoot($Page._id);
-            });
-
-        this.state.emitChange({
+        let stateChange: Partial<FrmdbEditorState> = {
             selectedAppName: appName,
             selectedPageName: newPageOpts.pageName,
-        });
+        };
+
+        if (newTableId) {
+            stateChange.selectedTableId = newTableId;
+        }
+
+        this.state.emitChange(stateChange);
     }
 
     init() {
@@ -201,11 +206,11 @@ export class FrmdbEditorDirective {
         );
 
         getData('/formuladb-api/user').then((u: {userRole: string, userId: string}) => {
-            if (u.userRole === "$ANONYMOUS") {
+            if (u.userRole === "$ANONYMOUS" && window.location.href.indexOf('frmdb.localhost') < 0) {
                 let {lang} = parseAllPageUrl(window.location.pathname);
                 raiseNotification(ThemeColors.warning, 
-                    "WARNING this is a preview environment.", 
-                    `To be able to save your modifications, please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
+                    "WARNING you are in preview mode, <strong class=\"text-danger\">your changes will be erased !</strong>", 
+                    `To be able to save your modifications, please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a> and create new environment.`)
             }
         })
     }
@@ -334,7 +339,7 @@ export class FrmdbEditorDirective {
                             this.state.emitChange({ selectedTableId: ev.entityId });
                         } else {
                             alert.classList.replace('d-none', 'd-block');
-                            alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
+                            alert.innerHTML = ev.notifMsg_ ? I18N.tt(ev.notifMsg_) : ev.error_ ? I18N.terr(ev.error_) : JSON.stringify(ev);
                         }
                         return ev;
                     })
@@ -420,17 +425,6 @@ export class FrmdbEditorDirective {
             this.dataGrid.forceReloadData();
         });
 
-        registerChangesFeedHandler("editorDataGridMonitor", async (events: events.MwzEvents[]) => {
-            for (let event of events) {
-                if (event.type_ === "ServerEventModifiedFormData" || event.type_ === "ServerEventDeletedFormData") {
-                    let { entityId } = parseDataObjId(event.obj._id);
-                    if (this.state.data.selectedTableId == entityId) {
-                        this.dataGrid.forceReloadData();
-                    }
-                }
-            }
-        });
-
     }
 
     async setAppProperties(isNewApp: boolean) {
@@ -466,7 +460,7 @@ export class FrmdbEditorDirective {
             var basedOnApp = (newAppModal.querySelector("select[name=basedOnApp]") as HTMLSelectElement).value;
             if (typeof basedOnApp !== 'string') { console.warn("Invalid base app name", basedOnApp); return }
 
-            BACKEND_SERVICE().putEvent(new ServerEventSetApp(appName, appObj.category, appObj.description, basedOnApp != '-' ? basedOnApp : undefined))
+            BACKEND_SERVICE().putEvent(new ServerEventSetApp(appName, appObj, basedOnApp != '-' ? basedOnApp : undefined))
                 .then(async (ev: ServerEventSetApp) => {
                     if (ev.state_ != 'ABORT') {
                         newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');
@@ -476,7 +470,7 @@ export class FrmdbEditorDirective {
                         }
                     } else {
                         alert.classList.replace('d-none', 'd-block');
-                        alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
+                        alert.innerHTML = ev.notifMsg_ ? I18N.tt(ev.notifMsg_) : ev.error_ ? I18N.terr(ev.error_) : JSON.stringify(ev);
                     }
                     return ev;
                 })
@@ -523,6 +517,7 @@ export class FrmdbEditorDirective {
                         newPageModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                         $FRMDB_MODAL(newPageModal, "hide");
                         navigateEditorToPage(ev.pageObj.name);
+                        setTimeout(() => this.reloadCanvas(), 750);
                     } else {
                         alert.classList.replace('d-none', 'd-block');
                         alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
@@ -582,7 +577,7 @@ export class FrmdbEditorDirective {
                 event.preventDefault();
 
                 BACKEND_SERVICE().putEvent(new ServerEventSetProperty(entity, {
-                    propType_: Pn.TEXT,
+                    propType_: Pn.INPUT, actualType: {name: "TextType"},
                     name,
                 }))
                     .then(async (ev: ServerEventSetProperty) => {
@@ -595,20 +590,21 @@ export class FrmdbEditorDirective {
 
                         } else {
                             alert.classList.replace('d-none', 'd-block');
-                            alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
+                            alert.innerHTML = ev.notifMsg_ ? I18N.tt(ev.notifMsg_) : ev.error_ ? I18N.terr(ev.error_) : JSON.stringify(ev);
                         }
                     })
             };
         });
 
-        onEvent(document.body, 'UserDeleteColumn', '*', (event: CustomEvent<UserDeleteColumn>) => {
+        onEvent(document.body, 'FrmdbDeleteColumn', '*', (event: CustomEvent<FrmdbDeleteColumn>) => {
             let currentEntity: Entity | undefined = this.state.data.tables?.find(e => e._id == this.state.data.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
+            let columnName = this.dataGrid.selectedColumnName;
+            if (!columnName) { alert(`Please select table column first`); return; }
 
-            if (confirm(`Please confirm deletion of table ${event.detail.tableName}.${event.detail.columnName} ?`)) {
-                if (entity._id != event.detail.tableName) { console.warn(`ERR ${entity._id} != ${event.detail.tableName}`); return; }
-                BACKEND_SERVICE().putEvent(new ServerEventDeleteProperty(entity, event.detail.columnName))
+            if (confirm(`Please confirm deletion of column ${columnName} of table ${entity._id} ?`)) {
+                BACKEND_SERVICE().putEvent(new ServerEventDeleteProperty(entity, columnName))
                     .then(async (ev: ServerEventDeleteProperty) => {
                         if (ev.state_ != 'ABORT') {
                             let dataGrid = queryDataGrid(document.body);
@@ -665,13 +661,21 @@ export class FrmdbEditorDirective {
                 this.canvas.style.width = 'calc(100vw - var(--frmdb-editor-left-panel-width))';
                 this.canvas.style.marginLeft = '0px';
             } else if (viewport === "viewport-tablet") {
-                this.canvas.style.width = '768px';
-                this.canvas.style.marginLeft = 'calc((100vw - 768px - var(--frmdb-editor-left-panel-width)) / 2)';
+                //768px does not trigger "md" media breakpoints
+                this.canvas.style.width = '772px';
+                this.canvas.style.marginLeft = 'calc((100vw - 772px - var(--frmdb-editor-left-panel-width)) / 2)';
             } else if (viewport === "viewport-mobile") {
                 this.canvas.style.width = '320px';
                 this.canvas.style.marginLeft = 'calc((100vw - 320px - var(--frmdb-editor-left-panel-width)) / 2)';
             }
         });
+
+        onEvent(document.body, 'FrmdbFormulaEditorOn', '*', (event) => {
+            this.elementEditor.disabled = true;
+        });
+        onEvent(document.body, 'FrmdbFormulaEditorOff', '*', (event) => {
+            this.elementEditor.disabled = false;
+        });        
     }
 
     getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {

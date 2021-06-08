@@ -1,4 +1,4 @@
-namespace: frmdb-master #TBD_ENV_NAME
+namespace: orbicobeautyro #TBD_ENV_NAME
 resources:
 - resources/be-sts.yaml
 - resources/be-service.yaml

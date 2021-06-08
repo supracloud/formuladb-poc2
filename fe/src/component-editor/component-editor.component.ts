@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { tmpl } from "./tmpl";
 import { Undo } from "../frmdb-editor/undo";
-import { Input, Inputs, createInput, SectionInput, ImageInput, ParamListInput } from "./inputs";
+import { Input, Inputs, createInput, SectionInput, ImageInput, ParamListInput, CheckboxInput, ClassInput, ClassSetInput } from "./inputs";
 import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
 import { FrmdbModifyPageElement } from "@fe/frmdb-user-events";
 import { ComponentsBase } from "./components-base";
@@ -9,6 +9,8 @@ import { ComponentsBaseSyleClasses } from "./components-base-style-classes";
 import { ComponentsBaseDataBinding } from "./components-base-data-binding";
 import { ComponentLink } from "./component-link";
 import { ComponentsBaseRawAttributes } from "./components-base-raw-attributes";
+import { $DATA_COLUMNS_FOR_ELEM } from "@fe/fe-functions";
+import { ComponentButton } from "./component-button";
 
 export const defaultComponent = "_base";
 export const preservePropertySections = true;
@@ -74,9 +76,10 @@ export interface ComponentProperty {
 	child?: string;//selector
 	parent?: string;//selector
 	hide?: boolean;
+	noDataBinding?: boolean;
 	beforeInit?: (el: HTMLElement) => void;
 	afterInit?: (el: HTMLElement) => void;
-	init?: (el: HTMLElement) => void;
+	init?: (el: HTMLElement) => string | undefined | null;
 	onChange?: (el: HTMLElement, value: string, input: Input, component: Component) => HTMLElement;
 }
 
@@ -101,7 +104,17 @@ export class ComponentEditorComponent extends HTMLElement {
 			if (newSelectedEl != this.selectedEl) {
 				emit(this, {type: "FrmdbSelectPageElement", el: newSelectedEl});
 			}
+		});
+		onEventChildren(this, "change", "*", (event: CustomEvent<FrmdbModifyPageElement>) => {
+			if (!this.selectedEl) return;
+			let propertyInput = event.target as Input;
+			if (!event.detail) return;
+			let newSelectedEl = this.onPropertyChange(this.selectedEl, propertyInput, event.detail.value, propertyInput.component, propertyInput.property);
+			if (newSelectedEl != this.selectedEl) {
+				emit(this, {type: "FrmdbSelectPageElement", el: newSelectedEl});
+			}
 		})
+
 	}
 	
 	initializeComponents() {
@@ -110,6 +123,7 @@ export class ComponentEditorComponent extends HTMLElement {
 		this.extend("_base", "_base", ComponentsBaseRawAttributes);
 		this.extend("_base", "_base", ComponentsBaseDataBinding);
 		this.extend("_base", ComponentLink.type, ComponentLink); 
+		this.extend("_base", ComponentButton.type, ComponentButton); 
 	}
 
 	selectedEl: HTMLElement;
@@ -125,10 +139,10 @@ export class ComponentEditorComponent extends HTMLElement {
 	}
 	
 	_components: { [type: string]: Component } = {};
-	_nodesLookup = {};
-	_attributesLookup = {};
-	_classesLookup = {};
-	_classesRegexLookup = {};
+	_nodesLookup: any = {};
+	_attributesLookup: any = {};
+	_classesLookup: any = {};
+	_classesRegexLookup: any = {};
 	styleManager = new StyleManager();
 	
 	get(type) {
@@ -147,7 +161,7 @@ export class ComponentEditorComponent extends HTMLElement {
 		}
 		
 		if (data.attributes) {
-			if (data.attributes.constructor === Array) {
+			if (data.attributes instanceof Array) {
 				for (let i in data.attributes) {
 					this._attributesLookup[data.attributes[i]] = data;
 				}
@@ -345,10 +359,10 @@ export class ComponentEditorComponent extends HTMLElement {
 					property.data = { "key": property.key };
 				}
 				
-				let propertyInput = createInput(property.inputtype);
+				let propertyInput: Input = createInput(property.inputtype);
 				propertyInput.property = property;
 				propertyInput.component = component;
-				propertyInput.init(property.data);
+				propertyInput.init(property.data, element);
 				
 				if (property.init) {
 					propertyInput.setValue(property.init(element));
@@ -369,7 +383,7 @@ export class ComponentEditorComponent extends HTMLElement {
 					if (value && property.htmlAttr == "class" && property.validValues) {
 						value = value.split(" ").filter((el) => {
 							return property.validValues ? property.validValues.indexOf(el) != -1 : true;
-						});
+						}).join(' ');
 					}
 					
 					propertyInput.setValue(value);
@@ -380,14 +394,35 @@ export class ComponentEditorComponent extends HTMLElement {
 					section = (propertyInput as SectionInput).section;
 				}
 				else {
+					let dataBindingHtml = property.noDataBinding ? '' : this.getDataBindingSelect(property, element);
 					let row = document.createElement('div');
-					row.innerHTML = tmpl(/*html*/`
-						<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
-							{% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
-							<div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input">
+					if (propertyInput instanceof ClassSetInput) {
+						row.innerHTML = /*html*/`
+							<div class="form-group">
+								<div class="d-flex">
+									<label class="control-label d-block" for="input-model">
+										${property.name}
+									</label>
+									${dataBindingHtml}
+								</div>
+								<div class="input"></div>
 							</div>
-						</div>	
-					`, property);
+						`;
+					} else {
+						row.innerHTML = tmpl(/*html*/`
+							<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
+								{% if (typeof name !== 'undefined' && name != false) { %}
+									<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">
+										{%=name%}
+									</label>
+								{% } %}
+								
+								<div class="d-flex flex-wrap w-100 {% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input">
+									${dataBindingHtml}
+								</div>
+							</div>	
+						`, property);
+					}
 					row.querySelector('.input')!.append(propertyInput);
 					if (!section) {console.warn("no section exists yet", component, property); continue}
 					section.append(row.querySelector('.form-group')!);
@@ -399,8 +434,21 @@ export class ComponentEditorComponent extends HTMLElement {
 		
 		if (component.init) component.init(selectedEl);
 	}
-	
-	
+
+	getDataBindingSelect(property: ComponentProperty, node: HTMLElement): string {
+		let opts = $DATA_COLUMNS_FOR_ELEM(node);
+
+		return /*html*/`
+			<input style="opacity: 0; margin-right: -1em" class="enable-dropdown-checkbox" id="enable-data-binding-value-${property.key}" type="checkbox">
+			<label for="enable-data-binding-value-${property.key}" class="enable-data-binding-icon mx-1"><i class="frmdb-i-database"></i></label>
+			<select class="inline-dropdown-menu form-control data-binding-input-value mb-2">
+				${opts.map(opt => /*html*/`
+					<option value="${opt.value}">${opt.text}</option>
+				`).join('')}
+			</select>
+		`;
+	}
+
 	onPropertyChange(selectedEl: HTMLElement, input: Input, value: string | number | boolean, component: Component, property: ComponentProperty) {
 		let element = selectedEl;
 		if (property.child) element = element.querySelector(property.child) as HTMLElement;
@@ -420,13 +468,12 @@ export class ComponentEditorComponent extends HTMLElement {
 		
 		if (property.onChange) {
 			element = property.onChange(element, '' + value, input, component);
-		}/* else */
-		if (property.htmlAttr) {
+		} else if (property.htmlAttr) {
 			let oldValue = element.getAttribute(property.htmlAttr);
 			
 			if (property.htmlAttr == "class" && property.validValues) {
-				element.classList.remove(property.validValues.join(" "));
-				element.classList.add('' + value);
+				element.classList.remove(...property.validValues);
+				if (value) element.classList.add('' + value);
 			}
 			// else if (property.htmlAttr === "style") {
 			// 	this.styleManager.setStyle(element, property.key, '' + value);

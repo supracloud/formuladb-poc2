@@ -4,54 +4,14 @@
  */
 
 import {
-    Expression
-    , LogicalExpression
-    , ArrayExpression
-    , Identifier
-    , MemberExpression
-    , NumberLiteral
-    , StringLiteral
-    , Literal
-    , UnaryExpression
-    , BinaryExpression
-    , ConditionalExpression,
+    Expression,
     CallExpression,
-    isExpression,
-    isLogicalExpression,
     isIdentifier,
-    isMemberExpression,
     isCallExpression
 } from "jsep";
 import { PickOmit } from "../ts-utils";
 import { ReduceFun } from "./reduce_functions";
-
-export const ScalarFunctions = {
-    AND: true,
-    OR: true,
-    NOT: true,
-    TEXT: true,
-    ID: true,
-    CONCATENATE: true,
-    PROPER: true,
-    REGEXREPLACE: true,
-    EOMONTH: true,
-    SQRT: true,
-    ROUND: true,
-    FACT: true,
-    HLOOKUP: true,
-    FLOOR: true,
-    DATEDIF: true,
-    INTERSECTS: true,
-    NUMRANGE: true,
-    DATERANGE: true,
-}
-
-export type ScalarCallExpression = CallExpression;
-export function isScalarCallExpression(param: Expression): param is ScalarCallExpression {
-    if (!isCallExpression(param)) return false;
-    if (!isIdentifier(param.callee)) return false;
-    return ScalarFunctions[param.callee.name] != null;
-}
+import { ScalarValueTypes } from "./types";
 
 export const enum ExecPlanN {
     CompiledScalarN ='CompiledScalarN',
@@ -110,6 +70,22 @@ export function isMapKey(param): param is MapKey {
     if (null == param || null != param.type) return false;
     return typeof param === 'object' && param.type_ === MapKeyN;
 }
+export function extendsMapKeyN(type_: ExecPlanN): boolean {
+    return type_ === MapKeyN
+        || type_ === MapFunctionN
+        || type_ === MapKeyAndQueryN
+        || type_ === MapFunctionAndQueryN
+    ;
+}
+export function extendsMapKey(param): param is 
+    | MapKey
+    | MapFunction
+    | MapKeyAndQuery
+    | MapFunctionAndQuery
+{
+    if (null == param || null != param.type) return false;
+    return typeof param === 'object' && extendsMapKeyN(param.type_);
+}
 export function includesMapKeyN(type_: ExecPlanN): boolean {
     return type_ === MapKeyN
         || type_ === MapFunctionN
@@ -119,11 +95,17 @@ export function includesMapKeyN(type_: ExecPlanN): boolean {
         || type_ === MapReduceTriggerN
     ;
 }
-export function includesMapKey(param): param is MapKey {
+export function includesMapKey(param): param is 
+    | MapKey
+    | MapFunction
+    | MapKeyAndQuery
+    | MapFunctionAndQuery
+    | MapReduceKeysAndQueries
+    | MapReduceTrigger
+{
     if (null == param || null != param.type) return false;
     return typeof param === 'object' && includesMapKeyN(param.type_);
 }
-
 
 
 export const MapValueN = ExecPlanN.MapValueN;
@@ -139,6 +121,21 @@ export function isMapValue(param): param is MapValue {
     if (null == param || null != param.type) return false;
     return typeof param === 'object' && param.type_ === MapValueN;
 }
+export function extendsMapValueN(type_: ExecPlanN): boolean {
+    return type_ === MapValueN
+        || type_ === MapFunctionN
+        || type_ === MapFunctionAndQueryN
+    ;
+}
+export function extendsMapValue(param): param is 
+    | MapValue
+    | MapFunction
+    | MapFunctionAndQuery
+{
+    if (null == param || null != param.type) return false;
+    return typeof param === 'object' && extendsMapValueN(param.type_);
+}
+
 export function includesMapValueN(type_: ExecPlanN): boolean {
     return type_ === MapValueN
         || type_ === MapFunctionN
@@ -146,7 +143,12 @@ export function includesMapValueN(type_: ExecPlanN): boolean {
         || type_ === MapReduceTriggerN
     ;
 }
-export function includesMapValue(param): param is MapValue {
+export function includesMapValue(param): param is 
+    | MapValue
+    | MapFunction
+    | MapFunctionAndQuery
+    | MapReduceTrigger 
+{
     if (null == param || null != param.type) return false;
     return typeof param === 'object' && includesMapValueN(param.type_);
 }
@@ -239,7 +241,11 @@ export function includesMapReduceKeysAndQueriesN(type_: ExecPlanN): boolean {
         || type_ === MapReduceTriggerN
     ;
 }
-export function includesMapReduceKeysAndQueries(param): param is MapReduceKeysAndQueries {
+export function includesMapReduceKeysAndQueries(param): param is 
+    | MapReduceKeysAndQueries 
+    | MapReduceKeysQueriesAndValue
+    | MapReduceTrigger
+{
     if (null == param || null != param.type) return false;
     return typeof param === 'object' && includesMapReduceKeysAndQueriesN(param.type_);
 }
@@ -273,11 +279,13 @@ export class MapReduceTrigger implements ExecPlanBase {
     rawExpr: Expression;
     mapreduceAggsOfManyObservablesQueryableFromOneObs: {
         aggsViewName: string;
+        aggsViewDescription: string;
         map: MapFunctionAndQueryT;
         reduceFun: ReduceFun;
     };
     mapObserversImpactedByOneObservable: MapFunctionAndQueryT & {
-        obsViewName: string
+        obsViewName: string;
+        obsViewDescription: string;
     };
 
     mapreduceAggsOfManyObservablesQueryableFromOneObs__?: string;//FIXME: security breach!!! this should be put somewhere else and not be available for the clients to see

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgweb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: pgweb
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        service: pgweb
+    spec:
+      containers:
+      - env:
+        - name: DATABASE_URL
+          value: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
+        image: sosedoff/pgweb
+        name: pgweb
+        ports:
+        - containerPort: 8991
+        resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}

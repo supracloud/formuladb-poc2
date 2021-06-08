@@ -1,6 +1,5 @@
 bases:
 - ../../base
-resources:
-- resources/production-issuer.yaml
 patches:
 - patches/be-sts.yaml
+- patches/db-sts.yaml

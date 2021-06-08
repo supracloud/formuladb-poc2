@@ -30,17 +30,27 @@ body {
 }
 
 .frmdb-hidden {
-    height: 10px;
-    font-size: 10px;
-    border: 1px solid #dfdede;
-    border-radius: 4px;
-    color: #dfdede;
-    visibility: hidden;
+    display: none !important;
 }
 .frmdb-editor-on.frmdb-editor-normal .frmdb-hidden {
-    visibility: visible;
+    max-height: 8px;
+    border: 4px dashed blue;
+    overflow: hidden;
+    display: block !important;
+    opacity: 0.25;
+    &.d-flex,&.row {
+        display: flex;
+    }
+    &.d-grid {
+        display: grid;
+    }
+
+    &:hover {
+        max-height: initial;
+        opacity: initial;
+    }
 }
-.frmdb-hidden:hover {
-    transform: scale(2);
-    padding: 2px;
+.frmdb-editor-on.frmdb-editor-normal .invisible {
+    visibility: visible !important;
+    opacity: 0.25;
 }

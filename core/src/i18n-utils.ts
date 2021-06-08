@@ -1,7 +1,7 @@
 import { LANGUAGES, DEFAULT_LANGUAGE, I18nLang, DEFAULT_FLAG } from "@domain/i18n";
 import { $DictionaryObjT, $Dictionary } from "@domain/metadata/default-metadata";
 
-const translatableSelector = 'th,td,p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,small,strong,u,ins,s,del,em,label,legend,[placeholder]';
+const translatableSelector = 'th,td,p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,small,strong,sup,sub,u,ins,s,del,em,label,legend,[placeholder]';
 const allowedInnerTags = 'b,strong,i,br,hr,em,q';
 const notAllowedTagsForTextEditing = ['input', 'select', 'textarea', 'video', 'img'];
 
@@ -104,15 +104,18 @@ export class I18Utils {
         }
     }
 
-    applyLanguageOnCleanHtmlPage(rootElement: Document | ShadowRoot | HTMLElement, targetLang: I18nLang, dictionary: Map<string, $DictionaryObjT>) {
+    applyLanguageOnCleanHtmlPage(rootElement: Document | ShadowRoot | HTMLElement, targetLang: I18nLang, dictionary: Map<string, $DictionaryObjT> | { [literal: string]: string }) {
         if (targetLang === DEFAULT_LANGUAGE) return;
 
         for (let el of Array.from(rootElement.querySelectorAll(translatableSelector))) {
             if (!isElementWithTextContent(el)) continue;
             let textDefaultLanguage = getTextValue(el as HTMLElement);
             el.setAttribute('data-i18n-key', textDefaultLanguage);
-            this.setTextValue(el as HTMLElement, 
-                dictionary.get($Dictionary._id + '~~' + textDefaultLanguage)?.[targetLang] || `${targetLang}:${textDefaultLanguage}`);
+            let translatedTxt = `${textDefaultLanguage} ${targetLang}`;
+            if (dictionary instanceof Map) {
+                translatedTxt = dictionary.get($Dictionary._id + '~~' + textDefaultLanguage)?.[targetLang] || translatedTxt;
+            } else translatedTxt = dictionary[textDefaultLanguage] || translatedTxt;
+            this.setTextValue(el as HTMLElement, translatedTxt);
         }
     }
 }

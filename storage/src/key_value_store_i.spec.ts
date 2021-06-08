@@ -6,7 +6,7 @@
 import * as _ from 'lodash';
 
 import { KeyValueStoreArrayKeys, KeyTableStoreI, KeyValueStoreI } from "./key_value_store_i";
-import { Entity, EntityProperty, Pn } from '@domain/metadata/entity';
+import { Entity, EntityProperty, Pn, Schema } from '@domain/metadata/entity';
 import { getKeyValueStoreFactory, KvsImplementation } from '@storage/key_value_store_impl_selector';
 import { SimpleAddHocQuery } from '@domain/metadata/simple-add-hoc-query';
 
@@ -19,10 +19,10 @@ export interface KeyValueStoreSpecObjType {
 export const KeyValueStoreSpecEntity: Entity = {
     _id: "KeyValueStoreSpecEntity",
     props: {
-        _id: { name: "_id", propType_: Pn.TEXT } as EntityProperty,
-        categ: { name: "categ", propType_: Pn.TEXT } as EntityProperty,
-        subcateg: { name: "subcateg", propType_: Pn.TEXT } as EntityProperty,
-        val: { name: "val", propType_: Pn.NUMBER } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.INPUT, actualType: { name: "TextType" } } as EntityProperty,
+        categ: { name: "categ", propType_: Pn.INPUT, actualType: { name: "TextType" } } as EntityProperty,
+        subcateg: { name: "subcateg", propType_: Pn.INPUT, actualType: { name: "TextType" } } as EntityProperty,
+        val: { name: "val", propType_: Pn.INPUT, actualType: { name: "NumberType" } } as EntityProperty,
     }
 };
 
@@ -33,8 +33,12 @@ describe('KeyObjStoreI', () => {
 
     beforeEach(async (done) => {
         let kvsFactory = await getKeyValueStoreFactory();
-        kvs = kvsFactory.createKeyValS('spec_KeyObjStoreI', {} as KeyValueStoreSpecObjType);
-        kvt = kvsFactory.createKeyTableS(KeyValueStoreSpecEntity);
+        kvs = kvsFactory.createKeyValS('spec_KeyObjStoreI', 'desc bla', {} as KeyValueStoreSpecObjType);
+        kvt = kvsFactory.createKeyTableS({
+            _id: "", entities: {
+                KeyValueStoreSpecEntity: KeyValueStoreSpecEntity,
+            }
+        } as Schema, KeyValueStoreSpecEntity);
         await kvt.clearDB();
         done();
     });

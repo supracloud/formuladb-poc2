@@ -1,0 +1,10 @@
+:root {
+    --frmdb-look-name: minty;
+}
+
+@import '../../node_modules/bootswatch/dist/minty/variables';
+@import "../_colors/_color-TBDTBD-TBDTBD.scss";
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import '../../node_modules/bootswatch/dist/minty/bootswatch';
+
+@import '../frmdb/frmdb';

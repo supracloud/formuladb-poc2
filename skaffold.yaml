@@ -29,6 +29,12 @@ build:
         strip: scripts
     kaniko:
       dockerfile: Dockerfile.be
+      cache: {}
+  # - image: registry.formuladb.io/formuladb/febe/code-server
+  #   context: .
+  #   kaniko:
+  #     dockerfile: Dockerfile.code
+  #     cache: {}
 deploy:
   kustomize:
     paths:
@@ -40,15 +46,22 @@ profiles:
     path: /build/cluster
   - op: remove
     path: /build/artifacts/0/kaniko
+  # - op: remove
+  #   path: /build/artifacts/1/kaniko
   - op: add
     path: /build/artifacts/0/docker
     value:
       dockerfile: Dockerfile.be
       buildArgs:
         BUILD_DEVELOPMENT: 1
+  # - op: add
+  #   path: /build/artifacts/1/docker
+  #   value:
+  #     dockerfile: Dockerfile.code
+  #     buildArgs:
   - op: replace
     path: /deploy/kustomize/paths/0
-    value: k8s/overlays/development
+    value: k8s/overlays/localdev
 - name: ci
   patches:
   - op: add
@@ -58,11 +71,11 @@ profiles:
   - op: replace
     path: /deploy/kustomize/paths/0
     value: k8s/overlays/ci
-- name: localci
+- name: staging
   patches:
   - op: replace
     path: /deploy/kustomize/paths/0
-    value: k8s/overlays/localci    
+    value: k8s/overlays/staging    
 - name: client
   patches:
   - op: replace
@@ -73,8 +86,19 @@ profiles:
   - op: replace
     path: /deploy/kustomize/paths/0
     value: k8s/overlays/production
-- name: onprem
+- name: k3s
   patches:
+  - op: remove
+    path: /build/cluster
+  - op: remove
+    path: /build/artifacts/0/kaniko
+  - op: add
+    path: /build/artifacts/0/docker
+    value:
+      dockerfile: Dockerfile.be
+      buildArgs:
+        BUILD_DEVELOPMENT: 1    
   - op: replace
     path: /deploy/kustomize/paths/0
-    value: k8s/overlays/onprem
+    value: k8s/overlays/k3s
+    # value: k8s/be

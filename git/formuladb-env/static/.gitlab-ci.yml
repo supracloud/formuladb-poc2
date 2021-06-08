@@ -1,7 +1,0 @@
-stages:
-  - publish
-
-publish:
-  stage: publish
-  script:
-    - gsutil -m rsync -c -x ".git*" -r . gs://formuladb-env/static-assets/formuladb-env/static

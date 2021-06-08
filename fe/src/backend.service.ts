@@ -13,7 +13,6 @@ import { MwzEvents, MwzEvent, ServerEventPutMediaObject } from "@domain/event";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
 
-import { App } from "@domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
 import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
 import { FrmdbLogger } from "@domain/frmdb-logger";
@@ -23,6 +22,8 @@ import { raiseNotification } from "./notifications.service";
 import { ThemeColors } from "@domain/uimetadata/theme";
 import { parseAllPageUrl, MandatoryPageOpts, FullPageOpts, AllPageOpts } from "@domain/url-utils";
 import { I18nLang } from "@domain/i18n";
+import { $AppObjT } from "@domain/metadata/default-metadata";
+import { _idValueStr } from "@domain/key_value_obj";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -52,8 +53,10 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
                         raiseNotification(ThemeColors.warning, 
                             "Cannot save modifications in preview environment.", 
                             `Please <a href="/${lang}/users/login.html" target="_blank">Login</a> or <a href="/${lang}/users/register.html" target="_blank">Register</a>`)
+                    } else {
+                        let resTxt = await response.text();
+                        throw new Error(url + ': ' + response.status + "-" + resTxt);
                     }
-                    throw new Error(url + ': ' + response.status + "-" + response.statusText);
                 }
             } catch (err) {
                 console.error("Error reading post data: ", err, url, data);
@@ -72,7 +75,8 @@ export function getData<OUT>(url: string): Promise<OUT> {
 
 export class BackendService {
 
-    public applications: Map<string, App> = new Map();
+    public applications: Map<string, $AppObjT> = new Map();
+    private schemaGetStarted = false;
     private _currentSchema: Schema = {
         _id: 'FRMDB_SCHEMA~~emppty',
         entities: {}
@@ -91,16 +95,16 @@ export class BackendService {
     }
 
     public async waitSchema() {
-        let schema = await this.getSchema();
-        if (!schema) throw new Error("Schema " + this.appName + " not found");
+        if (this.schemaGetStarted) await waitUntil(() => Promise.resolve(this.getCurrentSchema()), 25, 200);
+        else await this.getSchema();
     }
 
-    async getApp(): Promise<App | null> {
-        return getData<App | null>(`/formuladb-api/${this.appName}`);
+    async getApp(): Promise<$AppObjT | null> {
+        return getData<$AppObjT | null>(`/formuladb-api/${this.appName}`);
     }
 
-    async getAppProperties(appName: string): Promise<App | null> {
-        return getData<App | null>(`/formuladb-api/${appName}`);
+    async getAppProperties(appName: string): Promise<$AppObjT | null> {
+        return getData<$AppObjT | null>(`/formuladb-api/${appName}`);
     }
     async addFullPageOptsForMandatory(pageOpts: AllPageOpts): Promise<FullPageOpts> {
         if (!pageOpts.look) {
@@ -160,9 +164,9 @@ export class BackendService {
         return postData<MwzEvents, MwzEvents>('/formuladb-api/' + this.appName + '/event', event);
     }
 
-    public async getApplications(): Promise<Map<string, App> | null> {
+    public async getApplications(): Promise<Map<string, $AppObjT> | null> {
         if (this.applications.size == 0) {
-            let apps = await getData<App[] | null>('/formuladb-api/applications');
+            let apps = await getData<$AppObjT[] | null>('/formuladb-api/applications');
             if (apps) {
                 for (let app of apps) {
                     this.applications.set(app._id.replace(/^App~~/, ''), app);
@@ -182,7 +186,7 @@ export class BackendService {
         let i18nList = await this.getTableData("$Dictionary~~");
         let dictionary = {};
         for (let i18n of i18nList) {
-            dictionary[i18n._id.replace('$Dictionary~~', '')] = i18n[locale];
+            dictionary[_idValueStr(i18n._id)] = i18n[locale];
         }
         return dictionary;
     }
@@ -222,6 +226,7 @@ export class BackendService {
     }
 
     public async getSchema(): Promise<Schema> {
+        this.schemaGetStarted = true;
         let http = await getData<Schema | null>('/formuladb-api/' + this.appName + '/schema');
         if (!http) throw new Error("no schema for " + this.appName);
         if (!isSchema(http)) throw new Error("response is not Schema " + CircularJSON.stringify(http));

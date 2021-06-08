@@ -1,6 +1,0 @@
-- internal tools and automation (CI pipelines) are very good but very few people historically contributed
-- people will use a tool if it is bullet proof, internal contributors are very hard to find
-- dedicated team can be setup only with budget approval at higher levels, nowadays CI/CT/CD is mainstream companies create devOps teams who own these pipelines
-
-Auto-docs...
-FormulaDB's motivation and inspiration also comes from these struggles to promote internal productivity tools.

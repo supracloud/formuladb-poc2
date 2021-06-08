@@ -1,3 +1,0 @@
-Storage adapter is already abstracted, but we don't support polyglot persistence in the same environment. 
-
-Our vision is to add polyglot persistence to one single instance of formuladb. Based on the KPIs we collect about the data (size, cardinality, dependency DAG, formulas) we will automatically move data into the most appropriate type of storage (in-memory, document store, column store) and also automatically create indexes that will speed up formula computation and queries.

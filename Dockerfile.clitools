@@ -1,0 +1,15 @@
+#docker build -t frmdb-clitools -f Dockerfile.clitools .
+#docker tag frmdb-clitools registry.formuladb.io/formuladb/febe/formuladb-clitools:0.0.1
+#docker push registry.formuladb.io/formuladb/febe/formuladb-clitools:0.0.1
+
+FROM node:12.18.2-alpine3.12
+
+RUN apk add --no-cache postgresql-client
+RUN apk add --no-cache curl
+RUN apk add --no-cache netcat-openbsd
+RUN apk add --no-cache less
+RUN apk add --no-cache net-tools
+RUN apk add --no-cache rsync
+RUN apk add --no-cache jq
+
+ENV PAGER=less

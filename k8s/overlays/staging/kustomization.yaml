@@ -1,0 +1,4 @@
+bases:
+- ../client
+patches:
+- patches/be-sts.yaml

@@ -3,11 +3,12 @@
  * License TBD
  */
 
-import { Schema, Pn, Entity, EntityProperty, FormulaValidation, AutoCorrectionOnValidationFailed } from "./entity";
+import { Schema, Pn, Entity, EntityProperty, ValidateRecordProperty, AutoCorrectProperty, ComputedRecordProperty, ComputedRecordEntity } from "./entity";
 import { parseDataObjId } from "./data_obj";
 import { CompiledFormula } from "./execution_plan";
 import * as _ from "lodash";
 import { DAG } from "./dag";
+import { KeyValueObjIdType } from "@domain/key_value_obj";
 
 export interface FormulaTriggeredByObj {
     entityId: string;
@@ -23,24 +24,24 @@ export class SchemaDAO {
         return _.values(this.schema.entities);
     }
 
-    public getFormulas(objId: string): CompiledFormula[] {
+    public getFormulas(objId: KeyValueObjIdType): CompiledFormula[] {
         let ret: CompiledFormula[] = [];
         let entity = this.getEntityForDataObj(objId);
         if (!entity) {console.warn("Entity does not exist", objId); return []}
         _.values(entity.props).forEach(pr => {
-            if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+            if (Pn.SCALAR_FORMULA == pr.propType_ && null != pr.compiledFormula_ || Pn.AGGREGATE_FORMULA == pr.propType_ && null != pr.compiledFormula_) {
                 if (pr.compiledFormula_.triggers && pr.compiledFormula_.triggers.length > 0) ret.push(pr.compiledFormula_);
             }
         })
         return ret;
     }
 
-    public getSelfFormulas(objId: string): CompiledFormula[] {
+    public getSelfFormulas(objId: KeyValueObjIdType): CompiledFormula[] {
         let entityId = parseDataObjId(objId).entityId;
         let ret: CompiledFormula[] = [];
         let entity = this.schema.entities[entityId];
         for (let pr of Object.values(entity.props)) {
-            if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+            if (Pn.SCALAR_FORMULA == pr.propType_ && null != pr.compiledFormula_) {
                 if (pr.compiledFormula_.targetEntityName === entityId && !pr.compiledFormula_.triggers) {
                     ret.push(pr.compiledFormula_);
                 }
@@ -49,38 +50,42 @@ export class SchemaDAO {
         return ret;
     }
 
-    public getValidationsForEntity(entityId: string): _.Dictionary<FormulaValidation> | undefined {
-        return this.schema.entities[entityId].validations;
-    }
-    public getValidations(objId: string): _.Dictionary<FormulaValidation> | undefined {
-        let entityId = parseDataObjId(objId).entityId;
-        return this.getValidationsForEntity(entityId);
+    public getValidationsForEntity(entityId: string): {[colName: string]: ValidateRecordProperty} {
+        let ret: {[colName: string]: ValidateRecordProperty} = {};
+        for (let prop of Object.values(this.schema.entities[entityId].props)) {
+            if (prop.propType_ === Pn.VALIDATE_RECORD) {
+                ret[prop.name] = prop;
+            }
+        } 
+        return ret;
     }
 
     public getProperty(entityId: string, propertyName: string): EntityProperty {
         return this.schema.entities[entityId].props[propertyName];
     }
 
-    public getEntityForDataObj(id: string) {
+    public getEntityForDataObj(id: KeyValueObjIdType) {
         let entityId = parseDataObjId(id).entityId;
         return this.schema.entities[entityId];
     }
 
-    public getAutoCorrections(objId: string, validationFullName: string): AutoCorrectionOnValidationFailed[] {
+    public getAutoCorrections(objId: KeyValueObjIdType, validationTableName: string, validationColName?: string): {[colName: string]: AutoCorrectProperty} {
         let entityId = parseDataObjId(objId).entityId;
-        let autoCorrections = this.schema.entities[entityId].autoCorrectionsOnValidationFailed;
-        if (autoCorrections != null) {
-            return autoCorrections[validationFullName];
-        } else {
-            return [];
-        }
+        let ret: {[colName: string]: AutoCorrectProperty} = {};
+        for (let prop of Object.values(this.schema.entities[entityId].props)) {
+            if (prop.propType_ === Pn.AUTO_CORRECT && prop.validationTableName == validationTableName && prop.validationColName == validationColName) {
+                ret[prop.name] = prop;
+            }
+        } 
+        return ret;
     }
-    public getFormulasTriggeredByObj(objId: string): FormulaTriggeredByObj[] {
+    public getAggFormulasTriggeredByObj(objId: KeyValueObjIdType): FormulaTriggeredByObj[] {
         let entityId = parseDataObjId(objId).entityId;
         let ret: FormulaTriggeredByObj[] = [];
         this.entities().forEach(en => {
             _.values(en.props).forEach(pr => {
-                if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+                if (Pn.AGGREGATE_FORMULA == pr.propType_) {
+                    if (!pr.compiledFormula_) throw new Error(`formula not compiled yet ${entityId}.${pr.name} = ${pr.formula}`);
                     let compiledFormula: CompiledFormula = pr.compiledFormula_;
                     
                     for (let t of (pr.compiledFormula_.triggers ||[])) {
@@ -98,12 +103,22 @@ export class SchemaDAO {
         });
         return ret;
     }
-    public getObsViewNamesUpdatedByObj(objId: string): string[] {
+    public getComputedRecordsTriggeredByObj(objId: KeyValueObjIdType): ComputedRecordEntity[] {
+        let entityId = parseDataObjId(objId).entityId;
+        let ret: ComputedRecordEntity[] = [];
+        for (let ent of this.entities()) {
+            if (ent.props._id && ent.props._id.propType_ === Pn.COMPUTED_RECORD && ent.props._id.referencedEntityName == entityId) {
+                ret.push(ent as ComputedRecordEntity);
+            }
+        }
+        return ret;
+    }
+    public getObsViewNamesUpdatedByObj(objId: KeyValueObjIdType): string[] {
         let entityId = parseDataObjId(objId).entityId;
         let ret: string[] = [];
         this.entities().forEach(en => {
             _.values(en.props).forEach(pr => {
-                if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+                if (Pn.SCALAR_FORMULA == pr.propType_ && null != pr.compiledFormula_ || Pn.AGGREGATE_FORMULA == pr.propType_ && null != pr.compiledFormula_) {
                     let compiledFormula: CompiledFormula = pr.compiledFormula_;
                     
                     for (let t of (pr.compiledFormula_.triggers ||[])) {
