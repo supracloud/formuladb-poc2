@@ -8,6 +8,7 @@ Goals:
 * polyglot persistence
 * horizontally scalable over mixed databases/persistence
 * themeable using standard CSS/Sass skills
+* UI builder based on standard HTML, compatible with any CSS framework
 * deployable in any environment baremetal, public/private clouds using kubernetes as a common denominator (k3s for single node deployments)
 
 
