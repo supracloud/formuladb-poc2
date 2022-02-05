@@ -1,4 +1,17 @@
-FormulaDB apps could be plain HTML/CSS/JS web apps:
+This is a second PoC for the formuladb no-code/low-code platform.
+
+Goals:
+
+* data driven
+* business logic expressed as Spreadsheet-like formulas: computations, rollup(s), validations, rules
+* interfaces expressed as "external tables" and manipulated with the same constructs as a "normal" table
+* polyglot persistence
+* horizontally scalable over mixed databases/persistence
+* themeable using standard CSS/Sass skills
+* deployable in any environment baremetal, public/private clouds using kubernetes as a common denominator (k3s for single node deployments)
+
+
+# FormulaDB apps could be plain HTML/CSS/JS web apps:
 
 * [ ]  A `Page` is vanilla `HTML`
 * [ ]  An `Entity` is `JSON, Schema - like`: proprietary FormulaDB format
@@ -14,13 +27,6 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
   * [ ]  Add `DataObj`
   * [ ]  Delete `DataObj`
 
-```mermaid
-graph LR
-  git_febe --gitlab-ci--> docker:be
-  git_febe --gitlab-ci--> obj:frmdb-fe.js
-  git_febe --gitlab-ci--> obj:frmdb-editor.js
-  git_febe --gitlab-ci--> obj:frmdb-data-grid.js
-```
 
 
 ```ditaa
@@ -122,70 +128,3 @@ graph LR
                                                 +---------------+
 ```
 
-# "febe" internal Development
-
-## Prerequisites
-
-* docker
-* docker-compose
-* bash + git + node + vscode
-
-## env
-
-FRMDB_DEPLOYMENT_DIR: examples, customer-orbico, customer-dacris, etc.
-
-```bash
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/examples
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/customer-orbico
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/customer-dacris
-```
-
-## tools
-
-```bash
-# TBD TBD
-```
-
-# "app" Development and Deployment
-
-## Prerequisites
-
-* docker
-* docker-compose
-
-## env
-
-FRMDB_DEPLOYMENT_DIR: examples, customer-orbico, customer-dacris, etc.
-
-```bash
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/customer-dacris
-```
-
-## Deploy
-
-```bash
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe
-. bin/tools-dev.sh
-
-# TBD TBD
-```
-
-## Local ingress
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/deploy.yaml
-```
-
-# Links
-
-## images
-
-https://pixabay.com/
-
-https://www.123rf.com/photo_102144600_stock-vector-creative-website-and-landing-page-template-design-with-hand-drawing-people-vector-illustration.html
-
-## icons
-
-https://thenounproject.com/
