@@ -1,4 +1,4 @@
-This is a second PoC for the formuladb no-code/low-code platform.
+This is a second PoC for the formuladb no-code/low-code platform. **abandoned**
 
 Goals:
 
